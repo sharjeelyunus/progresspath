@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import HomePage from '../components/HomePage';
 import { useAuth } from '../context/AuthContext';
-import Training from './training';
+import TrainingsHomePage from '../components/TrainingsHomePage';
 
 const LandingPage = () => {
   const { user } = useAuth();
 
-  return <>{user ? <Training /> : <HomePage />}</>;
+  return <>{user ? <TrainingsHomePage /> : <HomePage />}</>;
 };
 
 export default LandingPage;

@@ -22,42 +22,43 @@ const Navbar = () => {
   };
 
   return (
-    <Disclosure as='nav' className='bg-gray-800'>
-      <>
-        <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
-          <div className='relative flex h-16 items-center justify-between'>
-            <div className='flex flex-1 items-center'>
-              <Link href='/' className='flex flex-shrink-0 items-center'>
-                <svg
-                  version='1.0'
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='20.000000pt'
-                  height='20.000000pt'
-                  viewBox='0 0 500.000000 500.000000'
-                  preserveAspectRatio='xMidYMid meet'
-                >
-                  <g
-                    transform='translate(0.000000,500.000000) scale(0.100000,-0.100000)'
-                    fill='#ffffff'
-                    stroke='none'
+    <nav className='fixed w-full'>
+      <Disclosure as='nav' className='bg-gray-800'>
+        <>
+          <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
+            <div className='relative flex h-16 items-center justify-between'>
+              <div className='flex flex-1 items-center'>
+                <Link href='/' className='flex flex-shrink-0 items-center'>
+                  <svg
+                    version='1.0'
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='20.000000pt'
+                    height='20.000000pt'
+                    viewBox='0 0 500.000000 500.000000'
+                    preserveAspectRatio='xMidYMid meet'
                   >
-                    <path
-                      d='M1904 4972 c-84 -40 -84 -117 -2 -302 31 -69 68 -153 83 -187 30 -67
+                    <g
+                      transform='translate(0.000000,500.000000) scale(0.100000,-0.100000)'
+                      fill='#ffffff'
+                      stroke='none'
+                    >
+                      <path
+                        d='M1904 4972 c-84 -40 -84 -117 -2 -302 31 -69 68 -153 83 -187 30 -67
 66 -108 106 -118 35 -9 86 34 94 78 9 53 -12 378 -29 432 -9 29 -29 64 -46 80
 -27 26 -39 30 -98 33 -50 2 -77 -2 -108 -16z'
-                    />
-                    <path
-                      d='M3452 4808 c-11 -18 -29 -62 -40 -98 -11 -36 -41 -123 -67 -195 -61
+                      />
+                      <path
+                        d='M3452 4808 c-11 -18 -29 -62 -40 -98 -11 -36 -41 -123 -67 -195 -61
 -171 -67 -190 -63 -227 4 -41 46 -73 83 -64 72 18 215 201 309 398 l28 57 -22
 46 c-30 61 -107 115 -167 115 -36 0 -44 -4 -61 -32z'
-                    />
-                    <path
-                      d='M714 4211 c-20 -12 -43 -43 -63 -82 -33 -66 -39 -105 -18 -132 26
+                      />
+                      <path
+                        d='M714 4211 c-20 -12 -43 -43 -63 -82 -33 -66 -39 -105 -18 -132 26
 -35 449 -157 543 -157 58 0 74 12 74 54 0 69 -91 153 -277 254 -156 85 -204
 97 -259 63z'
-                    />
-                    <path
-                      d='M2420 3833 c-164 -19 -370 -88 -507 -170 -287 -173 -473 -523 -473
+                      />
+                      <path
+                        d='M2420 3833 c-164 -19 -370 -88 -507 -170 -287 -173 -473 -523 -473
 -887 0 -271 83 -510 267 -776 20 -29 124 -149 229 -265 187 -208 262 -353 272
 -526 5 -108 -7 -152 -50 -170 -17 -7 -43 -30 -59 -52 -36 -50 -36 -74 -9 -391
 24 -280 56 -427 104 -480 38 -42 111 -68 261 -91 263 -42 691 -6 785 65 22 17
@@ -94,57 +95,57 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
 -98 -72 -28 -188 -43 -382 -48 -228 -6 -323 3 -449 43 -67 21 -78 28 -93 58
 -19 40 -50 227 -68 400 -13 134 -18 123 71 157 59 23 161 44 280 58 108 14
 443 6 600 -14z'
-                    />
-                    <path
-                      d='M4610 3780 c-45 -14 -324 -149 -352 -170 -41 -30 -47 -66 -15 -97 35
+                      />
+                      <path
+                        d='M4610 3780 c-45 -14 -324 -149 -352 -170 -41 -30 -47 -66 -15 -97 35
 -36 79 -40 236 -25 191 18 288 43 325 83 24 27 27 38 23 70 -7 52 -52 128 -83
 140 -30 11 -99 11 -134 -1z'
-                    />
-                    <path
-                      d='M275 3130 c-73 -8 -105 -18 -127 -38 -36 -31 -13 -186 34 -228 18
+                      />
+                      <path
+                        d='M275 3130 c-73 -8 -105 -18 -127 -38 -36 -31 -13 -186 34 -228 18
 -17 39 -19 207 -19 195 1 266 11 385 56 63 23 74 43 52 91 -49 103 -306 167
 -551 138z'
-                    />
-                    <path
-                      d='M4306 2261 c-9 -10 -19 -35 -23 -55 -11 -71 68 -145 253 -236 205
+                      />
+                      <path
+                        d='M4306 2261 c-9 -10 -19 -35 -23 -55 -11 -71 68 -145 253 -236 205
 -101 277 -103 335 -12 25 40 29 55 27 102 -3 52 -5 56 -38 72 -19 9 -91 33
 -160 53 -69 21 -166 50 -215 66 -106 34 -155 37 -179 10z'
-                    />
-                    <path
-                      d='M938 1936 c-135 -48 -312 -167 -339 -229 -16 -39 -5 -95 27 -129 23
+                      />
+                      <path
+                        d='M938 1936 c-135 -48 -312 -167 -339 -229 -16 -39 -5 -95 27 -129 23
 -24 36 -28 78 -28 76 0 141 42 276 179 122 123 164 187 140 216 -19 23 -104
 18 -182 -9z'
-                    />
-                  </g>
-                </svg>
+                      />
+                    </g>
+                  </svg>
 
-                <p className='text-white ml-5'>Progress Path</p>
-              </Link>
-            </div>
-            <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
-              {/* Profile dropdown */}
-              <Menu as='div' className='relative ml-3'>
-                <div>
-                  <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
-                    <span className='sr-only'>Open user menu</span>
-                    <img
-                      className='h-8 w-8 rounded-full'
-                      src={user.photoURL}
-                      alt=''
-                    />
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter='transition ease-out duration-100'
-                  enterFrom='transform opacity-0 scale-95'
-                  enterTo='transform opacity-100 scale-100'
-                  leave='transition ease-in duration-75'
-                  leaveFrom='transform opacity-100 scale-100'
-                  leaveTo='transform opacity-0 scale-95'
-                >
-                  <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                    {/* <Menu.Item>
+                  <p className='text-white ml-5'>Progress Path</p>
+                </Link>
+              </div>
+              <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+                {/* Profile dropdown */}
+                <Menu as='div' className='relative ml-3'>
+                  <div>
+                    <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
+                      <span className='sr-only'>Open user menu</span>
+                      <img
+                        className='h-8 w-8 rounded-full'
+                        src={user.photoURL}
+                        alt=''
+                      />
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter='transition ease-out duration-100'
+                    enterFrom='transform opacity-0 scale-95'
+                    enterTo='transform opacity-100 scale-100'
+                    leave='transition ease-in duration-75'
+                    leaveFrom='transform opacity-100 scale-100'
+                    leaveTo='transform opacity-0 scale-95'
+                  >
+                    <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                      {/* <Menu.Item>
                       {({ active }) => (
                         <a
                           href={user.username}
@@ -170,27 +171,28 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
                         </a>
                       )}
                     </Menu.Item> */}
-                    <Menu.Item>
-                      {({ active }) => (
-                        <button
-                          onClick={handleLogout}
-                          className={classNames(
-                            active ? 'bg-gray-100' : '',
-                            'block px-4 py-2 text-sm text-gray-700 w-full text-left'
-                          )}
-                        >
-                          Sign out
-                        </button>
-                      )}
-                    </Menu.Item>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <button
+                            onClick={handleLogout}
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700 w-full text-left'
+                            )}
+                          >
+                            Sign out
+                          </button>
+                        )}
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </div>
             </div>
           </div>
-        </div>
-      </>
-    </Disclosure>
+        </>
+      </Disclosure>
+    </nav>
   );
 };
 
