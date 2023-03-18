@@ -15,3 +15,12 @@ export interface UserType {
     lastSignInTime: string;
   };
 }
+
+export interface TrainingsInterface {
+  id: string;
+  index: number;
+  name: string;
+  leadName: string;
+  leadImage: string;
+  slug: string;
+}
