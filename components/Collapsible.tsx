@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { TiTick } from 'react-icons/ti';
+import { ImSpinner4 } from 'react-icons/im';
 
 type Props = {
   taskName: string;
@@ -24,7 +26,7 @@ const Collapsible = (props: Props) => {
         }
         onClick={toggle}
       >
-        <span className='text-[#b4b4b4]'>Day {props.index + 1}</span>
+        {props.markDone ? <TiTick /> : <ImSpinner4 />}
         <h3>{props.taskName}</h3>
         <span className='text-xl'>{!open ? '+' : '-'}</span>
       </button>
