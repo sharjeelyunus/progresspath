@@ -3,13 +3,21 @@ import React, { useEffect, useState } from 'react';
 import Collapsible from '../components/Collapsible';
 import Layout from '../components/Layout';
 import TaskDetails from '../components/TaskDetails';
-import useGetCompletedTasks from '../hooks/useGetCompletedTasks';
+import { useAuth } from '../context/AuthContext';
 import useGetAllTasks from '../hooks/useGetTasks';
 
 const Training = () => {
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/');
+    }
+  }, []);
 
   const data = useGetAllTasks(slug[0], setLoading);
 
