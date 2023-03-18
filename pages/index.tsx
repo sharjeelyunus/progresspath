@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import HomePage from '../components/HomePage';
 import { useAuth } from '../context/AuthContext';
 import TrainingsHomePage from '../components/TrainingsHomePage';

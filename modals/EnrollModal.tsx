@@ -1,20 +1,31 @@
 import { Dialog, Transition } from '@headlessui/react';
+import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { useRouter } from 'next/router';
 import { Fragment } from 'react';
+import { db } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-  setMarkDone: (markDone: boolean) => void;
+  trackId: string;
+  trackSlug: string;
 };
 
-const ComplelteTaskModal = ({ setMarkDone, isOpen, setIsOpen }: Props) => {
+const EnrollModal = ({ trackId, trackSlug, isOpen, setIsOpen }: Props) => {
+  const { user } = useAuth();
+  const router = useRouter();
   function closeModal() {
     setIsOpen(false);
   }
 
-  const handleCompleteTask = () => {
+  const handleCompleteTask = async () => {
+    await setDoc(doc(db, 'users', user.uid, 'enrolledTracks', trackId), {
+      trackId,
+      timestamp: Timestamp.now(),
+    });
     closeModal();
-    setMarkDone(true);
+    router.push(`/${trackSlug}`);
   };
 
   return (
@@ -49,29 +60,12 @@ const ComplelteTaskModal = ({ setMarkDone, isOpen, setIsOpen }: Props) => {
                     as='h3'
                     className='text-lg font-medium leading-6 text-white'
                   >
-                    Complete Task
+                    Enroll
                   </Dialog.Title>
                   <div className='mt-2'>
                     <p className='text-sm text-white'>
-                      Are you sure you want to complete this task?
+                      Are you sure you want to enroll in this track?
                     </p>
-                    <div className='py-3'>
-                      <input
-                        type='text'
-                        placeholder='Project URL (GitHub)'
-                        className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
-                      />
-                      <input
-                        type='text'
-                        placeholder='Project URL (Live)'
-                        className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
-                      />
-                      <input
-                        type='text'
-                        placeholder='Post URL'
-                        className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
-                      />
-                    </div>
                   </div>
 
                   <div className='mt-4 flex justify-end'>
@@ -93,4 +87,4 @@ const ComplelteTaskModal = ({ setMarkDone, isOpen, setIsOpen }: Props) => {
   );
 };
 
-export default ComplelteTaskModal;
+export default EnrollModal;

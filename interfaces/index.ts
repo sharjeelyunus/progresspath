@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Details {
   title: string;
   link: string;
@@ -38,4 +40,10 @@ export interface TaskInterface {
   day: number;
   taskName: string;
   details: TaskDetailsInterface[];
+}
+
+export interface UserTracks {
+  id: string;
+  trackId: string;
+  timestamp: Timestamp;
 }
