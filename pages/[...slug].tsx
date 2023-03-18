@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Collapsible from '../components/Collapsible';
 import Layout from '../components/Layout';
 import TaskDetails from '../components/TaskDetails';
+import useGetCompletedTasks from '../hooks/useGetCompletedTasks';
 import useGetAllTasks from '../hooks/useGetTasks';
 
 const Training = () => {
@@ -10,8 +11,6 @@ const Training = () => {
   const slug = (router.query.slug as string[]) ?? [];
 
   const data = useGetAllTasks(slug[0]);
-
-  const [markDone, setMarkDone] = useState(false);
 
   const tasks = data.map((task) => ({
     id: task.id,
@@ -27,14 +26,14 @@ const Training = () => {
           {tasks.map((task, index) => (
             <Collapsible
               key={index}
-              markDone={markDone}
               index={index}
+              taskId={task.id}
               taskName={task.taskName}
+              trackId={task.trackId}
             >
               <TaskDetails
                 trackId={task.trackId}
-                markDone={markDone}
-                setMarkDone={setMarkDone}
+                taskId={task.id}
                 details={task.details}
               />
             </Collapsible>

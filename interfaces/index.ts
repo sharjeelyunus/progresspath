@@ -49,3 +49,12 @@ export interface UserTracks {
   trackId: string;
   timestamp: Timestamp;
 }
+
+export interface CompletedTasks {
+  id: string;
+  taskId: string;
+  timestamp: Timestamp;
+  codeLink?: string;
+  liveLink?: string;
+  postLink?: string;
+}

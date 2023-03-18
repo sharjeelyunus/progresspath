@@ -1,16 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useGetCompletedTasks from '../hooks/useGetCompletedTasks';
 import { Details } from '../interfaces';
 import ComplelteTaskModal from '../modals/CompleteTaskModal';
 
 type Props = {
-  markDone: boolean;
-  setMarkDone: (markDone: boolean) => void;
   details: Array<Details>;
   trackId: string;
+  taskId: string;
 };
 
-const TaskDetails = ({ trackId, markDone, setMarkDone, details }: Props) => {
+const TaskDetails = ({ taskId, trackId, details }: Props) => {
   const [openCompleteTaskModal, setOpenCompleteTaskModal] = useState(false);
+  const [markDone, setMarkDone] = useState(false);
+
+  const completedTasks = useGetCompletedTasks(trackId);
+
+  useEffect(() => {
+    completedTasks.map((task) => {
+      if (task.id === taskId) {
+        setMarkDone(true);
+      }
+    });
+  }, [completedTasks]);
 
   return (
     <>
@@ -30,7 +41,7 @@ const TaskDetails = ({ trackId, markDone, setMarkDone, details }: Props) => {
                   </a>
                   <ComplelteTaskModal
                     trackId={trackId}
-                    taskId={detail.id}
+                    taskId={taskId}
                     setMarkDone={setMarkDone}
                     isOpen={openCompleteTaskModal}
                     setIsOpen={setOpenCompleteTaskModal}

@@ -1,7 +1,5 @@
 import {
   collection,
-  doc,
-  getDoc,
   getFirestore,
   onSnapshot,
   orderBy,
