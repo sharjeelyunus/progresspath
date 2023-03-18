@@ -1,15 +1,12 @@
 import Link from 'next/link';
-import Layout from '../components/Layout';
+import HomePage from '../components/HomePage';
+import { useAuth } from '../context/AuthContext';
+import Training from './training';
 
-const HomePage = () => (
-  <Layout title='Home | ProgressPath'>
-    <div className='flex flex-col items-center justify-center h-screen'>
-      <h1 className='font-bold text-5xl'>Welcome to ProgressPath 👋</h1>
-      <Link href='/training' className='font-bold mt-5'>
-        /training
-      </Link>
-    </div>
-  </Layout>
-);
+const LandingPage = () => {
+  const { user } = useAuth();
 
-export default HomePage;
+  return <>{user ? <Training /> : <HomePage />}</>;
+};
+
+export default LandingPage;
