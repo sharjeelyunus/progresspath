@@ -1,0 +1,38 @@
+{
+  "tarinings": [
+    {
+      "taskName": "Recap: Introduction to HTML, CSS, and JavaScript",
+      "details": [
+        {
+          "title": "Coding for Web Design 101: How HTML, CSS, and JavaScript Work",
+          "link": "https://blog.hubspot.com/marketing/web-design-html-css-javascript"
+        },
+        {
+          "title": "HTML, CSS, and Javascript in 30 minutes",
+          "link": "https://www.youtube.com/watch?v=_GTMOmRrqkU"
+        },
+        {
+          "title": "How To Make A Calculator Using HTML CSS And JavaScript        ",
+          "link": "https://www.youtube.com/watch?v=cGgLHJGyS34"
+        }
+      ]
+    },
+    {
+      "taskName": "Recap: JavaScript you need to know before starting React",
+      "details": [
+        {
+          "title": "Coding for Web Design 101: How HTML, CSS, and JavaScript Work",
+          "link": "https://blog.hubspot.com/marketing/web-design-html-css-javascript"
+        },
+        {
+          "title": "HTML, CSS, and Javascript in 30 minutes",
+          "link": "https://www.youtube.com/watch?v=_GTMOmRrqkU"
+        },
+        {
+          "title": "How To Make A Calculator Using HTML CSS And JavaScript        ",
+          "link": "https://www.youtube.com/watch?v=cGgLHJGyS34"
+        }
+      ]
+    }
+  ]
+}
