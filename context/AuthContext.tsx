@@ -3,9 +3,12 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
+  UserCredential,
 } from 'firebase/auth';
-import { auth } from '../config/firebase';
+import { toast } from 'react-hot-toast';
+import { auth, db, provider } from '../config/firebase';
 import { UserType } from '../interfaces';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
 
 type authContextType = {
   user: UserType | null;
@@ -32,6 +35,7 @@ export const AuthContextProvider = ({
 }) => {
   const [user, setUser] = useState<UserType>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [userExists, setUserExists] = useState<boolean>(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -41,6 +45,11 @@ export const AuthContextProvider = ({
           uid: user.uid,
           photoURL: user.photoURL,
           name: user.displayName,
+          onboarding: false,
+          metadata: {
+            lastSignInTime: user.metadata.lastSignInTime,
+            creationTime: user.metadata.creationTime,
+          },
         });
       } else {
         setUser(null);
@@ -51,17 +60,80 @@ export const AuthContextProvider = ({
     return () => unsubscribe();
   }, []);
 
-  const provider = new GoogleAuthProvider();
+  useEffect(() => {
+    // check if user exists in database
+    const syncUser = async () => {
+      if (user) {
+        const userRef = doc(db, 'users', user.uid);
+        const userDataExists = (await getDoc(userRef)).exists();
+        if (userDataExists) {
+          setUserExists(true);
+        } else {
+          setUserExists(false);
+        }
+      }
+    };
+    syncUser();
+  }, []);
+
+  const handleAddNewUser = async (result: UserCredential) => {
+    const user = result.user;
+    const userRef = doc(db, 'users', user.uid);
+    const userDetails: UserType = {
+      email: user?.email,
+      uid: user?.uid,
+      photoURL: user?.photoURL,
+      name: user?.displayName,
+      onboarding: false,
+      metadata: {
+        lastSignInTime: user?.metadata.lastSignInTime,
+        creationTime: user?.metadata.creationTime,
+      },
+    };
+    // get list of whitelisted emails from database
+    const emailsRef = doc(db, 'emails', 'whitelist');
+    const emailsDoc = await getDoc(emailsRef);
+    if (!emailsDoc.exists()) {
+      auth.signOut();
+      toast.error('You are not authorized to access this app');
+    } else {
+      const whiteListedEmails = emailsDoc.data()?.emails;
+      // check if user's email is in the whitelist
+      if (!whiteListedEmails.includes(userDetails.email)) {
+        auth.signOut();
+        toast.error('You are not authorized to access this app');
+      } else {
+        await setDoc(userRef, userDetails, { merge: true });
+        toast.success('Welcome to the app');
+      }
+    }
+  };
+
+  const handleUpdateUserMetadata = async (result: UserCredential) => {
+    const user = result.user;
+    const userRef = doc(db, 'users', user?.uid);
+    const userDetails = {
+      metadata: {
+        lastSignInTime: user?.metadata.lastSignInTime,
+        creationTime: user?.metadata.creationTime,
+      },
+    };
+    await setDoc(userRef, userDetails, { merge: true });
+    toast.success('Welcome back');
+  };
 
   const login = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        console.log({ credential, token, user });
+        // add user to database
+        // check if user already exists in database
+        if (userExists) {
+          // if yes, update user's metadata
+          handleUpdateUserMetadata(result);
+        } else {
+          // if not, add user to database
+          handleAddNewUser(result);
+        }
       })
       .catch((error) => {
         // Handle Errors here.
@@ -77,7 +149,6 @@ export const AuthContextProvider = ({
 
   const logout = () => {
     auth.signOut();
-    console.log('logout');
   };
 
   const value = {

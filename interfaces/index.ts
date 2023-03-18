@@ -9,4 +9,9 @@ export interface UserType {
   name: string | null;
   photoURL: string | null;
   username?: string;
+  onboarding?: boolean;
+  metadata?: {
+    creationTime: string;
+    lastSignInTime: string;
+  };
 }
