@@ -1,18 +1,51 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { addDoc, collection, doc, setDoc, Timestamp } from 'firebase/firestore';
+import { Fragment, useState } from 'react';
+import { db } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
   setMarkDone: (markDone: boolean) => void;
+  trackId: string;
+  taskId: string;
 };
 
-const ComplelteTaskModal = ({ setMarkDone, isOpen, setIsOpen }: Props) => {
+const ComplelteTaskModal = ({
+  trackId,
+  setMarkDone,
+  isOpen,
+  setIsOpen,
+  taskId,
+}: Props) => {
+  const [postLink, setPostLink] = useState('');
+  const [liveLink, setLiveLink] = useState('');
+  const [codeLink, setCodeLink] = useState('');
+  const { user } = useAuth();
   function closeModal() {
     setIsOpen(false);
   }
 
-  const handleCompleteTask = () => {
+  const handleCompleteTask = async () => {
+    await setDoc(
+      doc(
+        db,
+        'users',
+        user.uid,
+        'enrolledTracks',
+        trackId,
+        'completedTasks',
+        taskId
+      ),
+      {
+        taskId,
+        timestamp: Timestamp.now(),
+        postLink,
+        liveLink,
+        codeLink,
+      }
+    );
     closeModal();
     setMarkDone(true);
   };
@@ -59,16 +92,22 @@ const ComplelteTaskModal = ({ setMarkDone, isOpen, setIsOpen }: Props) => {
                       <input
                         type='text'
                         placeholder='Project URL (GitHub)'
+                        value={codeLink}
+                        onChange={(e) => setCodeLink(e.target.value)}
                         className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                       />
                       <input
                         type='text'
                         placeholder='Project URL (Live)'
+                        value={liveLink}
+                        onChange={(e) => setLiveLink(e.target.value)}
                         className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                       />
                       <input
                         type='text'
                         placeholder='Post URL'
+                        value={postLink}
+                        onChange={(e) => setPostLink(e.target.value)}
                         className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                       />
                     </div>

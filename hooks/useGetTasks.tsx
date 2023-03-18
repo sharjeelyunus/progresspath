@@ -37,6 +37,7 @@ export default function useGetAllTasks(slug: string): Array<TaskInterface> {
           allTasksData.map((task) => {
             return getTaskDetails(targetTraining.id, task.id).then(
               (taskDetails: TaskDetailsInterface[]) => {
+                task.trackId = targetTraining.id;
                 task.details = taskDetails;
               }
             );

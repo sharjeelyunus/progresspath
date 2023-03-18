@@ -6,9 +6,10 @@ type Props = {
   markDone: boolean;
   setMarkDone: (markDone: boolean) => void;
   details: Array<Details>;
+  trackId: string;
 };
 
-const TaskDetails = ({ markDone, setMarkDone, details }: Props) => {
+const TaskDetails = ({ trackId, markDone, setMarkDone, details }: Props) => {
   const [openCompleteTaskModal, setOpenCompleteTaskModal] = useState(false);
 
   return (
@@ -18,14 +19,23 @@ const TaskDetails = ({ markDone, setMarkDone, details }: Props) => {
           <div className='text-sm'>
             <div className='flex flex-col'>
               {details.map((detail, index) => (
-                <a
-                  className='p-2'
-                  href={detail.link}
-                  key={index}
-                  target='_blank'
-                >
-                  {index + 1}. {detail.title}
-                </a>
+                <>
+                  <a
+                    className='p-2'
+                    href={detail.link}
+                    key={index}
+                    target='_blank'
+                  >
+                    {index + 1}. {detail.title}
+                  </a>
+                  <ComplelteTaskModal
+                    trackId={trackId}
+                    taskId={detail.id}
+                    setMarkDone={setMarkDone}
+                    isOpen={openCompleteTaskModal}
+                    setIsOpen={setOpenCompleteTaskModal}
+                  />
+                </>
               ))}
             </div>
           </div>
@@ -39,12 +49,6 @@ const TaskDetails = ({ markDone, setMarkDone, details }: Props) => {
           </div>
         </div>
       </div>
-
-      <ComplelteTaskModal
-        setMarkDone={setMarkDone}
-        isOpen={openCompleteTaskModal}
-        setIsOpen={setOpenCompleteTaskModal}
-      />
     </>
   );
 };

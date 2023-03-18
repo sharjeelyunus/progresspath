@@ -1,6 +1,7 @@
-import { Timestamp } from "firebase/firestore";
+import { Timestamp } from 'firebase/firestore';
 
 export interface Details {
+  id: string;
   title: string;
   link: string;
 }
@@ -40,6 +41,7 @@ export interface TaskInterface {
   day: number;
   taskName: string;
   details: TaskDetailsInterface[];
+  trackId: string;
 }
 
 export interface UserTracks {

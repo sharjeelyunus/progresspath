@@ -10,11 +10,14 @@ const Training = () => {
   const slug = (router.query.slug as string[]) ?? [];
 
   const data = useGetAllTasks(slug[0]);
+
   const [markDone, setMarkDone] = useState(false);
 
   const tasks = data.map((task) => ({
+    id: task.id,
     taskName: task.taskName,
     details: task.details,
+    trackId: task.trackId,
   }));
 
   return (
@@ -29,6 +32,7 @@ const Training = () => {
               taskName={task.taskName}
             >
               <TaskDetails
+                trackId={task.trackId}
                 markDone={markDone}
                 setMarkDone={setMarkDone}
                 details={task.details}
