@@ -9,8 +9,9 @@ import useGetAllTasks from '../hooks/useGetTasks';
 const Training = () => {
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
+  const [loading, setLoading] = useState(false);
 
-  const data = useGetAllTasks(slug[0]);
+  const data = useGetAllTasks(slug[0], setLoading);
 
   const tasks = data.map((task) => ({
     id: task.id,
@@ -18,6 +19,18 @@ const Training = () => {
     details: task.details,
     trackId: task.trackId,
   }));
+
+  if (loading) {
+    return (
+      <Layout title='React & Nextjs | ProgressPath'>
+        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
+          <div className='flex flex-col'>
+            <h1>Loading...</h1>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title='React & Nextjs | ProgressPath'>

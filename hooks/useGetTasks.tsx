@@ -10,11 +10,15 @@ import { useEffect, useState } from 'react';
 import { TaskDetailsInterface, TaskInterface } from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
 
-export default function useGetAllTasks(slug: string): Array<TaskInterface> {
+export default function useGetAllTasks(
+  slug: string,
+  setLoading: (loading) => void
+): Array<TaskInterface> {
   const [tasks, setTasks] = useState<Array<TaskInterface>>([]);
   const targetTraining = useGetTargetTraining(slug);
 
   useEffect(() => {
+    setLoading(true);
     if (targetTraining && targetTraining.id) {
       // add a check to ensure that targetTraining and its id are defined
       const db = getFirestore();
@@ -46,6 +50,7 @@ export default function useGetAllTasks(slug: string): Array<TaskInterface> {
           setTasks(allTasksData);
         });
       });
+      setLoading(false);
 
       return unsub;
     }

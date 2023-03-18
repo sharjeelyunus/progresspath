@@ -53,7 +53,9 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
           <div className='flex justify-end'>
             <button
               className='bg-green-700 px-5 py-2 rounded-lg text-sm'
-              onClick={() => setOpenCompleteTaskModal(true)}
+              onClick={
+                markDone ? () => {} : () => setOpenCompleteTaskModal(true)
+              }
             >
               {markDone ? 'Completed' : 'Mark as Done'}
             </button>
