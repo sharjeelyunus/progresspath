@@ -25,3 +25,17 @@ export interface TrainingsInterface {
   slug: string;
   author: string;
 }
+
+export interface TaskDetailsInterface {
+  id: string;
+  index: number;
+  link: string;
+  title: string;
+}
+
+export interface TaskInterface {
+  id: string;
+  day: number;
+  taskName: string;
+  details: TaskDetailsInterface[];
+}

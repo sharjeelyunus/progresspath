@@ -18,11 +18,11 @@ export default function useGetAllTrainings(): Array<TrainingsInterface> {
     const db = getFirestore();
 
     const trainingsRef = collection(db, 'trainings');
-    const q = query(trainingsRef, orderBy('index', 'desc'));
+    const q = query(trainingsRef, orderBy('index', 'asc'));
 
     const unsub = onSnapshot(q, (docs) => {
-      var docsArr = docs.docs;
-      var allTrainingsData = docsArr.map((doc) => {
+      const docsArr = docs.docs;
+      const allTrainingsData = docsArr.map((doc) => {
         return { ...doc.data(), id: doc.id } as TrainingsInterface;
       });
 
@@ -35,9 +35,7 @@ export default function useGetAllTrainings(): Array<TrainingsInterface> {
       );
     });
 
-    return () => {
-      unsub();
-    };
+    return unsub;
   }, []);
 
   return trainings;

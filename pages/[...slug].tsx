@@ -1,14 +1,18 @@
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import Collapsible from '../components/Collapsible';
 import Layout from '../components/Layout';
 import TaskDetails from '../components/TaskDetails';
-
-import data from '../data.json';
+import useGetAllTasks from '../hooks/useGetTasks';
 
 const Training = () => {
+  const router = useRouter();
+  const slug = (router.query.slug as string[]) ?? [];
+
+  const data = useGetAllTasks(slug[0]);
   const [markDone, setMarkDone] = useState(false);
 
-  const tasks = data.tarinings.map((task) => ({
+  const tasks = data.map((task) => ({
     taskName: task.taskName,
     details: task.details,
   }));
