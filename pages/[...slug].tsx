@@ -53,6 +53,7 @@ const Training = () => {
               trackId={task.trackId}
             >
               <TaskDetails
+                key={task.id}
                 trackId={task.trackId}
                 taskId={task.id}
                 details={task.details}
