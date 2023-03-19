@@ -58,4 +58,15 @@ export interface CompletedTasks {
   liveLink?: string;
   postLink?: string;
   authorId?: string;
+  points?: number;
+}
+
+export interface LeaderboardEntry {
+  authorId: string;
+  points: number;
+  completedTasks: number;
+}
+
+export interface UserTasks {
+  [authorId: string]: string[];
 }
