@@ -39,13 +39,6 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
                   >
                     {index + 1}. {detail.title}
                   </a>
-                  <ComplelteTaskModal
-                    trackId={trackId}
-                    taskId={taskId}
-                    setMarkDone={setMarkDone}
-                    isOpen={openCompleteTaskModal}
-                    setIsOpen={setOpenCompleteTaskModal}
-                  />
                 </>
               ))}
             </div>
@@ -62,6 +55,15 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
           </div>
         </div>
       </div>
+      {openCompleteTaskModal && (
+        <ComplelteTaskModal
+          trackId={trackId}
+          taskId={taskId}
+          setMarkDone={setMarkDone}
+          isOpen={openCompleteTaskModal}
+          setIsOpen={setOpenCompleteTaskModal}
+        />
+      )}
     </>
   );
 };

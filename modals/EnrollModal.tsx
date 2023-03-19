@@ -6,84 +6,63 @@ import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 
 type Props = {
-  isOpen: boolean;
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
   trackId: string;
   trackSlug: string;
+  isOpen: boolean;
 };
 
-const EnrollModal = ({ trackId, trackSlug, isOpen, setIsOpen }: Props) => {
+const EnrollModal = ({ trackId, trackSlug, setIsOpen, isOpen }: Props) => {
   const { user } = useAuth();
   const router = useRouter();
-  function closeModal() {
-    setIsOpen(false);
-  }
 
-  const handleCompleteTask = async () => {
+  const handleEnrollTrack = async () => {
     await setDoc(doc(db, 'users', user.uid, 'enrolledTracks', trackId), {
       trackId,
       timestamp: Timestamp.now(),
     });
-    closeModal();
+    setIsOpen(false);
     router.push(`/${trackSlug}`);
   };
 
+  const handleOnClose = (e: any) => {
+    if (e.target.id === 'container') {
+      setIsOpen(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as='div' className='relative z-10' onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter='ease-out duration-300'
-            enterFrom='opacity-0'
-            enterTo='opacity-100'
-            leave='ease-in duration-200'
-            leaveFrom='opacity-100'
-            leaveTo='opacity-0'
-          >
-            <div className='fixed inset-0 bg-black bg-opacity-25' />
-          </Transition.Child>
-
-          <div className='fixed inset-0 overflow-y-auto'>
-            <div className='flex min-h-full items-center justify-center p-4 text-center'>
-              <Transition.Child
-                as={Fragment}
-                enter='ease-out duration-300'
-                enterFrom='opacity-0 scale-95'
-                enterTo='opacity-100 scale-100'
-                leave='ease-in duration-200'
-                leaveFrom='opacity-100 scale-100'
-                leaveTo='opacity-0 scale-95'
-              >
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-[#443C68] p-6 text-left align-middle shadow-xl transition-all'>
-                  <Dialog.Title
-                    as='h3'
-                    className='text-lg font-medium leading-6 text-white'
-                  >
-                    Enroll
-                  </Dialog.Title>
-                  <div className='mt-2'>
-                    <p className='text-sm text-white'>
-                      Are you sure you want to enroll in this track?
-                    </p>
-                  </div>
-
-                  <div className='mt-4 flex justify-end'>
-                    <button
-                      type='button'
-                      className='inline-flex justify-center rounded-md px-4 py-2 text-sm font-medium bg-[#18122B] text-white hover:bg-[#393053] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      onClick={handleCompleteTask}
-                    >
-                      Submit
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
+    <div
+      onClick={handleOnClose}
+      id='container'
+      className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50'
+    >
+      <div className='bg-white mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
+        <div className='flex flex-col w-[350px] lg:w-auto justify-center items-center py-6 lg:px-8 px-4'>
+          <div>
+            <h2 className='text-center text-lg lg:text-2xl'>
+              Are you sure you want to enroll in this track?
+            </h2>
           </div>
-        </Dialog>
-      </Transition>
-    </>
+          <div className='mt-5'>
+            <button
+              className='rounded-full bg-[#18122B] px-8 py-1 mr-5 w-[100px]'
+              onClick={handleEnrollTrack}
+            >
+              Yes
+            </button>
+            <button
+              className='rounded-full px-8 py-1 w-[100px]'
+              onClick={() => setIsOpen(false)}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

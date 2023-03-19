@@ -57,4 +57,5 @@ export interface CompletedTasks {
   codeLink?: string;
   liveLink?: string;
   postLink?: string;
+  authorId?: string;
 }
