@@ -1,7 +1,5 @@
-import { Dialog, Transition } from '@headlessui/react';
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/router';
-import { Fragment } from 'react';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 
@@ -39,22 +37,22 @@ const EnrollModal = ({ trackId, trackSlug, setIsOpen, isOpen }: Props) => {
       id='container'
       className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50'
     >
-      <div className='bg-white mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
+      <div className='bg-[#443C68] mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
         <div className='flex flex-col w-[350px] lg:w-auto justify-center items-center py-6 lg:px-8 px-4'>
           <div>
-            <h2 className='text-center text-lg lg:text-2xl'>
+            <h2 className='text-center text-white text-lg lg:text-2xl'>
               Are you sure you want to enroll in this track?
             </h2>
           </div>
           <div className='mt-5'>
             <button
-              className='rounded-full bg-[#18122B] px-8 py-1 mr-5 w-[100px]'
+              className='rounded-full text-white border-[0.3px] border-white bg-[#393053] px-8 py-1 mr-5 w-[100px]'
               onClick={handleEnrollTrack}
             >
               Yes
             </button>
             <button
-              className='rounded-full px-8 py-1 w-[100px]'
+              className='rounded-full text-white border-[0.3px] border-white px-8 py-1 w-[100px]'
               onClick={() => setIsOpen(false)}
             >
               No

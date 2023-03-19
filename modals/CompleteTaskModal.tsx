@@ -65,6 +65,9 @@ const CompleteTaskModal = ({
       <div className='bg-[#443C68] mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
         <div className='flex flex-col w-[350px] lg:w-auto justify-center items-center py-6 lg:px-8 px-4'>
           <div>
+            <div>
+              <h2 className='text-white font-bold text-lg'>Complete Task</h2>
+            </div>
             <div className='mt-2'>
               <h3 className='text-white'>
                 Are you sure you want to complete this task?
@@ -94,9 +97,9 @@ const CompleteTaskModal = ({
               </div>
             </div>
           </div>
-          <div className='mt-5 flex w-full justify-end'>
+          <div className='mt-5 flex w-full justify-end items-center'>
             <button
-              className='rounded-full bg-[#18122B] text-white px-8 py-1 w-[100px]'
+              className='rounded-full bg-[#393053] text-white text-center py-2 w-[100px]'
               onClick={handleCompleteTask}
             >
               Submit
