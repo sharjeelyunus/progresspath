@@ -90,23 +90,7 @@ export const AuthContextProvider = ({
         creationTime: user?.metadata.creationTime,
       },
     };
-    // get list of whitelisted emails from database
-    const emailsRef = doc(db, 'emails', 'whitelist');
-    const emailsDoc = await getDoc(emailsRef);
-    if (!emailsDoc.exists()) {
-      auth.signOut();
-      toast.error('You are not authorized to access this app');
-    } else {
-      const whiteListedEmails = emailsDoc.data()?.emails;
-      // check if user's email is in the whitelist
-      if (!whiteListedEmails.includes(userDetails.email)) {
-        auth.signOut();
-        toast.error('You are not authorized to access this app');
-      } else {
-        await setDoc(userRef, userDetails, { merge: true });
-        toast.success('Welcome to the app');
-      }
-    }
+    await setDoc(userRef, userDetails, { merge: true });
   };
 
   const handleUpdateUserMetadata = async (result: UserCredential) => {
