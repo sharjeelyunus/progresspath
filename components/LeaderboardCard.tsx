@@ -21,7 +21,7 @@ const LeaderboardCard = ({ rank, authorId, points, completedTasks }: Props) => {
           className='w-10 h-10 rounded-full'
         />
         <div>
-          <h2>{targetUser?.name}</h2>
+          <h2 className='font-bold'>{targetUser?.name}</h2>
           <span className='text-sm'>Completed {completedTasks} tasks</span>
         </div>
       </div>

@@ -12,7 +12,7 @@ const TrainingsHomePage = () => {
 
   return (
     <>
-      <Layout title='React & Nextjs | ProgressPath'>
+      <Layout title='Trainings | ProgressPath'>
         <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
           {trainings.map((training, index) => (
             <>
