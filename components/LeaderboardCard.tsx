@@ -16,7 +16,11 @@ const LeaderboardCard = ({ rank, authorId, points, completedTasks }: Props) => {
       <div className='flex items-center gap-3'>
         <span className='font-bold text-xl'>{rank}. </span>
         <img
-          src={targetUser?.photoURL}
+          src={
+            targetUser?.photoURL
+              ? targetUser?.photoURL
+              : '/blank-profile-picture.svg'
+          }
           alt=''
           className='w-10 h-10 rounded-full'
         />
