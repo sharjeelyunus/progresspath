@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Layout = ({ children, title = 'This is the default title' }: Props) => {
-  const { user } = useAuth();
+  const { loggedInUser } = useAuth();
   return (
     <div>
       <Head>
@@ -18,7 +18,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
         <meta charSet='utf-8' />
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Head>
-      {user && <Navbar />}
+      {loggedInUser && <Navbar />}
       {children}
       {/* <footer>
       <hr />
