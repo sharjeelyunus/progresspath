@@ -8,16 +8,18 @@ import {
 import { toast } from 'react-hot-toast';
 import { auth, db, provider } from '../config/firebase';
 import { UserType } from '../interfaces';
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 type authContextType = {
   user: UserType | null;
+  loggedInUser: UserType | null;
   login: () => void;
   logout: () => void;
 };
 
 const authContextDefaultValues: authContextType = {
   user: null,
+  loggedInUser: null,
   login: () => {},
   logout: () => {},
 };
@@ -34,6 +36,7 @@ export const AuthContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [user, setUser] = useState<UserType>();
+  const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [userExists, setUserExists] = useState<boolean>(false);
 
@@ -75,6 +78,20 @@ export const AuthContextProvider = ({
     };
     syncUser();
   }, []);
+
+  useEffect(() => {
+    // loggedInUser is the user from the database
+    const syncUser = async () => {
+      if (user) {
+        const userRef = doc(db, 'users', user.uid);
+        const userData = (await getDoc(userRef)).data();
+        if (userData) {
+          setLoggedInUser(userData as UserType);
+        }
+      }
+    };
+    syncUser();
+  }, [user]);
 
   const handleAddNewUser = async (result: UserCredential) => {
     const user = result.user;
@@ -137,6 +154,7 @@ export const AuthContextProvider = ({
 
   const value = {
     user,
+    loggedInUser,
     login,
     logout,
   };

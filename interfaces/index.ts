@@ -13,6 +13,13 @@ export interface UserType {
   photoURL: string | null;
   username?: string;
   onboarding?: boolean;
+  organization?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  twitter?: string;
+  linkedin?: string;
+  github?: string;
   metadata?: {
     creationTime: string;
     lastSignInTime: string;
