@@ -162,7 +162,7 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href={loggedInUser.username}
+                              href={`/user/${loggedInUser.username}`}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'

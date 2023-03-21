@@ -34,6 +34,9 @@ export interface TrainingsInterface {
   leadImage: string;
   slug: string;
   author: string;
+  image?: string;
+  completedTasksByUser?: number;
+  userPoints?: number;
 }
 
 export interface TaskDetailsInterface {
@@ -76,4 +79,25 @@ export interface LeaderboardEntry {
 
 export interface UserTasks {
   [authorId: string]: string[];
+}
+
+export interface TargetUser {
+  email: string | null;
+  uid: string | null;
+  name: string | null;
+  photoURL: string | null;
+  username?: string;
+  onboarding?: boolean;
+  organization?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  twitter?: string;
+  linkedin?: string;
+  github?: string;
+  metadata?: {
+    creationTime: string;
+    lastSignInTime: string;
+  };
+  tracks?: UserTracks[];
 }
