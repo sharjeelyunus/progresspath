@@ -1,4 +1,4 @@
-import { doc, getFirestore, onSnapshot, Timestamp } from 'firebase/firestore';
+import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { TrainingsInterface, UserType } from '../interfaces';
 import useGetLeaderboardData from './useGetLeaderboard';

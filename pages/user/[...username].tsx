@@ -4,9 +4,7 @@ import Layout from '../../components/Layout';
 import TrackCard from '../../components/TrackCard';
 import useFetchTargetUser from '../../hooks/useFetchTargetUser';
 
-type Props = {};
-
-const ProfilePage = (props: Props) => {
+const ProfilePage = () => {
   const router = useRouter();
   const username = (router.query.username as string[]) ?? [];
   const targetUser = useFetchTargetUser(username[0]);
@@ -29,12 +27,14 @@ const ProfilePage = (props: Props) => {
               <p className='text-white'>{targetUser?.organization}</p>
             </div>
           </div>
-          <div className='mt-5 flex items-center justify-center flex-col'>
-            <h1 className='text-white font-semibold text-3xl'>Tracks</h1>
-            {targetUser?.tracks.map((track) => (
-              <TrackCard key={track.id} {...track} />
-            ))}
-          </div>
+          {targetUser?.tracks.length > 0 && (
+            <div className='mt-5 flex items-center justify-center flex-col'>
+              <h1 className='text-white font-semibold text-3xl'>Tracks</h1>
+              {targetUser?.tracks.map((track) => (
+                <TrackCard key={track.id} {...track} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </Layout>

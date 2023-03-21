@@ -14,7 +14,7 @@ const LeaderboardCard = ({ rank, authorId, points, completedTasks }: Props) => {
 
   return (
     <>
-      {targetUser.username ? (
+      {targetUser?.username ? (
         <Link
           href={`/user/${targetUser?.username}`}
           className='flex items-center justify-between bg-[#393053] text-white px-5 py-3 rounded-2xl w-[350px] lg:w-[500px] mt-3'
