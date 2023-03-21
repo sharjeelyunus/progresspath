@@ -41,7 +41,7 @@ export default function useGetAllTrainings(): Array<TrainingsInterface> {
   return trainings;
 }
 
-const getAuthorDetails = async (authorId: string) => {
+export const getAuthorDetails = async (authorId: string) => {
   const db = getFirestore();
   const q = doc(db, 'users', authorId);
 

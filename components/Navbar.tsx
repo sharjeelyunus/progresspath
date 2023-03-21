@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { loggedInUser, logout } = useAuth();
   const router = useRouter();
 
   function classNames(...classes) {
@@ -130,7 +130,7 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
                       <span className='sr-only'>Open user menu</span>
                       <img
                         className='h-8 w-8 rounded-full'
-                        src={user.photoURL}
+                        src={loggedInUser.photoURL}
                         alt=''
                       />
                     </Menu.Button>
@@ -145,19 +145,34 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
                     leaveTo='transform opacity-0 scale-95'
                   >
                     <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                      {/* <Menu.Item>
+                      <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href={user.username}
+                          <div
                             className={classNames(
                               active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
+                              'flex flex-col border-b px-4 py-2 text-sm text-gray-700'
                             )}
                           >
-                            Your Profile
-                          </a>
+                            <span>{loggedInUser.name}</span>
+                            <span>{loggedInUser.email}</span>
+                          </div>
                         )}
-                      </Menu.Item> */}
+                      </Menu.Item>
+                      {loggedInUser.username && (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href={`/user/${loggedInUser.username}`}
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700'
+                              )}
+                            >
+                              Your Profile
+                            </a>
+                          )}
+                        </Menu.Item>
+                      )}
                       <Menu.Item>
                         {({ active }) => (
                           <a
