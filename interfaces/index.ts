@@ -36,7 +36,8 @@ export interface TrainingsInterface {
   slug: string;
   author: string;
   image?: string;
-  completedTasksByUser?: number;
+  completedTasksByUser?: CompletedTasks[];
+  totalCompletedTasksByUser?: number;
   userPoints?: number;
 }
 

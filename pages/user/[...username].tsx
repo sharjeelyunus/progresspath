@@ -30,7 +30,7 @@ const ProfilePage = () => {
   return (
     <Layout title={`${targetUser?.name} | ProgressPath`}>
       <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
-        <div className='flex items-center flex-col'>
+        <div className='flex items-center flex-col w-full'>
           <div className='flex gap-5'>
             <img
               src={targetUser?.photoURL}
@@ -46,9 +46,8 @@ const ProfilePage = () => {
             </div>
           </div>
           {targetUser?.tracks.length > 0 && (
-            <div className='mt-5 flex items-center justify-center flex-col'>
-              <h1 className='text-white font-semibold text-3xl'>Tracks</h1>
-              {targetUser?.tracks.map((track) => (
+            <div className='mt-5 flex items-center justify-center flex-col w-full'>
+              {targetUser?.tracks?.map((track) => (
                 <TrackCard key={track.id} {...track} userId={targetUser.uid} />
               ))}
             </div>
