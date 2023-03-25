@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import useGetUserTrackDetails from '../hooks/useGetUserTrackDetails';
 import { UserTracks } from '../interfaces';
 import CompletedTaskDetails from './CompletedTaskDetails';
@@ -9,6 +10,7 @@ type Props = UserTracks & {
 };
 
 const TrackCard = ({ userId, trackId, timestamp }: Props) => {
+  const { loggedInUser } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
   const enrollDate = `${timestamp.toDate().getDate()}/${
@@ -33,8 +35,17 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
   }
 
   return (
-    <div className='bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'>
-      <Link href={`/${userTrackDetails?.slug}`} className="flex justify-center">
+    <div
+      className={
+        loggedInUser.uid === userId
+          ? 'bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
+          : 'w-full'
+      }
+    >
+      <Link
+        href={`/${userTrackDetails?.slug}`}
+        className={loggedInUser.uid === userId ? 'flex justify-center' : 'flex justify-center'}
+      >
         <div className='lg:flex lg:w-[75%] justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
           <div className='lg:flex gap-5 items-center'>
             <img
@@ -75,11 +86,13 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
           </div>
         </div>
       </Link>
-      <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
-        {sortedCompletedTasks?.map((task) => (
-          <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
-        ))}
-      </div>
+      {loggedInUser?.uid === userId && (
+        <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
+          {sortedCompletedTasks?.map((task) => (
+            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
