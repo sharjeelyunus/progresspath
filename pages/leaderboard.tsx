@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import LeaderboardCard from '../components/LeaderboardCard';
 import useGetLeaderboardData from '../hooks/useGetLeaderboard';
 
 const Leaderboard = () => {
   const leaderboardData = useGetLeaderboardData();
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (leaderboardData) {
+      setLoading(false);
+    }
+  }, [leaderboardData]);
+
+  if (loading) {
+    return (
+      <Layout title='Loading... | ProgressPath'>
+        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
+          Loading...
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title='Leaderboard | ProgressPath'>

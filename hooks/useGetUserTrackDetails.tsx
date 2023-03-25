@@ -1,17 +1,19 @@
 import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import useGetLeaderboardData from './useGetLeaderboard';
 import { getAuthorDetails } from './useGetTrainings';
 
 export default function useGetUserTrackDetails(
-  trackId: string
+  trackId: string,
+  userId: string
 ): TrainingsInterface {
-  const [targetUser, setTargetUser] = useState<TrainingsInterface>();
+  const [userTrackDetails, setUserTrackDetails] =
+    useState<TrainingsInterface>();
   const leaderboardData = useGetLeaderboardData();
 
   useEffect(() => {
-    const db = getFirestore();
     const userRef = doc(db, 'trainings', trackId);
     const unsub = onSnapshot(userRef, (doc) => {
       const Tracks: TrainingsInterface = {
@@ -20,8 +22,8 @@ export default function useGetUserTrackDetails(
       } as TrainingsInterface;
 
       leaderboardData.filter((user) => {
-        if (user.authorId === Tracks.author) {
-          Tracks.completedTasksByUser = user.completedTasks;
+        if (user.authorId === userId) {
+          Tracks.completedTasksByUser = user.totalCompletedTasks;
           Tracks.userPoints = user.points;
         }
       });
@@ -29,12 +31,13 @@ export default function useGetUserTrackDetails(
       getAuthorDetails(Tracks.author).then((authorDetails: UserType) => {
         Tracks.leadName = authorDetails?.name;
         Tracks.leadImage = authorDetails?.photoURL;
-        setTargetUser(Tracks);
+        Tracks.leadUsername = authorDetails?.username;
+        setUserTrackDetails(Tracks);
       });
     });
 
     return unsub;
-  }, [trackId]);
+  }, [trackId, leaderboardData, userId]);
 
-  return targetUser;
+  return userTrackDetails;
 }

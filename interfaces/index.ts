@@ -32,6 +32,7 @@ export interface TrainingsInterface {
   name: string;
   leadName: string;
   leadImage: string;
+  leadUsername?: string;
   slug: string;
   author: string;
   image?: string;

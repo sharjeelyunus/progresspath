@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import TrackCard from '../../components/TrackCard';
 import useFetchTargetUser from '../../hooks/useFetchTargetUser';
@@ -8,6 +8,24 @@ const ProfilePage = () => {
   const router = useRouter();
   const username = (router.query.username as string[]) ?? [];
   const targetUser = useFetchTargetUser(username[0]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (targetUser) {
+      setLoading(false);
+    }
+  }, [targetUser]);
+
+  if (loading) {
+    return (
+      <Layout title='Loading... | ProgressPath'>
+        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
+          Loading...
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout title={`${targetUser?.name} | ProgressPath`}>
@@ -31,7 +49,7 @@ const ProfilePage = () => {
             <div className='mt-5 flex items-center justify-center flex-col'>
               <h1 className='text-white font-semibold text-3xl'>Tracks</h1>
               {targetUser?.tracks.map((track) => (
-                <TrackCard key={track.id} {...track} />
+                <TrackCard key={track.id} {...track} userId={targetUser.uid} />
               ))}
             </div>
           )}

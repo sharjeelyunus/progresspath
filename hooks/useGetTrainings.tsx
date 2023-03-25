@@ -2,21 +2,19 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
   getFirestore,
   onSnapshot,
   orderBy,
   query,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 
 export default function useGetAllTrainings(): Array<TrainingsInterface> {
   const [trainings, setTrainings] = useState<Array<TrainingsInterface>>([]);
 
   useEffect(() => {
-    const db = getFirestore();
-
     const trainingsRef = collection(db, 'trainings');
     const q = query(trainingsRef, orderBy('index', 'asc'));
 
@@ -30,6 +28,7 @@ export default function useGetAllTrainings(): Array<TrainingsInterface> {
         (authorDetails: UserType) => {
           allTrainingsData[0].leadName = authorDetails?.name;
           allTrainingsData[0].leadImage = authorDetails?.photoURL;
+          allTrainingsData[0].leadUsername = authorDetails?.username;
           setTrainings(allTrainingsData);
         }
       );
