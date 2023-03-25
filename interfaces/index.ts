@@ -74,7 +74,8 @@ export interface CompletedTasks {
 export interface LeaderboardEntry {
   authorId: string;
   points: number;
-  completedTasks: number;
+  totalCompletedTasks: number;
+  completedTasks: CompletedTasks[];
 }
 
 export interface UserTasks {

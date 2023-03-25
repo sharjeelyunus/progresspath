@@ -17,7 +17,7 @@ const Leaderboard = () => {
               rank={index + 1}
               authorId={entry.authorId}
               points={entry.points}
-              completedTasks={entry.completedTasks}
+              completedTasks={entry.totalCompletedTasks}
             />
           ))}
         </div>
