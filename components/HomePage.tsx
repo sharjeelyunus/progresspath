@@ -3,7 +3,7 @@ import Layout from './Layout';
 import { useAuth } from '../context/AuthContext';
 
 const HomePage = () => {
-  const { login, user } = useAuth();
+  const { login } = useAuth();
 
   return (
     <Layout title='Home | ProgressPath'>
@@ -19,28 +19,22 @@ const HomePage = () => {
             is structured as a daily path, with each day unlocking new tasks,
             resources, and challenges to help users stay motivated and engaged.
           </p>
-          {!user ? (
-            <div className='w-[300px]'>
-              <button
-                aria-label='Continue with google'
-                role='button'
-                onClick={login}
-                className='focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-white flex items-center w-full mt-5'
-              >
-                <img
-                  src='https://tuk-cdn.s3.amazonaws.com/can-uploader/sign_in-svg2.svg'
-                  alt='google'
-                />
-                <p className='text-base font-medium ml-4 text-white'>
-                  Login with Google
-                </p>
-              </button>
-            </div>
-          ) : (
-            <Link href='/training' className='font-bold mt-5'>
-              /training
-            </Link>
-          )}
+          <div className='w-[300px]'>
+            <button
+              aria-label='Continue with google'
+              role='button'
+              onClick={login}
+              className='focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-white flex items-center w-full mt-5'
+            >
+              <img
+                src='https://tuk-cdn.s3.amazonaws.com/can-uploader/sign_in-svg2.svg'
+                alt='google'
+              />
+              <p className='text-base font-medium ml-4 text-white'>
+                Login with Google
+              </p>
+            </button>
+          </div>
           <div className='mt-5'>
             <span className='text-[#18122B] text-2xl font-bold underline'>
               Instructions

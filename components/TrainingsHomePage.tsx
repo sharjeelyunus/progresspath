@@ -11,16 +11,21 @@ import { Toaster } from 'react-hot-toast';
 const TrainingsHomePage = () => {
   const { loggedInUser } = useAuth();
 
+  const [loadingOnboardingStatus, setLoadingOnboardingStatus] = useState(true);
   const [openEnrollModal, setOpenEnrollModal] = useState(false);
   const [openOnboardingModal, setOpenOnboardingModal] = useState(false);
   const trainings = useGetAllTrainings();
   const userEnrolledTracks = useGetUserTracks();
 
   useEffect(() => {
-    if (!loggedInUser?.onboarding) {
-      setOpenOnboardingModal(true);
-    } else {
-      setOpenOnboardingModal(false);
+    if (loggedInUser) {
+      setLoadingOnboardingStatus(true);
+      if (!loggedInUser.onboarding) {
+        setOpenOnboardingModal(true);
+      } else {
+        setOpenOnboardingModal(false);
+      }
+      setLoadingOnboardingStatus(false);
     }
   }, [loggedInUser]);
 
@@ -28,15 +33,9 @@ const TrainingsHomePage = () => {
     <>
       <Toaster position='top-center' reverseOrder={false} />
       <Layout title='Trainings | ProgressPath'>
-        {openOnboardingModal ? (
-          <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
-            <OnboardingModal
-              key={1}
-              isOpen={openOnboardingModal}
-              setIsOpen={setOpenOnboardingModal}
-            />
-          </div>
-        ) : (
+        {loadingOnboardingStatus ? (
+          <div className='flex justify-center items-center text-white text-2xl bg-[#635985] py-28 min-h-screen'>Loading...</div>
+        ) : loggedInUser.onboarding ? (
           <>
             <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
               {trainings.map((training, index) => (
@@ -94,6 +93,16 @@ const TrainingsHomePage = () => {
                   )}
                 </>
               ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
+              <OnboardingModal
+                key={1}
+                isOpen={openOnboardingModal}
+                setIsOpen={setOpenOnboardingModal}
+              />
             </div>
           </>
         )}

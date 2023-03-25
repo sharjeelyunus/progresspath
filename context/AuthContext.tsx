@@ -15,6 +15,7 @@ type authContextType = {
   loggedInUser: UserType | null;
   login: () => void;
   logout: () => void;
+  loading: boolean;
 };
 
 const authContextDefaultValues: authContextType = {
@@ -22,6 +23,7 @@ const authContextDefaultValues: authContextType = {
   loggedInUser: null,
   login: () => {},
   logout: () => {},
+  loading: true,
 };
 
 const AuthContext = createContext<authContextType>(authContextDefaultValues);
@@ -38,7 +40,6 @@ export const AuthContextProvider = ({
   const [user, setUser] = useState<UserType>();
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userExists, setUserExists] = useState<boolean>(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -56,27 +57,12 @@ export const AuthContextProvider = ({
         });
       } else {
         setUser(null);
+        setLoggedInUser(null);
       }
     });
     setLoading(false);
 
     return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    // check if user exists in database
-    const syncUser = async () => {
-      if (user) {
-        const userRef = doc(db, 'users', user.uid);
-        const userDataExists = (await getDoc(userRef)).exists();
-        if (userDataExists) {
-          setUserExists(true);
-        } else {
-          setUserExists(false);
-        }
-      }
-    };
-    syncUser();
   }, []);
 
   useEffect(() => {
@@ -92,6 +78,20 @@ export const AuthContextProvider = ({
     };
     syncUser();
   }, [user]);
+
+  useEffect(() => {
+    const syncUser = async () => {
+      if (user && !loggedInUser) {
+        // Only sync user data if loggedInUser is not set yet
+        const userRef = doc(db, 'users', user.uid);
+        const userData = (await getDoc(userRef)).data();
+        if (userData) {
+          setLoggedInUser(userData as UserType);
+        }
+      }
+    };
+    syncUser();
+  }, [user, loggedInUser]);
 
   const handleAddNewUser = async (result: UserCredential) => {
     const user = result.user;
@@ -125,16 +125,22 @@ export const AuthContextProvider = ({
 
   const login = () => {
     signInWithPopup(auth, provider)
+      // add user to database
       .then((result) => {
-        // add user to database
-        // check if user already exists in database
-        if (userExists) {
-          // if yes, update user's metadata
-          handleUpdateUserMetadata(result);
-        } else {
-          // if not, add user to database
-          handleAddNewUser(result);
-        }
+        // The signed-in user info.
+        const user = result.user;
+        async () => {
+          const userRef = doc(db, 'users', user.uid);
+          const userDataExists = (await getDoc(userRef)).exists();
+          // check if user already exists in database
+          if (userDataExists) {
+            // if yes, update user's metadata
+            handleUpdateUserMetadata(result);
+          } else {
+            // if not, add user to database
+            handleAddNewUser(result);
+          }
+        };
       })
       .catch((error) => {
         // Handle Errors here.
@@ -157,6 +163,7 @@ export const AuthContextProvider = ({
     loggedInUser,
     login,
     logout,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
