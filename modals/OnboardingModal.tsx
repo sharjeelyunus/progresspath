@@ -48,22 +48,28 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
       toast.error('Please fill all the fields');
       return;
     } else {
+      // check for whitespace in username
+      if (username.includes(' ')) {
+        toast.error('Username should not contain spaces');
+        return;
+      }
+      // check minimum length of username
       if (username.length < 8) {
         toast.error('Username must be at least 8 characters long');
         return;
-      } else {
-        // check if username exists
-        const userRef = collection(db, 'users');
-        const q = query(
-          userRef,
-          where('username', '==', username ? username : '')
-        );
-        const querySnapshot = await getDocs(q);
+      }
 
-        if (querySnapshot.size > 0) {
-          toast.error('Username already exists');
-          return;
-        }
+      // check if username exists
+      const userRef = collection(db, 'users');
+      const q = query(
+        userRef,
+        where('username', '==', username ? username : '')
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.size > 0) {
+        toast.error('Username already exists');
+        return;
       }
     }
 
