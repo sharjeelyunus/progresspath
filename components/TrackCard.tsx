@@ -37,20 +37,18 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
   return (
     <div
       className={
-        loggedInUser.uid === userId
+        loggedInUser.uid === userId ||
+        userTrackDetails.leadId === loggedInUser.uid
           ? 'bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
           : 'w-full'
       }
     >
-      <Link
-        href={`/${userTrackDetails?.slug}`}
-        className={loggedInUser.uid === userId ? 'flex justify-center' : 'flex justify-center'}
-      >
+      <Link href={`/${userTrackDetails?.slug}`} className='flex justify-center'>
         <div className='lg:flex lg:w-[75%] justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
           <div className='lg:flex gap-5 items-center'>
             <img
               src={userTrackDetails?.image}
-              alt=''
+              alt={userTrackDetails?.name}
               className='lg:w-24 lg:h-24 rounded-2xl'
             />
             <div className='lg:flex gap-10'>
@@ -86,13 +84,14 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
           </div>
         </div>
       </Link>
-      {loggedInUser?.uid === userId && (
-        <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
-          {sortedCompletedTasks?.map((task) => (
-            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
-          ))}
-        </div>
-      )}
+      {loggedInUser?.uid === userId ||
+        (userTrackDetails.leadId === loggedInUser.uid && (
+          <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
+            {sortedCompletedTasks?.map((task) => (
+              <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
+            ))}
+          </div>
+        ))}
     </div>
   );
 };

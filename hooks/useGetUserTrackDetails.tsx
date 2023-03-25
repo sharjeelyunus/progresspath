@@ -33,6 +33,7 @@ export default function useGetUserTrackDetails(
         Tracks.leadName = authorDetails?.name;
         Tracks.leadImage = authorDetails?.photoURL;
         Tracks.leadUsername = authorDetails?.username;
+        Tracks.leadId = authorDetails?.uid;
         setUserTrackDetails(Tracks);
       });
     });
