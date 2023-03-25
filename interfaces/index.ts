@@ -30,13 +30,15 @@ export interface TrainingsInterface {
   id: string;
   index: number;
   name: string;
+  leadId: string;
   leadName: string;
   leadImage: string;
   leadUsername?: string;
   slug: string;
   author: string;
   image?: string;
-  completedTasksByUser?: number;
+  completedTasksByUser?: CompletedTasks[];
+  totalCompletedTasksByUser?: number;
   userPoints?: number;
 }
 

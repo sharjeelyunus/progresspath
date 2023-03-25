@@ -23,7 +23,8 @@ export default function useGetUserTrackDetails(
 
       leaderboardData.filter((user) => {
         if (user.authorId === userId) {
-          Tracks.completedTasksByUser = user.totalCompletedTasks;
+          Tracks.completedTasksByUser = user.completedTasks;
+          Tracks.totalCompletedTasksByUser = user.totalCompletedTasks;
           Tracks.userPoints = user.points;
         }
       });
@@ -32,6 +33,7 @@ export default function useGetUserTrackDetails(
         Tracks.leadName = authorDetails?.name;
         Tracks.leadImage = authorDetails?.photoURL;
         Tracks.leadUsername = authorDetails?.username;
+        Tracks.leadId = authorDetails?.uid;
         setUserTrackDetails(Tracks);
       });
     });
