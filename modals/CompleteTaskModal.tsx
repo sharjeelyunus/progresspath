@@ -1,5 +1,6 @@
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 
@@ -25,6 +26,26 @@ const CompleteTaskModal = ({
   const { user } = useAuth();
 
   const handleCompleteTask = async () => {
+    // Ensure at least one link is present
+    if (!postLink && !liveLink && !codeLink) {
+      toast.error('Please submit at least one link');
+      return;
+    }
+
+    // Validate URLs
+    const urlRegex = new RegExp(
+      /^https?:\/\/(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\S*$/i
+    );
+
+    if (
+      !urlRegex.test(postLink) &&
+      !urlRegex.test(liveLink) &&
+      !urlRegex.test(codeLink)
+    ) {
+      toast.error('Please enter a valid URL');
+      return;
+    }
+
     await setDoc(
       doc(
         db,
