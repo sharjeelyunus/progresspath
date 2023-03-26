@@ -37,8 +37,8 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
   return (
     <div
       className={
-        loggedInUser.uid === userId ||
-        userTrackDetails.leadId === loggedInUser.uid
+        loggedInUser?.uid === userId ||
+        userTrackDetails.leadId === loggedInUser?.uid
           ? 'bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
           : 'w-full'
       }
@@ -85,7 +85,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
         </div>
       </Link>
       {(loggedInUser?.uid === userId ||
-        userTrackDetails.leadId === loggedInUser.uid) && (
+        userTrackDetails.leadId === loggedInUser?.uid) && (
         <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
           {sortedCompletedTasks?.map((task) => (
             <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
