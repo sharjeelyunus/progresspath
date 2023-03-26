@@ -84,14 +84,14 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
           </div>
         </div>
       </Link>
-      {loggedInUser?.uid === userId ||
-        (userTrackDetails.leadId === loggedInUser.uid && (
-          <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
-            {sortedCompletedTasks?.map((task) => (
-              <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
-            ))}
-          </div>
-        ))}
+      {(loggedInUser?.uid === userId ||
+        userTrackDetails.leadId === loggedInUser.uid) && (
+        <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
+          {sortedCompletedTasks?.map((task) => (
+            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
