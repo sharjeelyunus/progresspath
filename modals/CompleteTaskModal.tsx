@@ -34,15 +34,17 @@ const CompleteTaskModal = ({
 
     // Validate URLs
     const urlRegex = new RegExp(
-      /^https?:\/\/(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\S*$/i
+      /^(http|https):\/\/(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\S*$/i
     );
-
-    if (
-      !urlRegex.test(postLink) &&
-      !urlRegex.test(liveLink) &&
-      !urlRegex.test(codeLink)
-    ) {
-      toast.error('Please enter a valid URL');
+    
+    if (postLink && !urlRegex.test(postLink)) {
+      toast.error('Please enter a valid post URL');
+      return;
+    } else if (liveLink && !urlRegex.test(liveLink)) {
+      toast.error('Please enter a valid live URL');
+      return;
+    } else if (codeLink && !urlRegex.test(codeLink)) {
+      toast.error('Please enter a valid code URL');
       return;
     }
 
