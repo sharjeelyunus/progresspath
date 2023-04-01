@@ -72,6 +72,10 @@ export interface CompletedTasks {
   postLink?: string;
   authorId?: string;
   points?: number;
+  review?: {
+    reviewer: string;
+    text: string;
+  }
 }
 
 export interface LeaderboardEntry {
