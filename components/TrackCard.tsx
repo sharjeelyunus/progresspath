@@ -88,7 +88,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
         userTrackDetails.leadId === loggedInUser?.uid) && (
         <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
           {sortedCompletedTasks?.map((task) => (
-            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} />
+            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} leadId={userTrackDetails.leadId} />
           ))}
         </div>
       )}
