@@ -24,7 +24,7 @@ export default function useGetUserTrackDetails(
       leaderboardData.filter((user) => {
         if (user.authorId === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
-          Tracks.totalCompletedTasksByUser = user.totalCompletedTasks;
+          Tracks.completedTasksByUser.length = user.completedTasks.length;
           Tracks.userPoints = user.points;
         }
       });

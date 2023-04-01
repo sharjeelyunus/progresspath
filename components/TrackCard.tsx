@@ -70,7 +70,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
               </div>
               <div className='lg:border-x lg:px-10'>
                 <p className='text-white text-lg'>
-                  Completed Tasks: {userTrackDetails?.totalCompletedTasksByUser}
+                  Completed Tasks: {userTrackDetails?.completedTasksByUser?.length}
                 </p>
                 <p className='text-white text-lg'>
                   Points: {userTrackDetails?.userPoints}

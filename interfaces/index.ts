@@ -39,7 +39,6 @@ export interface TrainingsInterface {
   author: string;
   image?: string;
   completedTasksByUser?: CompletedTasks[];
-  totalCompletedTasksByUser?: number;
   userPoints?: number;
 }
 
@@ -83,7 +82,6 @@ export interface CompletedTasks {
 export interface LeaderboardEntry {
   authorId: string;
   points: number;
-  totalCompletedTasks: number;
   completedTasks: CompletedTasks[];
 }
 

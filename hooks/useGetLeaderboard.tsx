@@ -42,21 +42,24 @@ function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
     ([authorId, tasks]) => {
       let points = 0;
       tasks.forEach((task) => {
-        points += 5; // Add 5 points for each completed task
-        if (task.codeLink && isValidUrl(task.codeLink)) {
-          points += 5; // Add 5 points for valid codeLink
-        }
-        if (task.liveLink && isValidUrl(task.liveLink)) {
-          points += 5; // Add 5 points for valid liveLink
-        }
-        if (task.postLink && isValidUrl(task.postLink)) {
-          points += 5; // Add 5 points for valid postLink
+        if (task.points) {
+          points += task.points;
+        } else {
+          points += 5; // Add 5 points for each completed task
+          if (task.codeLink && isValidUrl(task.codeLink)) {
+            points += 5; // Add 5 points for valid codeLink
+          }
+          if (task.liveLink && isValidUrl(task.liveLink)) {
+            points += 5; // Add 5 points for valid liveLink
+          }
+          if (task.postLink && isValidUrl(task.postLink)) {
+            points += 5; // Add 5 points for valid postLink
+          }
         }
       });
       return {
         authorId,
         points,
-        totalCompletedTasks: tasks.length,
         completedTasks: tasks,
       };
     }
@@ -65,8 +68,8 @@ function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
   leaderboard.sort((a, b) => {
     if (a.points === b.points) {
       // Sort by number of completed tasks if points are equal
-      if (a.totalCompletedTasks !== b.totalCompletedTasks) {
-        return b.totalCompletedTasks - a.totalCompletedTasks;
+      if (a.completedTasks.length !== b.completedTasks.length) {
+        return b.completedTasks.length - a.completedTasks.length;
       }
       // Sort by timestamp if number of completed tasks are equal
       return b.completedTasks[0].timestamp - a.completedTasks[0].timestamp;
