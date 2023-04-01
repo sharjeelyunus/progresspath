@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import useGetCompletedTasks from '../hooks/useGetCompletedTasks';
 import { Details } from '../interfaces';
 import ComplelteTaskModal from '../modals/CompleteTaskModal';
+import { MdVideoLibrary } from 'react-icons/md';
+import { SiReadthedocs } from 'react-icons/si';
+import { RiArticleFill } from 'react-icons/ri';
+import { MdOutlineComputer } from 'react-icons/md';
 
 type Props = {
   details: Array<Details>;
@@ -37,7 +41,23 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
                     key={index}
                     target='_blank'
                   >
-                    {index + 1}. {detail.title}
+                    {detail.type === 'video' ? (
+                      <div className='flex items-center gap-2'>
+                        <MdVideoLibrary /> {detail.title}
+                      </div>
+                    ) : detail.type === 'article' ? (
+                      <div className='flex items-center gap-2'>
+                        <RiArticleFill /> {detail.title}
+                      </div>
+                    ) : detail.type === 'docs' ? (
+                      <div className='flex items-center gap-2'>
+                        <SiReadthedocs /> {detail.title}
+                      </div>
+                    ) : (
+                      <div className='flex items-center gap-2'>
+                        <MdOutlineComputer /> {detail.title}
+                      </div>
+                    )}
                   </a>
                 </>
               ))}

@@ -4,6 +4,7 @@ export interface Details {
   id: string;
   title: string;
   link: string;
+  type: string;
 }
 
 export interface UserType {
@@ -47,6 +48,7 @@ export interface TaskDetailsInterface {
   index: number;
   link: string;
   title: string;
+  type: string;
 }
 
 export interface TaskInterface {
