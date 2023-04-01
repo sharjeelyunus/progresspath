@@ -105,13 +105,23 @@ const CompletedTaskDetails = ({
         <p className='mt-2'>
           Completed on: {timestamp.toDate().toLocaleDateString()}
         </p>
-        <div className={points ? 'text-blue-300 mt-1 flex gap-2 py-1 rounded-md' : 'mt-1 flex gap-2 py-1 rounded-md'}>
+        <div
+          className={
+            points && points !== algoPoints
+              ? points > algoPoints
+                ? 'text-blue-500 mt-1 flex gap-2 py-1 rounded-md'
+                : 'text-red-500 mt-1 flex gap-2 py-1 rounded-md'
+              : 'mt-1 flex gap-2 py-1 rounded-md'
+          }
+        >
           <h1 className='font-semibold'>Points:</h1>
           <p>{points ? points : algoPoints}</p>
         </div>
         {review && review.text && (
           <fieldset className='mt-2 flex gap-2 items-center bg-orange-300 text-orange-900 px-5 py-1 rounded-md border border-orange-900'>
-            <legend className='text-sm font-semibold bg-orange-300 underline px-2 rounded-md'>Review:</legend>
+            <legend className='text-sm font-semibold bg-orange-300 underline px-2 rounded-md'>
+              Review:
+            </legend>
             <p className='text-sm'>{review.text}</p>
           </fieldset>
         )}
