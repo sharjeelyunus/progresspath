@@ -130,7 +130,7 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
                       <span className='sr-only'>Open user menu</span>
                       <img
                         className='h-8 w-8 rounded-full'
-                        src={loggedInUser.photoURL}
+                        src={loggedInUser.photoURL ? loggedInUser.photoURL : '/blank-profile-picture.svg'}
                         alt=''
                       />
                     </Menu.Button>
