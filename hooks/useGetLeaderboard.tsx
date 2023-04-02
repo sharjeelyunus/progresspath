@@ -1,69 +1,33 @@
 // @ts-nocheck
 
-import { collection, collectionGroup, doc, onSnapshot, writeBatch } from 'firebase/firestore';
-import { useEffect, useMemo, useReducer } from 'react';
+import { collectionGroup, onSnapshot, query } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { CompletedTasks, LeaderboardEntry, UserTasks } from '../interfaces';
 
-const initialState = {
-  completedTasks: [],
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'SET_COMPLETED_TASKS':
-      return {
-        ...state,
-        completedTasks: action.payload,
-      };
-    default:
-      return state;
-  }
-}
-
 export default function useGetLeaderboardData(): LeaderboardEntry[] {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const leaderboard = useMemo(() => {
-    return getLeaderboard(state.completedTasks);
-  }, [state.completedTasks]);
+  const [completedTasks, setCompletedTasks] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collectionGroup(db, 'completedTasks'),
-      (snapshot) => {
-        const allTasks: CompletedTasks[] = snapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-          taskId: doc.id,
-          timestamp: doc.data().timestamp.toDate(),
-        }));
-        const leaderboard: LeaderboardEntry[] = getLeaderboard(allTasks);
-
-        // Batched writes
-        // const batch = writeBatch(db);
-        // const completedTasksRef = collection(db, 'completedTasks');
-        // leaderboard.forEach((entry) => {
-        //   const { authorId, points } = entry;
-        //   const userRef = doc(completedTasksRef, authorId);
-        //   batch.update(userRef, { points });
-        // });
-        // batch.commit();
-
-        dispatch({
-          type: 'SET_COMPLETED_TASKS',
-          payload: leaderboard,
+    const syncData = async () => {
+      const q = query(collectionGroup(db, 'completedTasks'));
+      const unsub = onSnapshot(q, (docs) => {
+        const docsArr = docs.docs;
+        const allUserTracksData = docsArr.map((doc) => {
+          return { ...doc.data(), id: doc.id } as CompletedTasks;
         });
-      }
-    );
+        setCompletedTasks(mergeTasksByUser(allUserTracksData));
+      });
 
-    return () => unsubscribe();
+      return unsub;
+    };
+    syncData();
   }, []);
 
-  return leaderboard;
+  return completedTasks;
 }
 
-function getLeaderboard(tasks: CompletedTasks[]): LeaderboardEntry[] {
+function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
   const userTasks: UserTasks = {};
   tasks.forEach((task) => {
     const authorId = task.authorId;

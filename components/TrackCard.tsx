@@ -62,8 +62,8 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
                 >
                   <img
                     className='w-6 h-6 rounded-full'
-                    src={userTrackDetails?.leadImage ? userTrackDetails?.leadImage : '/blank-profile-picture.svg'}
-                    alt={userTrackDetails?.leadName ? userTrackDetails?.leadName : 'Lead'}
+                    src={userTrackDetails?.leadImage || '/blank-profile-picture.svg'}
+                    alt={userTrackDetails?.leadName}
                   />
                   <span>{userTrackDetails?.leadName ? userTrackDetails.leadName : 'Lead'}</span>
                 </a>

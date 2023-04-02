@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CompletedTasks } from '../interfaces';
+import useGetTargetTraining from './useGetTargetTraining';
 
 export default function useGetCompletedTasks(
   trackId: string
