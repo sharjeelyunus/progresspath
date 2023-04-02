@@ -102,9 +102,9 @@ const CompletedTaskDetails = ({
             </a>
           )}
         </div>
-        <p className='mt-2'>
+        {/* <p className='mt-2'>
           Completed on: {timestamp.toDate().toLocaleDateString()}
-        </p>
+        </p> */}
         <div
           className={
             points && points !== algoPoints
