@@ -55,6 +55,16 @@ export const AuthContextProvider = ({
             creationTime: user.metadata.creationTime,
           },
         });
+        setLoggedInUser({
+          email: user.email,
+          uid: user.uid,
+          photoURL: user.photoURL,
+          name: user.displayName,
+          metadata: {
+            lastSignInTime: user.metadata.lastSignInTime,
+            creationTime: user.metadata.creationTime,
+          },
+        })
       } else {
         setUser(null);
         setLoggedInUser(null);
@@ -97,17 +107,17 @@ export const AuthContextProvider = ({
     const user = result.user;
     const userRef = doc(db, 'users', user.uid);
     const userDetails: UserType = {
-      email: user?.email,
-      uid: user?.uid,
-      photoURL: user?.photoURL,
-      name: user?.displayName,
+      email: user.email,
+      uid: user.uid,
+      photoURL: user.photoURL,
+      name: user.displayName,
       onboarding: false,
       metadata: {
         lastSignInTime: user?.metadata.lastSignInTime,
         creationTime: user?.metadata.creationTime,
       },
     };
-    await setDoc(userRef, userDetails, { merge: true });
+    await setDoc(userRef, userDetails as UserType, { merge: true });
   };
 
   const handleUpdateUserMetadata = async (result: UserCredential) => {

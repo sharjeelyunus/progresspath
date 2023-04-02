@@ -65,7 +65,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
                     src={userTrackDetails?.leadImage || '/blank-profile-picture.svg'}
                     alt={userTrackDetails?.leadName}
                   />
-                  <span>{userTrackDetails?.leadName}</span>
+                  <span>{userTrackDetails?.leadName ? userTrackDetails.leadName : 'Lead'}</span>
                 </a>
               </div>
               <div className='lg:border-x lg:px-10'>
