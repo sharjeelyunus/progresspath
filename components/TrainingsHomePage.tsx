@@ -47,7 +47,7 @@ const TrainingsHomePage = () => {
                     <Link
                       key={index}
                       href={training.slug}
-                      className='bg-[#393053] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
+                      className='bg-[#393053] min-w-[300px] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
                     >
                       <h1 className='text-2xl font-bold text-white'>
                         {training.name}
@@ -55,7 +55,7 @@ const TrainingsHomePage = () => {
                       <div className='flex items-center mt-4'>
                         <img
                           className='h-8 w-8 rounded-full mr-2'
-                          src={training.leadImage}
+                          src={training.leadImage ? training.leadImage : '/blank-profile-picture.svg'}
                           alt={training.leadName}
                         />
                         <p className='text-white'>{training.leadName}</p>
@@ -66,7 +66,7 @@ const TrainingsHomePage = () => {
                       <button
                         onClick={() => setOpenEnrollModal(true)}
                         key={training.id}
-                        className='bg-[#393053] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
+                        className='bg-[#393053] min-w-[300px] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
                       >
                         <h1 className='text-2xl font-bold text-white'>
                           {training.name}
