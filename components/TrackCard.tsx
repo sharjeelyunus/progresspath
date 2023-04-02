@@ -47,7 +47,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
         <div className='lg:flex lg:w-[75%] justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
           <div className='lg:flex gap-5 items-center'>
             <img
-              src={userTrackDetails?.image}
+              src={userTrackDetails?.image ? userTrackDetails?.image : '/blank-profile-picture.svg'}
               alt={userTrackDetails?.name}
               className='lg:w-24 lg:h-24 rounded-2xl'
             />
@@ -62,10 +62,10 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
                 >
                   <img
                     className='w-6 h-6 rounded-full'
-                    src={userTrackDetails?.leadImage}
-                    alt={userTrackDetails?.leadName}
+                    src={userTrackDetails?.leadImage ? userTrackDetails?.leadImage : '/blank-profile-picture.svg'}
+                    alt={userTrackDetails?.leadName ? userTrackDetails?.leadName : 'Lead'}
                   />
-                  <span>{userTrackDetails?.leadName}</span>
+                  <span>{userTrackDetails?.leadName ? userTrackDetails.leadName : 'Lead'}</span>
                 </a>
               </div>
               <div className='lg:border-x lg:px-10'>

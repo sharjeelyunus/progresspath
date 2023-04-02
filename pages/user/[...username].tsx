@@ -33,7 +33,7 @@ const ProfilePage = () => {
         <div className='flex items-center flex-col w-full'>
           <div className='flex gap-5'>
             <img
-              src={targetUser?.photoURL}
+              src={targetUser?.photoURL ? targetUser.photoURL : '/blank-profile-picture.svg'}
               alt=''
               className='w-24 h-24 rounded-2xl'
             />

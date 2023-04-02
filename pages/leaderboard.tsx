@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import LeaderboardCard from '../components/LeaderboardCard';
 import useGetLeaderboardData from '../hooks/useGetLeaderboard';
@@ -12,6 +12,13 @@ const Leaderboard = () => {
     if (leaderboardData) {
       setLoading(false);
     }
+  }, [leaderboardData]);
+
+  const sortedData = useMemo(() => {
+    if (!leaderboardData) {
+      return [];
+    }
+    return [...leaderboardData].sort((a, b) => b.points - a.points);
   }, [leaderboardData]);
 
   if (loading) {
@@ -29,7 +36,7 @@ const Leaderboard = () => {
       <div className='py-28 flex flex-col items-center min-h-screen bg-[#635985] text-white'>
         <h1 className='font-bold text-2xl'>Leaderboard</h1>
         <div className='py-5'>
-          {leaderboardData.map((entry, index) => (
+          {sortedData.map((entry, index) => (
             <LeaderboardCard
               key={entry.authorId}
               rank={index + 1}

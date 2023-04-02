@@ -1,5 +1,5 @@
-import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useEffect, useState, useMemo } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import useGetLeaderboardData from './useGetLeaderboard';
@@ -13,6 +13,8 @@ export default function useGetUserTrackDetails(
     useState<TrainingsInterface>();
   const leaderboardData = useGetLeaderboardData();
 
+  const memoizedGetAuthorDetails = useMemo(() => getAuthorDetails, []);
+
   useEffect(() => {
     const userRef = doc(db, 'trainings', trackId);
     const unsub = onSnapshot(userRef, (doc) => {
@@ -21,25 +23,28 @@ export default function useGetUserTrackDetails(
         id: doc.id,
       } as TrainingsInterface;
 
-      leaderboardData.filter((user) => {
+      leaderboardData.forEach((user) => {
         if (user.authorId === userId) {
-          Tracks.completedTasksByUser = user.completedTasks;
-          Tracks.completedTasksByUser.length = user.completedTasks.length;
+          Tracks.completedTasksByUser = user.completedTasks.slice();
           Tracks.userPoints = user.points;
         }
       });
 
-      getAuthorDetails(Tracks.author).then((authorDetails: UserType) => {
-        Tracks.leadName = authorDetails?.name;
-        Tracks.leadImage = authorDetails?.photoURL;
-        Tracks.leadUsername = authorDetails?.username;
-        Tracks.leadId = authorDetails?.uid;
-        setUserTrackDetails(Tracks);
-      });
+      setUserTrackDetails(Tracks);
+
+      memoizedGetAuthorDetails(Tracks.author).then(
+        (authorDetails: UserType | null) => {
+          Tracks.leadName = authorDetails?.name;
+          Tracks.leadImage = authorDetails?.photoURL;
+          Tracks.leadUsername = authorDetails?.username;
+          Tracks.leadId = authorDetails?.uid;
+          setUserTrackDetails(Tracks);
+        }
+      );
     });
 
     return unsub;
-  }, [trackId, leaderboardData, userId]);
+  }, [trackId, userId, leaderboardData, memoizedGetAuthorDetails]);
 
   return userTrackDetails;
 }
