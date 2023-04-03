@@ -1,6 +1,5 @@
 import {
   collection,
-  getFirestore,
   onSnapshot,
   orderBy,
   query,
@@ -8,6 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserTracks } from '../interfaces';
+import { db } from '../config/firebase';
 
 export default function useGetUserTracks(): Array<UserTracks> {
   const [userEnrolledTracks, setUserEnrolledTracks] = useState<
@@ -16,7 +16,6 @@ export default function useGetUserTracks(): Array<UserTracks> {
   const { user } = useAuth();
 
   useEffect(() => {
-    const db = getFirestore();
     const enrolledTrackRef = collection(
       db,
       'users',
@@ -25,15 +24,14 @@ export default function useGetUserTracks(): Array<UserTracks> {
     );
     const q = query(enrolledTrackRef, orderBy('timestamp', 'desc'));
     const unsub = onSnapshot(q, (docs) => {
-      const docsArr = docs.docs;
-      const allUserTracksData = docsArr.map((doc) => {
+      const allUserTracksData = docs.docs.map((doc) => {
         return { ...doc.data(), id: doc.id } as UserTracks;
       });
       setUserEnrolledTracks(allUserTracksData);
     });
 
     return unsub;
-  }, []);
+  }, [db, user.uid]);
 
   return userEnrolledTracks;
 }

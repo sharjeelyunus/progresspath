@@ -1,6 +1,5 @@
 import {
   collection,
-  getFirestore,
   onSnapshot,
   orderBy,
   query,
@@ -8,6 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CompletedTasks } from '../interfaces';
+import { db } from '../config/firebase';
 
 export default function useGetCompletedTasks(
   trackId: string
@@ -18,7 +18,6 @@ export default function useGetCompletedTasks(
   const { user } = useAuth();
   useEffect(() => {
     if (trackId) {
-      const db = getFirestore();
       const enrolledTrackRef = collection(
         db,
         'users',
@@ -28,12 +27,17 @@ export default function useGetCompletedTasks(
         'completedTasks'
       );
       const q = query(enrolledTrackRef, orderBy('timestamp', 'desc'));
-      const unsub = onSnapshot(q, (docs) => {
-        const docsArr = docs.docs;
-        const allUserTracksData = docsArr.map((doc) => {
-          return { ...doc.data(), id: doc.id } as CompletedTasks;
-        });
-        setCompletedTasks(allUserTracksData);
+      const unsub = onSnapshot(q, {
+        next: (docs) => {
+          const docsArr = docs.docs;
+          const allUserTracksData = docsArr.map((doc) => {
+            return { ...doc.data(), id: doc.id } as CompletedTasks;
+          });
+          setCompletedTasks(allUserTracksData);
+        },
+        error: (error) => {
+          console.error(error);
+        },
       });
 
       return unsub;

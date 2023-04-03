@@ -2,7 +2,6 @@ import {
   collection,
   doc,
   getDoc,
-  getFirestore,
   onSnapshot,
   orderBy,
   query,
@@ -11,8 +10,26 @@ import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 
-export default function useGetAllTrainings(): Array<TrainingsInterface> {
-  const [trainings, setTrainings] = useState<Array<TrainingsInterface>>([]);
+export default function useGetAllTrainings(): TrainingsInterface[] {
+  const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
+  const [authorDetails, setAuthorDetails] = useState<UserType>();
+
+  useEffect(() => {
+    const fetchAuthorDetails = async (authorId: string) => {
+      if (!authorId) {
+        return; // Early return if authorId is empty or undefined
+      }
+
+      const q = doc(db, 'users', authorId);
+
+      const querySnapshot = await getDoc(q);
+      const documentData = querySnapshot.data();
+
+      setAuthorDetails(documentData as UserType);
+    };
+
+    fetchAuthorDetails(trainings[0]?.author || '');
+  }, [trainings]);
 
   useEffect(() => {
     const trainingsRef = collection(db, 'trainings');
@@ -24,28 +41,16 @@ export default function useGetAllTrainings(): Array<TrainingsInterface> {
         return { ...doc.data(), id: doc.id } as TrainingsInterface;
       });
 
-      getAuthorDetails(allTrainingsData[0].author).then(
-        (authorDetails: UserType) => {
-          allTrainingsData[0].leadName = authorDetails?.name;
-          allTrainingsData[0].leadImage = authorDetails?.photoURL;
-          allTrainingsData[0].leadUsername = authorDetails?.username;
-          setTrainings(allTrainingsData);
-        }
-      );
+      setTrainings(allTrainingsData);
     });
 
     return unsub;
   }, []);
 
-  return trainings;
+  return trainings.map((training) => ({
+    ...training,
+    leadName: authorDetails?.name || '',
+    leadImage: authorDetails?.photoURL || '',
+    leadUsername: authorDetails?.username || '',
+  }));
 }
-
-export const getAuthorDetails = async (authorId: string) => {
-  const db = getFirestore();
-  const q = doc(db, 'users', authorId);
-
-  const querySnapshot = await getDoc(q);
-  const documentData = querySnapshot.data();
-
-  return documentData as Object;
-};

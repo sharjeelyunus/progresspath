@@ -1,4 +1,4 @@
-import { doc, onSnapshot, Timestamp } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TaskInterface } from '../interfaces';
@@ -6,23 +6,23 @@ import { TaskInterface } from '../interfaces';
 export default function useGetTargetTask(
   trackId: string,
   taskId: string
-): TaskInterface {
-  const [targetUser, setTargetUser] = useState<TaskInterface>();
+): TaskInterface | undefined {
+  const [targetTask, setTargetTask] = useState<TaskInterface>();
 
   useEffect(() => {
-    const userRef = doc(db, 'trainings', trackId, 'tasks', taskId);
-    const unsub = onSnapshot(userRef, (doc) => {
-      const userData: TaskInterface = {
-        ...doc.data(),
-        id: doc.id,
-      } as TaskInterface;
-      setTargetUser(userData);
-    });
+    if (trackId && taskId) {
+      const taskRef = doc(db, 'trainings', trackId, 'tasks', taskId);
+      const unsubscribe = onSnapshot(taskRef, (doc) => {
+        const taskData: TaskInterface = {
+          ...doc.data(),
+          id: doc.id,
+        } as TaskInterface;
+        setTargetTask(taskData);
+      });
 
-    return () => {
-      unsub();
-    };
+      return unsubscribe;
+    }
   }, [trackId, taskId]);
 
-  return targetUser;
+  return targetTask;
 }
