@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
-import TrackCard from '../../components/TrackCard';
 import useFetchTargetUser from '../../hooks/useFetchTargetUser';
+import UserTracks from '../../components/UserTracks';
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -45,13 +45,7 @@ const ProfilePage = () => {
               <p className='text-white'>{targetUser?.organization}</p>
             </div>
           </div>
-          {targetUser?.tracks.length > 0 && (
-            <div className='mt-5 flex items-center justify-center flex-col w-full'>
-              {targetUser?.tracks?.map((track) => (
-                <TrackCard key={track.id} {...track} userId={targetUser.uid} />
-              ))}
-            </div>
-          )}
+          {targetUser?.uid && <UserTracks uid={targetUser.uid} />}
         </div>
       </div>
     </Layout>
