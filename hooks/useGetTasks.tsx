@@ -1,7 +1,6 @@
 import {
   collection,
   getDocs,
-  getFirestore,
   onSnapshot,
   orderBy,
   query,
@@ -9,20 +8,14 @@ import {
 import { useEffect, useState } from 'react';
 import { TaskDetailsInterface, TaskInterface } from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
+import { db } from '../config/firebase';
 
-export default function useGetAllTasks(
-  slug: string,
-  setLoading: (loading) => void
-): Array<TaskInterface> {
+export default function useGetAllTasks(slug: string, setLoading): Array<TaskInterface> {
   const [tasks, setTasks] = useState<Array<TaskInterface>>([]);
   const targetTraining = useGetTargetTraining(slug);
 
   useEffect(() => {
-    setLoading(true);
     if (targetTraining && targetTraining.id) {
-      // add a check to ensure that targetTraining and its id are defined
-      const db = getFirestore();
-
       const trainingsRef = collection(
         db,
         'trainings',
@@ -32,12 +25,13 @@ export default function useGetAllTasks(
       const q = query(trainingsRef, orderBy('day', 'asc'));
 
       const unsub = onSnapshot(q, (docs) => {
+        setLoading(true);
         const docsArr = docs.docs;
         const allTasksData = docsArr.map((doc) => {
           return { ...doc.data(), id: doc.id } as TaskInterface;
         });
 
-        Promise.all(
+        Promise.allSettled(
           allTasksData.map((task) => {
             return getTaskDetails(targetTraining.id, task.id).then(
               (taskDetails: TaskDetailsInterface[]) => {
@@ -48,23 +42,22 @@ export default function useGetAllTasks(
           })
         ).then(() => {
           setTasks(allTasksData);
+          setLoading(false);
         });
       });
-      setLoading(false);
 
-      return unsub;
+      return () => unsub();
     }
   }, [targetTraining]);
 
   return tasks;
 }
 
-const getTaskDetails = async (tariningId: string, taskId: string) => {
-  const db = getFirestore();
+const getTaskDetails = async (trainingId: string, taskId: string) => {
   const detailsRef = collection(
     db,
     'trainings',
-    tariningId,
+    trainingId,
     'tasks',
     taskId,
     'details'

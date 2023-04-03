@@ -103,7 +103,7 @@ const CompletedTaskDetails = ({
           )}
         </div>
         <p className='mt-2'>
-          Completed on: {timestamp.toDate().toLocaleDateString()}
+          {/* Completed on: {timestamp.toDate().toLocaleDateString()} */}
         </p>
         <div
           className={

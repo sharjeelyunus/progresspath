@@ -1,9 +1,8 @@
-import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import useGetLeaderboardData from './useGetLeaderboard';
-import { getAuthorDetails } from './useGetTrainings';
 
 export default function useGetUserTrackDetails(
   trackId: string,
@@ -11,35 +10,40 @@ export default function useGetUserTrackDetails(
 ): TrainingsInterface {
   const [userTrackDetails, setUserTrackDetails] =
     useState<TrainingsInterface>();
+  const [authorDetails, setAuthorDetails] = useState<UserType>();
   const leaderboardData = useGetLeaderboardData();
 
   useEffect(() => {
-    const userRef = doc(db, 'trainings', trackId);
-    const unsub = onSnapshot(userRef, (doc) => {
+    const trackRef = doc(db, 'trainings', trackId);
+    const authorRef = doc(db, 'users', userId);
+
+    Promise.all([
+      getDoc(trackRef),
+      getDoc(authorRef).then((doc) => doc.data() as UserType),
+    ]).then(([trackDoc, authorData]) => {
       const Tracks: TrainingsInterface = {
-        ...doc.data(),
-        id: doc.id,
+        ...trackDoc.data(),
+        id: trackDoc.id,
       } as TrainingsInterface;
 
-      leaderboardData.filter((user) => {
+      leaderboardData.forEach((user) => {
         if (user.authorId === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
-          Tracks.completedTasksByUser.length = user.completedTasks.length;
           Tracks.userPoints = user.points;
         }
       });
 
-      getAuthorDetails(Tracks.author).then((authorDetails: UserType) => {
-        Tracks.leadName = authorDetails?.name;
-        Tracks.leadImage = authorDetails?.photoURL;
-        Tracks.leadUsername = authorDetails?.username;
-        Tracks.leadId = authorDetails?.uid;
-        setUserTrackDetails(Tracks);
-      });
+      setAuthorDetails(authorData);
+      setUserTrackDetails((prevState) => ({
+        ...prevState,
+        ...Tracks,
+        leadName: authorData?.name,
+        leadImage: authorData?.photoURL,
+        leadUsername: authorData?.username,
+        leadId: authorData?.uid,
+      }));
     });
-
-    return unsub;
-  }, [trackId, leaderboardData, userId]);
+  }, [trackId, userId, leaderboardData]);
 
   return userTrackDetails;
 }
