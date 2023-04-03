@@ -1,12 +1,14 @@
 // @ts-nocheck
 
 import { collectionGroup, onSnapshot, query } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { db } from '../config/firebase';
 import { CompletedTasks, LeaderboardEntry, UserTasks } from '../interfaces';
+import { useRecoilState } from 'recoil';
+import LeaderboardAtom from '../atoms/LeaderboardAtom';
 
 export default function useGetLeaderboardData(): LeaderboardEntry[] {
-  const [completedTasks, setCompletedTasks] = useState<LeaderboardEntry[]>([]);
+  const [completedTasks, setCompletedTasks] = useRecoilState(LeaderboardAtom);
 
   useEffect(() => {
     const syncData = async () => {

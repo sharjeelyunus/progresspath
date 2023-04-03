@@ -13,6 +13,8 @@ export default function useGetUserTrackDetails(
     useState<TrainingsInterface>();
   const leaderboardData = useGetLeaderboardData();
 
+  // console.log(leaderboardData)
+
   useEffect(() => {
     const userRef = doc(db, 'trainings', trackId);
     const unsub = onSnapshot(userRef, (doc) => {
@@ -24,7 +26,6 @@ export default function useGetUserTrackDetails(
       leaderboardData.filter((user) => {
         if (user.authorId === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
-          Tracks.completedTasksByUser.length = user.completedTasks.length;
           Tracks.userPoints = user.points;
         }
       });

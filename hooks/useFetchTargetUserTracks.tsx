@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../config/firebase';
 import { UserTracks } from '../interfaces';
+import { useRecoilState } from 'recoil';
+import UserTrackAtom from '../atoms/UserTracks';
 
 export default function useFetchTargetUserTracks(
     userId: string,
 ): Array<UserTracks> {
-  const [completedTasks, setCompletedTasks] = useState<Array<UserTracks>>(
-    []
-  );
+  const [completedTasks, setCompletedTasks] = useRecoilState(UserTrackAtom);
   useEffect(() => {
     if (userId) {
       const q = query(collection(db, 'users', userId, 'enrolledTracks'));
