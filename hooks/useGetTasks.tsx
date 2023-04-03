@@ -10,9 +10,8 @@ import { TaskDetailsInterface, TaskInterface } from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
 import { db } from '../config/firebase';
 
-export default function useGetAllTasks(slug: string): Array<TaskInterface> {
+export default function useGetAllTasks(slug: string, setLoading): Array<TaskInterface> {
   const [tasks, setTasks] = useState<Array<TaskInterface>>([]);
-  const [loading, setLoading] = useState(true);
   const targetTraining = useGetTargetTraining(slug);
 
   useEffect(() => {
