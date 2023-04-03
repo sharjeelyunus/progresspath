@@ -45,7 +45,7 @@ const ProfilePage = () => {
               <p className='text-white'>{targetUser?.organization}</p>
             </div>
           </div>
-          <UserTracks uid={targetUser.uid} />
+          {targetUser?.uid && <UserTracks uid={targetUser.uid} />}
         </div>
       </div>
     </Layout>

@@ -44,7 +44,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
       }
     >
       <Link href={`/${userTrackDetails?.slug}`} className='flex justify-center'>
-        <div className='lg:flex lg:w-[75%] justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
+        <div className='lg:flex lg:w-full justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
           <div className='lg:flex gap-5 items-center'>
             <img
               src={userTrackDetails?.image ? userTrackDetails?.image : '/blank-profile-picture.svg'}

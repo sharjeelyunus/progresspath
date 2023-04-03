@@ -4,20 +4,33 @@ import { db } from '../config/firebase';
 import { UserType } from '../interfaces';
 
 export default function useFetchTargetUser(username: string): UserType {
-  const [targetUserDetails, setTargetUserDetails] = useState<UserType>();
+  const [targetUserDetails, setTargetUserDetails] = useState<UserType>(() => {
+    return {
+      username: '',
+      email: '',
+      uid: '',
+      photoURL: '',
+      bio: '',
+      name: '',
+    };
+  });
 
   useEffect(() => {
     const unsub = onSnapshot(
-      query(
-        collection(db, 'users'),
-        where('username', '==', username ? username : '')
-      ),
-      async (docs) => {
-        const userData: UserType = {
-          ...docs.docs[0]?.data(),
-          uid: docs.docs[0]?.id,
-        } as UserType;
-        setTargetUserDetails({ ...userData });
+      query(collection(db, 'users'), where('username', '==', username || '')),
+      async (snapshot) => {
+        try {
+          const [userData] = snapshot.docs?.map((doc) => ({
+            ...doc?.data(),
+            uid: doc?.id,
+          }));
+          setTargetUserDetails((prevUserDetails) => ({
+            ...prevUserDetails,
+            ...userData,
+          }));
+        } catch (error) {
+          console.error(error);
+        }
       }
     );
 
