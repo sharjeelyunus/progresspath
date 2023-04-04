@@ -13,6 +13,7 @@ import { TrainingsInterface, UserType } from '../interfaces';
 export default function useGetAllTrainings(): TrainingsInterface[] {
   const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
   const [authorDetails, setAuthorDetails] = useState<UserType>();
+  const [cachedData, setCachedData] = useState<TrainingsInterface[]>();
 
   useEffect(() => {
     const fetchAuthorDetails = async (authorId: string) => {
@@ -35,17 +36,26 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
     const trainingsRef = collection(db, 'trainings');
     const q = query(trainingsRef, orderBy('index', 'asc'));
 
+    // Check if there is cached data and return it
+    if (cachedData) {
+      setTrainings(cachedData);
+      return;
+    }
+
     const unsub = onSnapshot(q, (docs) => {
       const docsArr = docs.docs;
       const allTrainingsData = docsArr.map((doc) => {
         return { ...doc.data(), id: doc.id } as TrainingsInterface;
       });
 
+      // Cache the data
+      setCachedData(allTrainingsData);
+
       setTrainings(allTrainingsData);
     });
 
     return unsub;
-  }, []);
+  }, [cachedData]);
 
   return trainings.map((training) => ({
     ...training,

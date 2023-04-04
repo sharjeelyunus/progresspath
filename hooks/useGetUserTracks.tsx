@@ -1,19 +1,15 @@
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserTracks } from '../interfaces';
 import { db } from '../config/firebase';
 
 export default function useGetUserTracks(): Array<UserTracks> {
+  const { user } = useAuth();
+
   const [userEnrolledTracks, setUserEnrolledTracks] = useState<
     Array<UserTracks>
   >([]);
-  const { user } = useAuth();
 
   useEffect(() => {
     const enrolledTrackRef = collection(
@@ -33,5 +29,9 @@ export default function useGetUserTracks(): Array<UserTracks> {
     return unsub;
   }, [db, user.uid]);
 
-  return userEnrolledTracks;
+  const cachedUserEnrolledTracks = useMemo(() => {
+    return userEnrolledTracks;
+  }, [userEnrolledTracks]);
+
+  return cachedUserEnrolledTracks;
 }

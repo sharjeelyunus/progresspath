@@ -1,4 +1,4 @@
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
@@ -10,40 +10,40 @@ export default function useGetUserTrackDetails(
 ): TrainingsInterface {
   const [userTrackDetails, setUserTrackDetails] =
     useState<TrainingsInterface>();
-  const [authorDetails, setAuthorDetails] = useState<UserType>();
   const leaderboardData = useGetLeaderboardData();
 
   useEffect(() => {
-    const trackRef = doc(db, 'trainings', trackId);
-    const authorRef = doc(db, 'users', userId);
-
-    Promise.all([
-      getDoc(trackRef),
-      getDoc(authorRef).then((doc) => doc.data() as UserType),
-    ]).then(([trackDoc, authorData]) => {
+    const userRef = doc(db, 'trainings', trackId);
+    const unsub = onSnapshot(userRef, (doc) => {
       const Tracks: TrainingsInterface = {
-        ...trackDoc.data(),
-        id: trackDoc.id,
+        ...doc.data(),
+        id: doc.id,
       } as TrainingsInterface;
 
-      leaderboardData.forEach((user) => {
+      leaderboardData.filter((user) => {
         if (user.authorId === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
           Tracks.userPoints = user.points;
         }
       });
 
-      setAuthorDetails(authorData);
-      setUserTrackDetails((prevState) => ({
-        ...prevState,
-        ...Tracks,
-        leadName: authorData?.name,
-        leadImage: authorData?.photoURL,
-        leadUsername: authorData?.username,
-        leadId: authorData?.uid,
-      }));
+      getAuthorDetails(Tracks.author).then((authorDetails: UserType) => {
+        Tracks.lead = authorDetails as UserType;
+        setUserTrackDetails(Tracks);
+      });
     });
-  }, [trackId, userId, leaderboardData]);
+
+    return unsub;
+  }, [trackId, leaderboardData, userId]);
 
   return userTrackDetails;
 }
+
+const getAuthorDetails = async (authorId: string) => {
+  const q = doc(db, 'users', authorId);
+
+  const querySnapshot = await getDoc(q);
+  const documentData = querySnapshot.data();
+
+  return documentData as UserType;
+};

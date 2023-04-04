@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import useFetchTargetUserTracks from '../hooks/useFetchTargetUserTracks';
-import { UserType } from '../interfaces';
 import TrackCard from './TrackCard';
 
 type Props = {
-    uid: string;
+  uid: string;
 };
 
 const UserTracks = ({ uid }: Props) => {
@@ -22,4 +21,4 @@ const UserTracks = ({ uid }: Props) => {
   );
 };
 
-export default UserTracks;
+export default memo(UserTracks);
