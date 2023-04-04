@@ -38,7 +38,7 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
     <div
       className={
         loggedInUser?.uid === userId ||
-        userTrackDetails.leadId === loggedInUser?.uid
+        userTrackDetails?.lead?.uid === loggedInUser?.uid
           ? 'bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
           : 'w-full'
       }
@@ -57,15 +57,15 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
                   {userTrackDetails?.name}
                 </h1>
                 <a
-                  href={userTrackDetails?.leadUsername}
+                  href={userTrackDetails?.lead?.uid}
                   className='text-white text-lg flex items-center gap-2 mt-2'
                 >
                   <img
                     className='w-6 h-6 rounded-full'
-                    src={userTrackDetails?.leadImage || '/blank-profile-picture.svg'}
-                    alt={userTrackDetails?.leadName}
+                    src={userTrackDetails?.lead?.photoURL || '/blank-profile-picture.svg'}
+                    alt={userTrackDetails?.lead?.name}
                   />
-                  <span>{userTrackDetails?.leadName ? userTrackDetails.leadName : 'Lead'}</span>
+                  <span>{userTrackDetails?.lead?.name ? userTrackDetails?.lead?.name : 'Sharjeel Yunus'}</span>
                 </a>
               </div>
               <div className='lg:border-x lg:px-10'>
@@ -85,10 +85,10 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
         </div>
       </Link>
       {(loggedInUser?.uid === userId ||
-        userTrackDetails.leadId === loggedInUser?.uid) && (
+        userTrackDetails?.lead?.uid === loggedInUser?.uid) && (
         <div className='w-full flex flex-wrap gap-5 lg:px-20 justify-center'>
           {sortedCompletedTasks?.map((task) => (
-            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} leadId={userTrackDetails.leadId} />
+            <CompletedTaskDetails key={task.id} {...task} trackId={trackId} leadId={userTrackDetails?.lead?.uid} />
           ))}
         </div>
       )}
