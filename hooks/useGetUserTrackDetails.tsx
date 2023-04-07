@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import useGetLeaderboardData from './useGetLeaderboard';
+import { useRecoilValue } from 'recoil';
+import LeaderboardAtom from '../atoms/LeaderboardAtom';
 
 export default function useGetUserTrackDetails(
   trackId: string,
@@ -10,7 +12,7 @@ export default function useGetUserTrackDetails(
 ): TrainingsInterface {
   const [userTrackDetails, setUserTrackDetails] =
     useState<TrainingsInterface>();
-  const leaderboardData = useGetLeaderboardData();
+    const leaderboardData = useRecoilValue(LeaderboardAtom);
 
   useEffect(() => {
     const userRef = doc(db, 'trainings', trackId);
@@ -21,7 +23,7 @@ export default function useGetUserTrackDetails(
       } as TrainingsInterface;
 
       leaderboardData.filter((user) => {
-        if (user.authorId === userId) {
+        if (user.author.uid === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
           Tracks.userPoints = user.points;
         }

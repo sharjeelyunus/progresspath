@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import LeaderboardCard from '../components/LeaderboardCard';
-import useGetLeaderboardData from '../hooks/useGetLeaderboard';
+import { useRecoilValue } from 'recoil';
+import LeaderboardAtom from '../atoms/LeaderboardAtom';
 
 const Leaderboard = () => {
-  const leaderboardData = useGetLeaderboardData();
+  const leaderboardData = useRecoilValue(LeaderboardAtom);
 
   const [loading, setLoading] = useState(true);
 
@@ -38,9 +39,9 @@ const Leaderboard = () => {
         <div className='py-5'>
           {sortedData.map((entry, index) => (
             <LeaderboardCard
-              key={entry.authorId}
+              key={entry.author.uid}
               rank={index + 1}
-              authorId={entry.authorId}
+              author={entry.author}
               points={entry.points}
               completedTasks={entry.completedTasks.length}
             />

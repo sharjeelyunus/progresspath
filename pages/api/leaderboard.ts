@@ -1,9 +1,15 @@
 // @ts-nocheck
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { collectionGroup, getDocs } from 'firebase/firestore';
+import { collectionGroup, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { CompletedTasks, LeaderboardEntry, UserTasks } from '../../interfaces';
+import {
+  CompletedTasks,
+  LeaderboardEntry,
+  UserTasks,
+  UserType,
+} from '../../interfaces';
+import { setCache } from '../../utils/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +23,9 @@ export default async function handler(
       completedTasks.push({ ...doc.data(), id: doc.id } as CompletedTasks);
     });
 
-    const leaderboard: LeaderboardEntry[] = mergeTasksByUser(completedTasks);
+    const leaderboard: LeaderboardEntry[] = await mergeTasksByUser(
+      completedTasks
+    );
     res.status(200).json({ leaderboard });
   } catch (error) {
     console.error(error);
@@ -25,10 +33,15 @@ export default async function handler(
   }
 }
 
-function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
+async function mergeTasksByUser(
+  tasks: CompletedTasks[]
+): Promise<LeaderboardEntry[]> {
   const userTasks: UserTasks = {};
   tasks.forEach((task) => {
     const authorId = task.authorId;
+    if (!authorId) {
+      return;
+    }
     if (authorId in userTasks) {
       userTasks[authorId].push(task);
     } else {
@@ -36,32 +49,37 @@ function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
     }
   });
 
-  const leaderboard: LeaderboardEntry[] = Object.entries(userTasks).map(
-    ([authorId, tasks]) => {
-      let points = 0;
-      tasks.forEach((task) => {
-        if (task.points) {
-          points += task.points;
-        } else {
-          points += 5; // Add 5 points for each completed task
-          if (task.codeLink && isValidUrl(task.codeLink)) {
-            points += 5; // Add 5 points for valid codeLink
-          }
-          if (task.liveLink && isValidUrl(task.liveLink)) {
-            points += 5; // Add 5 points for valid liveLink
-          }
-          if (task.postLink && isValidUrl(task.postLink)) {
-            points += 5; // Add 5 points for valid postLink
-          }
+  const leaderboard: LeaderboardEntry[] = [];
+  for (const [authorId, tasks] of Object.entries(userTasks)) {
+    let points = 0;
+    tasks.forEach((task) => {
+      if (task.points) {
+        points += task.points;
+      } else {
+        points += 5; // Add 5 points for each completed task
+        if (task.codeLink && isValidUrl(task.codeLink)) {
+          points += 5; // Add 5 points for valid codeLink
         }
-      });
-      return {
-        authorId,
-        points,
-        completedTasks: tasks,
-      };
-    }
-  );
+        if (task.liveLink && isValidUrl(task.liveLink)) {
+          points += 5; // Add 5 points for valid liveLink
+        }
+        if (task.postLink && isValidUrl(task.postLink)) {
+          points += 5; // Add 5 points for valid postLink
+        }
+      }
+    });
+    const authorRef = doc(db, 'users', authorId);
+    const authorSnapshot = await getDoc(authorRef);
+    const authorData = authorSnapshot.data() as UserType;
+    leaderboard.push({
+      points,
+      completedTasks: tasks,
+      author: {
+        uid: authorId,
+        ...authorData,
+      }
+    });
+  }
 
   leaderboard.sort((a, b) => {
     if (a.points === b.points) {
@@ -74,6 +92,8 @@ function mergeTasksByUser(tasks: CompletedTasks[]): LeaderboardEntry[] {
     }
     return b.points - a.points;
   });
+
+  setCache('leaderboard', leaderboard);
 
   return leaderboard;
 }
