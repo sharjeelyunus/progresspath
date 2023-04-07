@@ -21,7 +21,7 @@ export default function useGetUserTrackDetails(
       } as TrainingsInterface;
 
       leaderboardData.filter((user) => {
-        if (user.authorId === userId) {
+        if (user.author.uid === userId) {
           Tracks.completedTasksByUser = user.completedTasks;
           Tracks.userPoints = user.points;
         }

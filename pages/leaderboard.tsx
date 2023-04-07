@@ -38,9 +38,9 @@ const Leaderboard = () => {
         <div className='py-5'>
           {sortedData.map((entry, index) => (
             <LeaderboardCard
-              key={entry.authorId}
+              key={entry.author.uid}
               rank={index + 1}
-              authorId={entry.authorId}
+              author={entry.author}
               points={entry.points}
               completedTasks={entry.completedTasks.length}
             />
