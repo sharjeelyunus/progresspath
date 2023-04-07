@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { LeaderboardEntry } from '../interfaces';
 import { getCache, setCache } from '../utils/cache';
+import { useSetRecoilState } from 'recoil';
+import LeaderboardAtom from '../atoms/LeaderboardAtom';
 
-export default function useGetLeaderboardData(): LeaderboardEntry[] {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
-    []
-  );
+export default function useGetLeaderboardData(): void {
+  const setLeaderboardData = useSetRecoilState(LeaderboardAtom);
 
   const fetchLeaderboardData = async () => {
     try {
@@ -26,6 +26,4 @@ export default function useGetLeaderboardData(): LeaderboardEntry[] {
       fetchLeaderboardData(); // fetch data if there is no cached data
     }
   }, []);
-
-  return leaderboardData;
 }
