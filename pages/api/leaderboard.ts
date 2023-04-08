@@ -11,11 +11,21 @@ import {
 } from '../../interfaces';
 import { setCache } from '../../utils/cache';
 
+interface QueryParams {
+  page: number;
+  limit: number;
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
+    const queryParams = req.query as QueryParams;
+    const page = Number(queryParams.page || 1);
+    const limit = Number(queryParams.limit || 10);
+    const offset = (page - 1) * limit;
+
     const q = collectionGroup(db, 'completedTasks');
     const querySnapshot = await getDocs(q);
     const completedTasks: CompletedTasks[] = [];
@@ -24,9 +34,17 @@ export default async function handler(
     });
 
     const leaderboard: LeaderboardEntry[] = await mergeTasksByUser(
-      completedTasks
+      completedTasks,
+      req
     );
-    res.status(200).json({ leaderboard });
+
+    const paginatedLeaderboard = leaderboard.slice(offset, offset + limit);
+    res.status(200).json({
+      leaderboard: paginatedLeaderboard,
+      totalCount: leaderboard.length,
+      page,
+      totalPages: Math.ceil(leaderboard.length / limit),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -34,7 +52,8 @@ export default async function handler(
 }
 
 async function mergeTasksByUser(
-  tasks: CompletedTasks[]
+  tasks: CompletedTasks[],
+  req: NextApiRequest
 ): Promise<LeaderboardEntry[]> {
   const userTasks: UserTasks = {};
   tasks.forEach((task) => {
@@ -77,7 +96,7 @@ async function mergeTasksByUser(
       author: {
         uid: authorId,
         ...authorData,
-      }
+      },
     });
   }
 
@@ -95,7 +114,13 @@ async function mergeTasksByUser(
 
   setCache('leaderboard', leaderboard);
 
-  return leaderboard;
+  const page = req.query.page ? parseInt(req.query.page as string) : 1;
+  const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedLeaderboard = leaderboard.slice(startIndex, endIndex);
+
+  return paginatedLeaderboard;
 }
 
 function isValidUrl(url: string): boolean {

@@ -8,9 +8,8 @@ export default function useGetUserTrackDetails(
   trackId: string,
   userId: string
 ): TrainingsInterface {
-  const [userTrackDetails, setUserTrackDetails] =
-    useState<TrainingsInterface>();
-  const leaderboardData = useGetLeaderboardData();
+  const [userTrackDetails, setUserTrackDetails] = useState<TrainingsInterface>();
+  const [leaderboardData, paginationData, changePage] = useGetLeaderboardData();
 
   useEffect(() => {
     const userRef = doc(db, 'trainings', trackId);
@@ -36,7 +35,11 @@ export default function useGetUserTrackDetails(
     return unsub;
   }, [trackId, leaderboardData, userId]);
 
-  return userTrackDetails;
+  const startIndex = (paginationData.currentPage - 1) * paginationData.itemsPerPage;
+  const endIndex = startIndex + paginationData.itemsPerPage;
+  const slicedLeaderboardData = leaderboardData.slice(startIndex, endIndex);
+
+  return { ...userTrackDetails };
 }
 
 const getAuthorDetails = async (authorId: string) => {

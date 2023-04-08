@@ -16,10 +16,10 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
       {author?.username ? (
         <Link
           href={`/user/${author?.username}`}
-          className='flex items-center justify-between bg-[#393053] text-white px-5 py-3 rounded-2xl w-[350px] lg:w-[500px] mt-3'
+          className='flex items-center justify-between bg-[#393053] text-white px-5 py-1 rounded-2xl w-[350px] lg:w-[500px] mt-3'
         >
           <div className='flex items-center gap-3'>
-            <span className='font-bold text-xl'>{rank}. </span>
+            <span className='font-bold'>{rank}. </span>
             <img
               src={
                 author?.photoURL
@@ -27,21 +27,21 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
                   : '/blank-profile-picture.svg'
               }
               alt=''
-              className='w-10 h-10 rounded-full'
+              className='w-5 h-5 rounded-full'
             />
-            <div>
-              <h2 className='font-bold'>{author?.name}</h2>
-              <span className='text-sm'>Completed {completedTasks} tasks</span>
+            <div className='flex gap-3 items-center'>
+              <h2 className='font-bold'>{author?.name}</h2> |
+              <span className='text-sm'>Completed {completedTasks} {completedTasks > 1 ? 'tasks' : 'task'}</span>
             </div>
           </div>
           <div className='border-l'>
-            <p className='font-bold text-lg ml-3'>{points}pt</p>
+            <p className='font-bold ml-3'>{points}pt</p>
           </div>
         </Link>
       ) : (
         <div className='flex items-center justify-between bg-[#393053] text-white px-5 py-3 rounded-2xl w-[350px] lg:w-[500px] mt-3'>
           <div className='flex items-center gap-3'>
-            <span className='font-bold text-xl'>{rank}. </span>
+            <span className='font-bold'>{rank}. </span>
             <img
               src={
                 author?.photoURL
@@ -53,11 +53,11 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
             />
             <div>
               <h2 className='font-bold'>{author?.name}</h2>
-              <span className='text-sm'>Completed {completedTasks} tasks</span>
+              <span className='text-sm'>Completed {completedTasks} {completedTasks > 1 ? 'tasks' : 'task'}</span>
             </div>
           </div>
           <div className='border-l'>
-            <p className='font-bold text-lg ml-3'>{points}pt</p>
+            <p className='font-bold ml-3'>{points}pt</p>
           </div>
         </div>
       )}
