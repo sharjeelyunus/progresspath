@@ -11,12 +11,14 @@ type Props = {
 
 const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
 
+  const isMobile = window.innerWidth < 768;
+
   return (
     <>
       {author?.username ? (
         <Link
           href={`/user/${author?.username}`}
-          className='flex items-center justify-between bg-[#393053] text-white px-5 py-1 rounded-2xl w-[350px] lg:w-[650px] mt-3'
+          className='flex items-center justify-between bg-[#393053] text-white px-5 py-2 rounded-2xl w-[350px] lg:w-[650px] mt-3'
         >
           <div className='flex items-center gap-3'>
             <span className='font-bold'>{rank}. </span>
@@ -29,8 +31,8 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
               alt=''
               className='w-5 h-5 rounded-full'
             />
-            <div className='flex gap-3 items-center'>
-              <h2 className='font-bold'>{author?.name}</h2> |
+            <div className={isMobile ? '' : 'flex gap-3 items-center'}>
+              <h2 className='font-bold'>{author?.name}</h2> {!isMobile && '|'}
               <span className='text-sm'>Completed {completedTasks} {completedTasks > 1 ? 'tasks' : 'task'}</span>
             </div>
           </div>

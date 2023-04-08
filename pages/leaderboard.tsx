@@ -26,7 +26,7 @@ const Leaderboard = () => {
 
   return (
     <Layout title='Leaderboard | ProgressPath'>
-      <div className='py-24 flex flex-col items-center bg-[#635985] text-white h-screen'>
+      <div className='pt-24 flex flex-col items-center bg-[#635985] text-white min-h-screen'>
         <h1 className='font-bold text-2xl'>Leaderboard</h1>
         <div className='py-3'>
           {leaderboardData.map((entry, index) => (
@@ -39,7 +39,7 @@ const Leaderboard = () => {
             />
           ))}
         </div>
-        {leaderboardData.length > 0 && (
+        {/* {leaderboardData.length > 0 && (
           <ul className='flex justify-center items-center mt-8 fixed bottom-8 w-full'>
             {paginationData.hasPrevPage && (
               <li className='relative block py-2 px-3 leading-tight bg-[#393053] border border-gray-300 text-white rounded-l hover:bg-[#18122B] cursor-pointer'>
@@ -66,7 +66,7 @@ const Leaderboard = () => {
               </li>
             )}
           </ul>
-        )}
+        )} */}
       </div>
     </Layout>
   );
