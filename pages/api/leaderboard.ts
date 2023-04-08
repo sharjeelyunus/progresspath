@@ -51,27 +51,40 @@ export default async function handler(
   }
 }
 
-async function mergeTasksByUser(
-  tasks: CompletedTasks[],
-  req: NextApiRequest
-): Promise<LeaderboardEntry[]> {
-  const userTasks: UserTasks = {};
+async function usersWithCompletedTasks(
+  tasks: CompletedTasks[]
+): Promise<UserTasks[]> {
+  const UsersWithCompletedTasks: UserTasks[] = [];
   tasks.forEach((task) => {
     const authorId = task.authorId;
     if (!authorId) {
       return;
     }
-    if (authorId in userTasks) {
-      userTasks[authorId].push(task);
+    const existingUserTasks = UsersWithCompletedTasks.find(
+      (ut) => ut.authorId === authorId
+    );
+    if (existingUserTasks) {
+      existingUserTasks.tasks.push(task);
     } else {
-      userTasks[authorId] = [task];
+      UsersWithCompletedTasks.push({
+        authorId: authorId,
+        tasks: [task],
+      });
     }
   });
+  return UsersWithCompletedTasks;
+}
+
+async function mergeTasksByUser(
+  tasks: CompletedTasks[],
+  req: NextApiRequest
+): Promise<LeaderboardEntry[]> {
+  const userTasks = await usersWithCompletedTasks(tasks);
 
   const leaderboard: LeaderboardEntry[] = [];
-  for (const [authorId, tasks] of Object.entries(userTasks)) {
+  for (const userTask of userTasks) {
     let points = 0;
-    tasks.forEach((task) => {
+    for (const task of userTask.tasks) {
       if (task.points) {
         points += task.points;
       } else {
@@ -86,15 +99,15 @@ async function mergeTasksByUser(
           points += 5; // Add 5 points for valid postLink
         }
       }
-    });
-    const authorRef = doc(db, 'users', authorId);
+    }
+    const authorRef = doc(db, 'users', userTask.authorId);
     const authorSnapshot = await getDoc(authorRef);
     const authorData = authorSnapshot.data() as UserType;
     leaderboard.push({
       points,
-      completedTasks: tasks,
+      completedTasks: userTask.tasks,
       author: {
-        uid: authorId,
+        uid: userTask.authorId,
         ...authorData,
       },
     });
@@ -112,7 +125,7 @@ async function mergeTasksByUser(
     return b.points - a.points;
   });
 
-  setCache('leaderboard', leaderboard);
+  setCache('leaderboardData', leaderboard);
 
   const page = req.query.page ? parseInt(req.query.page as string) : 1;
   const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;

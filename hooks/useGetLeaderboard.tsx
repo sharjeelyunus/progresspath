@@ -21,12 +21,12 @@ export default function useGetLeaderboardData(
 
   const fetchLeaderboardData = async () => {
     try {
-      const response = await fetch('/api/leaderboard');
+      const response = await fetch(`/api/leaderboard?page=${initialPage}`);
       const data = await response.json();
       setLeaderboardData(data.leaderboard);
       setCache('leaderboardData', data.leaderboard); // cache the fetched data
     } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
+      throw new Error('Failed to fetch leaderboard data');
     }
   };
 
@@ -42,7 +42,7 @@ export default function useGetLeaderboardData(
     if (cachedData) {
       setLeaderboardData(cachedData); // set the cached data if available
     } else {
-      fetchLeaderboardData(); // fetch data if there is no cached data
+      fetchLeaderboardData().catch((error) => console.error(error.message)); // fetch data if there is no cached data
     }
   }, []);
 
