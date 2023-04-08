@@ -16,7 +16,7 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
       {author?.username ? (
         <Link
           href={`/user/${author?.username}`}
-          className='flex items-center justify-between bg-[#393053] text-white px-5 py-1 rounded-2xl w-[350px] lg:w-[500px] mt-3'
+          className='flex items-center justify-between bg-[#393053] text-white px-5 py-1 rounded-2xl w-[350px] lg:w-[650px] mt-3'
         >
           <div className='flex items-center gap-3'>
             <span className='font-bold'>{rank}. </span>
@@ -39,7 +39,7 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
           </div>
         </Link>
       ) : (
-        <div className='flex items-center justify-between bg-[#393053] text-white px-5 py-3 rounded-2xl w-[350px] lg:w-[500px] mt-3'>
+        <div className='flex items-center justify-between bg-[#393053] text-white px-5 py-3 rounded-2xl w-[350px] lg:w-[600px] mt-3'>
           <div className='flex items-center gap-3'>
             <span className='font-bold'>{rank}. </span>
             <img
