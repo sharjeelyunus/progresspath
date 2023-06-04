@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-// import useGetUserTrackDetails from '../hooks/useGetUserTrackDetails';
 import { UserTracks } from '../interfaces';
 import CompletedTaskDetails from './CompletedTaskDetails';
-import useGetUserCompletedTasks from '../hooks/useGetUserCompletedTasks';
+import { useGetUserCompletedTasks } from '../hooks/useGetUserCompletedTasks';
 
 type Props = UserTracks & {
   userId: string;
@@ -18,7 +17,6 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
     timestamp.toDate().getMonth() + 1
   }/${timestamp.toDate().getFullYear()}`;
 
-  // const userTrackDetails = useGetUserTrackDetails(trackId, userId);
   const userTrackDetails = useGetUserCompletedTasks(trackId, userId);
 
   // sort completed tasks by date
