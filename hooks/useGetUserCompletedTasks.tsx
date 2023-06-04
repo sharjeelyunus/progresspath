@@ -1,107 +1,42 @@
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { db } from '../config/firebase';
-import { CompletedTasks, TrainingsInterface, UserType } from '../interfaces';
+import { useEffect, useState, useMemo } from 'react';
+import { getCache, setCache } from '../utils/cache';
 
-export default function useGetUserCompletedTasks(
-  trackId: string,
-  userId: string
-): TrainingsInterface {
-  const [userTrackDetails, setUserTrackDetails] =
-    useState<TrainingsInterface>();
-  const [cachedData, setCachedData] = useState<TrainingsInterface>();
+export function useGetUserCompletedTasks(trackId: string, userId: string) {
+  const [userTrackDetails, setUserTrackDetails] = useState(null);
 
-  useEffect(() => {
-    const trainingsRef = collection(
-      db,
-      'users',
-      userId,
-      'enrolledTracks',
-      trackId,
-      'completedTasks'
-    );
-    const q = query(trainingsRef, orderBy('timestamp', 'desc'));
+  const cacheKey = useMemo(() => `${trackId}-${userId}`, [trackId, userId]);
 
-    // Check if there is cached data and return it
-    if (cachedData) {
-      setUserTrackDetails(cachedData);
-      return;
-    }
-
-    const unsub = onSnapshot(q, async (docs) => {
-      const docsArr = docs.docs;
-      const userCompletedTasks = docsArr.map(
-        (doc) =>
-          ({
-            ...doc.data(),
-            id: doc.id,
-          } as CompletedTasks)
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `/api/userTrackDetails?trackId=${trackId}&userId=${userId}`
       );
 
-      const userTrackDetails = await getTrackDetails(trackId);
-
-      let userPoints = 0;
-
-      for (const task of userCompletedTasks) {
-        if (task.points) {
-          userPoints += task.points;
-        } else {
-          userPoints += 5; // Add 5 points for each completed task
-
-          if (task.codeLink && isValidUrl(task.codeLink)) {
-            userPoints += 5; // Add 5 points for valid codeLink
-          }
-          if (task.liveLink && isValidUrl(task.liveLink)) {
-            userPoints += 5; // Add 5 points for valid liveLink
-          }
-          if (task.postLink && isValidUrl(task.postLink)) {
-            userPoints += 5; // Add 5 points for valid postLink
-          }
-        }
+      if (!response.ok) {
+        throw new Error('Failed to fetch user track details');
       }
 
-      const allTrainingsData: TrainingsInterface = {
-        ...userTrackDetails,
-        lead: await getAuthorDetails(userTrackDetails.author),
-        completedTasksByUser: userCompletedTasks,
-        userPoints,
-      };
+      const data = await response.json();
+      setUserTrackDetails(data);
+      setCache(cacheKey, data);
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-      // Cache the data
-      setCachedData(allTrainingsData);
+  useEffect(() => {
+    const cachedData = getCache(cacheKey);
+    const localStorageData = localStorage.getItem(cacheKey);
 
-      setUserTrackDetails(allTrainingsData);
-    });
-
-    return unsub;
-  }, [cachedData]);
+    if (cachedData) {
+      setUserTrackDetails(cachedData);
+    } else if (localStorageData) {
+      setUserTrackDetails(JSON.parse(localStorageData));
+    } else {
+      fetchData();
+    }
+  }, [trackId, userId, cacheKey]);
 
   return { ...userTrackDetails };
-}
-
-const getAuthorDetails = async (authorId: string): Promise<UserType> => {
-  const q = doc(db, 'users', authorId);
-  const querySnapshot = await getDoc(q);
-  return querySnapshot.data() as UserType;
-};
-
-const getTrackDetails = async (
-  trackId: string
-): Promise<TrainingsInterface> => {
-  const q = doc(db, 'trainings', trackId);
-  const querySnapshot = await getDoc(q);
-  return querySnapshot.data() as TrainingsInterface;
-};
-
-function isValidUrl(url: string): boolean {
-  const urlPattern =
-    /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
-  return urlPattern.test(url);
 }
