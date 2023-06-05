@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import LeaderboardCard from '../components/LeaderboardCard';
-import usePagination from '../hooks/usePagination';
+// import usePagination from '../hooks/usePagination';
+import useGetLeaderboardData from '../hooks/useGetLeaderboard';
 
 const Leaderboard = () => {
-  const [leaderboardData, paginationData] = usePagination();
+  const [leaderboardData] = useGetLeaderboardData();
 
   const [loading, setLoading] = useState(true);
 

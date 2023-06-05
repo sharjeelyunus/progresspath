@@ -22,9 +22,9 @@ export default async function handler(
 ) {
   try {
     const queryParams = req.query as QueryParams;
-    const page = Number(queryParams.page || 1);
-    const limit = Number(queryParams.limit || 10);
-    const offset = (page - 1) * limit;
+    // const page = Number(queryParams.page || 1);
+    // const limit = Number(queryParams.limit || 10);
+    // const offset = (page - 1) * limit;
 
     const q = collectionGroup(db, 'completedTasks');
     const querySnapshot = await getDocs(q);
@@ -38,12 +38,12 @@ export default async function handler(
       req
     );
 
-    const paginatedLeaderboard = leaderboard.slice(offset, offset + limit);
+    // const paginatedLeaderboard = leaderboard.slice(offset, offset + limit);
     res.status(200).json({
-      leaderboard: paginatedLeaderboard,
+      leaderboard: leaderboard,
       totalCount: leaderboard.length,
-      page,
-      totalPages: Math.ceil(leaderboard.length / limit),
+      // page,
+      // totalPages: Math.ceil(leaderboard.length / limit),
     });
   } catch (error) {
     console.error(error);
@@ -127,13 +127,13 @@ async function mergeTasksByUser(
 
   setCache('leaderboardData', leaderboard);
 
-  const page = req.query.page ? parseInt(req.query.page as string) : 1;
-  const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const paginatedLeaderboard = leaderboard.slice(startIndex, endIndex);
+  // const page = req.query.page ? parseInt(req.query.page as string) : 1;
+  // const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+  // const startIndex = (page - 1) * limit;
+  // const endIndex = page * limit;
+  // const paginatedLeaderboard = leaderboard.slice(startIndex, endIndex);
 
-  return paginatedLeaderboard;
+  return leaderboard;
 }
 
 function isValidUrl(url: string): boolean {
