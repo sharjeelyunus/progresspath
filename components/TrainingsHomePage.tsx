@@ -12,22 +12,21 @@ const TrainingsHomePage = () => {
   const { loggedInUser } = useAuth();
   const trainings = useGetAllTrainings();
   const userEnrolledTracks = useGetUserTracks();
-  const [loading, setLoading] = useState(true);
+  const [loadingTrainings, setLoadingTrainings] = useState(true);
   const [openEnrollModal, setOpenEnrollModal] = useState(false);
   const [openOnboardingModal, setOpenOnboardingModal] = useState(false);
+  const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
 
   useEffect(() => {
-    setLoading(true);
-    if (loggedInUser && !loggedInUser.onboarding) {
+    setLoadingTrainings(true);
+    if (loggedInUser && !loggedInUser.onboarding && !openOnboardingModal) {
       setOpenOnboardingModal(true);
     }
-    setLoading(false);
-  }, [loggedInUser]);
+    setLoadingTrainings(false);
+  }, [loggedInUser, openOnboardingModal]);
 
   const renderTrainingCard = (training) => {
-    const isEnrolled = userEnrolledTracks
-      .map((track) => track.id)
-      .includes(training.id);
+    const isEnrolled = enrolledTrackIds.has(training.id);
 
     return (
       <div key={training.id}>
@@ -65,23 +64,17 @@ const TrainingsHomePage = () => {
     <>
       <Toaster position='top-center' reverseOrder={false} />
       <Layout title='Trainings | ProgressPath'>
-        {loading ? (
+        {loadingTrainings ? (
           <div className='flex justify-center items-center text-white text-2xl bg-[#635985] py-28 min-h-screen'>
             Loading...
           </div>
         ) : loggedInUser?.onboarding ? (
           <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
-            {trainings.map((training) =>
-              userEnrolledTracks
-                .map((track) => track.id)
-                .includes(training.id) ? (
-                <Link key={training.id} href={training.slug}>
-                  {renderTrainingCard(training)}
-                </Link>
-              ) : (
-                renderTrainingCard(training)
-              )
-            )}
+            {trainings.map((training) => (
+              <Link key={training.id} href={training.slug}>
+                {renderTrainingCard(training)}
+              </Link>
+            ))}
           </div>
         ) : (
           <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
