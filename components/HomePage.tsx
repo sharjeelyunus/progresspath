@@ -13,7 +13,7 @@ const HomePage = () => {
           <span className='text-[#18122B] underline'>ProgressPath</span>👋
         </h1>
         <div className='flex flex-col justify-center items-center mt-5'>
-          <p className='text-white text-lg text-center'>
+          <p className='text-white text-lg text-center px-0 lg:px-60'>
             ProgressPath is a comprehensive training platform designed to help
             individuals build new skills and advance their careers. The platform
             is structured as a daily path, with each day unlocking new tasks,
@@ -34,19 +34,6 @@ const HomePage = () => {
                 Login with Google
               </p>
             </button>
-          </div>
-          <div className='mt-5'>
-            <span className='text-[#18122B] text-2xl font-bold underline'>
-              Instructions
-            </span>
-            <ul className='list-disc list-inside text-white text-lg'>
-              <li>
-                Sign in with same email you applied for Bytewise fellowship
-              </li>
-              <li>Enroll in a track</li>
-              <li>Complete tasks</li>
-              <li>Check leaderboard to track your progress</li>
-            </ul>
           </div>
         </div>
       </div>

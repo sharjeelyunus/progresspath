@@ -5,8 +5,10 @@ import Layout from '../components/Layout';
 import TaskDetails from '../components/TaskDetails';
 import { useAuth } from '../context/AuthContext';
 import useGetAllTasks from '../hooks/useGetTasks';
+import AddTask from '../components/Dashboard/AddTask';
 
 const Training = () => {
+  const { loggedInUser } = useAuth();
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
@@ -26,6 +28,7 @@ const Training = () => {
     taskName: task.taskName,
     details: task.details,
     trackId: task.trackId,
+    day: task.day,
   }));
 
   if (loading) {
@@ -39,6 +42,8 @@ const Training = () => {
       </Layout>
     );
   }
+
+  const lastTaskDay = tasks[tasks.length - 1]?.day;
 
   return (
     <Layout title='React & Nextjs | ProgressPath'>
@@ -60,6 +65,7 @@ const Training = () => {
               />
             </Collapsible>
           ))}
+          <AddTask trackId={data[0]?.trackId} lastTaskDay={lastTaskDay} />
         </div>
       </div>
     </Layout>
