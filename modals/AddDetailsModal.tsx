@@ -1,18 +1,26 @@
 import { addDoc, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-  lastTaskDay: number;
+  lastTaskIndex: number;
   trackId: string;
+  taskId: string;
 };
 
-function AddTaskModal({ isOpen, setIsOpen, lastTaskDay, trackId }: Props) {
-  const [taskDay, setTaskDay] = useState<number>(lastTaskDay + 1);
-  const [taskName, setTaskName] = useState<string>('');
+const AddDetailsModal = ({
+  isOpen,
+  lastTaskIndex,
+  setIsOpen,
+  trackId,
+  taskId,
+}: Props) => {
+  const [taskDay, setTaskDay] = useState<number>(lastTaskIndex + 1);
+  const [taskTitle, setTaskTitle] = useState<string>('');
   const [taskType, setTaskType] = useState<string>('');
+  const [taskLink, setTaskLink] = useState<string>('');
 
   const handleOnClose = (e: any) => {
     if (e.target.id === 'container') {
@@ -23,11 +31,15 @@ function AddTaskModal({ isOpen, setIsOpen, lastTaskDay, trackId }: Props) {
   if (!isOpen) return null;
 
   const handleAddTask = async () => {
-    await addDoc(collection(db, 'trainings', trackId, 'tasks'), {
-      day: taskDay,
-      taskName: taskName,
-      taskType: taskType,
-    });
+    await addDoc(
+      collection(db, 'trainings', trackId, 'tasks', taskId, 'details'),
+      {
+        index: taskDay,
+        title: taskTitle,
+        type: taskType,
+        link: taskLink,
+      }
+    );
     setIsOpen(false);
   };
 
@@ -41,29 +53,38 @@ function AddTaskModal({ isOpen, setIsOpen, lastTaskDay, trackId }: Props) {
         <div className='flex flex-col w-[350px] lg:w-[500px] justify-center items-center py-6 lg:px-8 px-4'>
           <div className='w-full'>
             <div>
-              <h2 className='text-white font-bold text-lg'>Add new task!</h2>
+              <h2 className='text-white font-bold text-lg'>
+                Add task resources!
+              </h2>
             </div>
             <div className='mt-2'>
               <div className='py-3'>
                 <input
                   type='number'
-                  placeholder='Day'
+                  placeholder='Index'
                   value={taskDay}
                   onChange={(e) => setTaskDay(e.target.valueAsNumber)}
                   className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
                 <input
                   type='text'
-                  placeholder='Task Name'
-                  value={taskName}
-                  onChange={(e) => setTaskName(e.target.value)}
+                  placeholder='Title'
+                  value={taskTitle}
+                  onChange={(e) => setTaskTitle(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
                 <input
                   type='text'
-                  placeholder='Task Type'
+                  placeholder='Type'
                   value={taskType}
                   onChange={(e) => setTaskType(e.target.value)}
+                  className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
+                />
+                <input
+                  type='text'
+                  placeholder='Link'
+                  value={taskLink}
+                  onChange={(e) => setTaskLink(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
               </div>
@@ -81,6 +102,6 @@ function AddTaskModal({ isOpen, setIsOpen, lastTaskDay, trackId }: Props) {
       </div>
     </div>
   );
-}
+};
 
-export default AddTaskModal;
+export default AddDetailsModal;

@@ -6,6 +6,8 @@ import { MdVideoLibrary } from 'react-icons/md';
 import { SiReadthedocs } from 'react-icons/si';
 import { RiArticleFill } from 'react-icons/ri';
 import { MdOutlineComputer } from 'react-icons/md';
+import { useAuth } from '../context/AuthContext';
+import AddDetailsModal from '../modals/AddDetailsModal';
 
 type Props = {
   details: Array<Details>;
@@ -14,8 +16,12 @@ type Props = {
 };
 
 const TaskDetails = ({ taskId, trackId, details }: Props) => {
+  const { loggedInUser } = useAuth();
+
   const [openCompleteTaskModal, setOpenCompleteTaskModal] = useState(false);
   const [markDone, setMarkDone] = useState(false);
+  const [isMentor, setIsMentor] = useState(false);
+  const [addTaskDetails, setAddTaskDetails] = useState(false);
 
   const completedTasks = useGetCompletedTasks(trackId);
 
@@ -26,6 +32,20 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
       }
     });
   }, [completedTasks]);
+
+  useEffect(() => {
+    if (
+      loggedInUser?.mentorTracks?.length > 0 &&
+      loggedInUser?.mentorTracks.includes(trackId)
+    ) {
+      setIsMentor(true);
+    } else {
+      setIsMentor(false);
+    }
+  }, [loggedInUser]);
+
+  const lastTask = details?.length - 1;
+  const lastTaskIndex = details[lastTask]?.index;
 
   return (
     <>
@@ -63,6 +83,16 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
               ))}
             </div>
           </div>
+          {isMentor && (
+            <div className='flex justify-center'>
+              <button
+                className='bg-[#443C68] px-5 py-2 rounded-lg text-sm'
+                onClick={() => setAddTaskDetails(true)}
+              >
+                Add Details
+              </button>
+            </div>
+          )}
           <div className='flex justify-end'>
             <button
               className='bg-green-700 px-5 py-2 rounded-lg text-sm'
@@ -82,6 +112,16 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
           setMarkDone={setMarkDone}
           isOpen={openCompleteTaskModal}
           setIsOpen={setOpenCompleteTaskModal}
+        />
+      )}
+
+      {addTaskDetails && (
+        <AddDetailsModal
+          setIsOpen={setAddTaskDetails}
+          isOpen={addTaskDetails}
+          lastTaskIndex={lastTaskIndex}
+          taskId={taskId}
+          trackId={trackId}
         />
       )}
     </>

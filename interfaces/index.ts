@@ -5,6 +5,7 @@ export interface Details {
   title: string;
   link: string;
   type: string;
+  index: number;
 }
 
 export interface UserType {
