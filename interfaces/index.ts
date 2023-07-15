@@ -25,6 +25,7 @@ export interface UserType {
     creationTime: string;
     lastSignInTime: string;
   };
+  mentorTracks?: string[];
 }
 
 export interface TrainingsInterface {
@@ -73,7 +74,7 @@ export interface CompletedTasks {
   review?: {
     reviewer: string;
     text: string;
-  }
+  };
 }
 
 export interface LeaderboardEntry {
