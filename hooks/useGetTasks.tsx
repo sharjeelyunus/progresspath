@@ -9,12 +9,18 @@ import { useEffect, useState } from 'react';
 import { TaskDetailsInterface, TaskInterface } from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
 import { db } from '../config/firebase';
+import { getCache, setCache } from '../utils/cache';
 
-export default function useGetAllTasks(slug: string, setLoading): Array<TaskInterface> {
+export default function useGetAllTasks(
+  slug: string,
+  setLoading
+): Array<TaskInterface> {
   const [tasks, setTasks] = useState<Array<TaskInterface>>([]);
   const targetTraining = useGetTargetTraining(slug);
 
-  useEffect(() => {
+  const cacheKey = `tasks-${slug}`;
+
+  const fetchTasks = async () => {
     if (targetTraining && targetTraining.id) {
       const trainingsRef = collection(
         db,
@@ -42,11 +48,21 @@ export default function useGetAllTasks(slug: string, setLoading): Array<TaskInte
           })
         ).then(() => {
           setTasks(allTasksData);
+          setCache(cacheKey, allTasksData);
           setLoading(false);
         });
       });
 
       return () => unsub();
+    }
+  };
+
+  useEffect(() => {
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+      setTasks(cachedData as Array<TaskInterface>);
+    } else {
+      fetchTasks();
     }
   }, [targetTraining]);
 
