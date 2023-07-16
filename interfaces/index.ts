@@ -82,6 +82,7 @@ export interface LeaderboardEntry {
   author: UserType;
   points: number;
   completedTasks: CompletedTasks[];
+  rank?: number;
 }
 
 export interface UserTasks {

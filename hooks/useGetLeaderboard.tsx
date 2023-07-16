@@ -1,54 +1,33 @@
 import { useEffect, useState } from 'react';
 import { LeaderboardEntry } from '../interfaces';
-// import { getCache, setCache } from '../utils/cache';
+import { getCache, setCache } from '../utils/cache';
 
-export default function useGetLeaderboardData(
-  initialPage: number = 1,
-  itemsPerPage: number = 10
-): [LeaderboardEntry[]] {
+export default function useGetLeaderboardData(): [LeaderboardEntry[]] {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
     []
   );
-  // const [paginationData, setPaginationData] = useState<PaginationData>({
-  //   currentPage: initialPage,
-  //   itemsPerPage,
-  // });
+
+  const cacheKey = 'leaderboardData';
 
   const fetchLeaderboardData = async () => {
     try {
       const response = await fetch(`/api/leaderboard`);
       const data = await response.json();
       setLeaderboardData(data.leaderboard);
-      // setCache('leaderboardData', data.leaderboard); // cache the fetched data
+      setCache(cacheKey, data.leaderboard);
     } catch (error) {
       throw new Error('Failed to fetch leaderboard data');
     }
   };
 
-  // const changePage = (pageNumber: number) => {
-  //   setPaginationData((prevPaginationData) => ({
-  //     ...prevPaginationData,
-  //     currentPage: pageNumber,
-  //   }));
-  // };
-
   useEffect(() => {
-    // const cachedData = getCache<LeaderboardEntry[]>('leaderboardData'); // check if there is cached data
-    // if (cachedData) {
-    //   setLeaderboardData(cachedData); // set the cached data if available
-    // } else {
-    fetchLeaderboardData().catch((error) => console.error(error.message)); // fetch data if there is no cached data
-    // }
+    const cachedData = getCache(cacheKey);
+    if (cachedData) {
+      setLeaderboardData(cachedData as LeaderboardEntry[]);
+    } else {
+      fetchLeaderboardData().catch((error) => console.error(error.message));
+    }
   }, []);
 
-  // Calculate the start and end index of the items to display based on the current page and items per page
-  // const startIndex =
-  //   (paginationData.currentPage - 1) * paginationData.itemsPerPage;
-  // const endIndex = startIndex + paginationData.itemsPerPage;
-
-  return [
-    leaderboardData,
-    // paginationData,
-    // changePage,
-  ];
+  return [leaderboardData];
 }

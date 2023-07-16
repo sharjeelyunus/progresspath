@@ -11,21 +11,11 @@ import {
 } from '../../interfaces';
 import { setCache } from '../../utils/cache';
 
-interface QueryParams {
-  page: number;
-  limit: number;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const queryParams = req.query as QueryParams;
-    // const page = Number(queryParams.page || 1);
-    // const limit = Number(queryParams.limit || 10);
-    // const offset = (page - 1) * limit;
-
     const q = collectionGroup(db, 'completedTasks');
     const querySnapshot = await getDocs(q);
     const completedTasks: CompletedTasks[] = [];
@@ -38,12 +28,9 @@ export default async function handler(
       req
     );
 
-    // const paginatedLeaderboard = leaderboard.slice(offset, offset + limit);
     res.status(200).json({
       leaderboard: leaderboard,
       totalCount: leaderboard.length,
-      // page,
-      // totalPages: Math.ceil(leaderboard.length / limit),
     });
   } catch (error) {
     console.error(error);
@@ -76,8 +63,7 @@ async function usersWithCompletedTasks(
 }
 
 async function mergeTasksByUser(
-  tasks: CompletedTasks[],
-  req: NextApiRequest
+  tasks: CompletedTasks[]
 ): Promise<LeaderboardEntry[]> {
   const userTasks = await usersWithCompletedTasks(tasks);
 
@@ -100,15 +86,12 @@ async function mergeTasksByUser(
         }
       }
     }
-    const authorRef = doc(db, 'users', userTask.authorId);
-    const authorSnapshot = await getDoc(authorRef);
-    const authorData = authorSnapshot.data() as UserType;
+
     leaderboard.push({
       points,
       completedTasks: userTask.tasks,
       author: {
         uid: userTask.authorId,
-        ...authorData,
       },
     });
   }
@@ -125,15 +108,36 @@ async function mergeTasksByUser(
     return b.points - a.points;
   });
 
-  setCache('leaderboardData', leaderboard);
+  const top10 = leaderboard.slice(0, 10);
+  const top10AuthorIds = top10.map((entry) => entry.author.uid);
+  const top10AuthorDocs = await Promise.all(
+    top10AuthorIds.map((id) => getDoc(doc(db, 'users', id)))
+  );
+  const top10Authors = top10AuthorDocs.map((doc) => {
+    const data = doc.data();
+    return {
+      ...data,
+    } as UserType;
+  });
 
-  // const page = req.query.page ? parseInt(req.query.page as string) : 1;
-  // const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-  // const startIndex = (page - 1) * limit;
-  // const endIndex = page * limit;
-  // const paginatedLeaderboard = leaderboard.slice(startIndex, endIndex);
+  top10.forEach((entry) => {
+    const author = top10Authors.find(
+      (author) => author.uid === entry.author.uid
+    );
+    if (author) {
+      entry.author = author;
+    }
+  });
 
-  return leaderboard;
+  const top10WithRank = top10.map((entry, index) => {
+    return {
+      ...entry,
+      rank: index + 1,
+    };
+  });
+
+  setCache('leaderboardData', top10WithRank);
+  return top10;
 }
 
 function isValidUrl(url: string): boolean {
