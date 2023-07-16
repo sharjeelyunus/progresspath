@@ -8,7 +8,6 @@ import useGetAllTasks from '../hooks/useGetTasks';
 import AddTask from '../components/Dashboard/AddTask';
 
 const Training = () => {
-  const { loggedInUser } = useAuth();
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
