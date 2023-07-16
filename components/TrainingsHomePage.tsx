@@ -7,6 +7,14 @@ import EnrollModal from '../modals/EnrollModal';
 import OnboardingModal from '../modals/OnboardingModal';
 import Layout from './Layout';
 import { Toaster } from 'react-hot-toast';
+import {
+  collection,
+  collectionGroup,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 const TrainingsHomePage = () => {
   const { loggedInUser } = useAuth();
@@ -16,6 +24,7 @@ const TrainingsHomePage = () => {
   const [openEnrollModal, setOpenEnrollModal] = useState(false);
   const [openOnboardingModal, setOpenOnboardingModal] = useState(false);
   const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
+  const [enrolledUserCounts, setEnrolledUserCounts] = useState({});
 
   useEffect(() => {
     setLoadingTrainings(true);
@@ -25,15 +34,42 @@ const TrainingsHomePage = () => {
     setLoadingTrainings(false);
   }, [loggedInUser, openOnboardingModal]);
 
+  useEffect(() => {
+    const fetchEnrolledUserCounts = async () => {
+      const counts = {};
+      const enrolledTrackIds: string[] = Array.from(
+        userEnrolledTracks,
+        (track) => track.id
+      );
+      for (const trackId of enrolledTrackIds) {
+        const count = await getEnrolledUserCount(trackId);
+        counts[trackId] = count;
+      }
+      setEnrolledUserCounts(counts);
+    };
+
+    fetchEnrolledUserCounts();
+  }, [enrolledTrackIds]);
+
+  const getEnrolledUserCount = async (trackId) => {
+    const q = collectionGroup(db, 'enrolledTracks');
+    const querySnapshot = await getDocs(q);
+    const enrolledUserCount = querySnapshot.docs.filter(
+      (doc) => doc.data().trackId === trackId
+    ).length;
+    return enrolledUserCount;
+  };
+
   const renderTrainingCard = (training) => {
     const isEnrolled = enrolledTrackIds.has(training.id);
+    const enrolledUserCount = enrolledUserCounts[training.id];
 
     return (
-      <div key={training.id}>
-        <button
-          onClick={() => setOpenEnrollModal(true)}
-          className='bg-[#393053] min-w-[300px] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
-        >
+      <div
+        key={training.id}
+        className='bg-[#393053] min-w-[300px] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
+      >
+        <button onClick={() => setOpenEnrollModal(true)} className='w-full justify-center items-center'>
           <h1 className='text-2xl font-bold text-white'>{training.name}</h1>
           <div className='flex items-center mt-4'>
             <img
@@ -46,6 +82,9 @@ const TrainingsHomePage = () => {
               alt={training.leadName}
             />
             <p className='text-white'>{training.leadName}</p>
+          </div>
+          <div className='flex justify-end mt-5'>
+            <p className='text-white'>{enrolledUserCount} Enrolled</p>
           </div>
         </button>
         {openEnrollModal && isEnrolled && (
