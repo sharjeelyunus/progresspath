@@ -1,24 +1,17 @@
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import useGetAllTrainings from '../hooks/useGetTrainings';
-import useGetUserTracks from '../hooks/useGetUserTracks';
-import EnrollModal from '../modals/EnrollModal';
 import OnboardingModal from '../modals/OnboardingModal';
 import Layout from './Layout';
 import { Toaster } from 'react-hot-toast';
-import useEnrolledUserCounts from '../hooks/useEnrolledUserCounts';
+import TrainingCard from './TrainingCard';
 
 const TrainingsHomePage = () => {
   const { loggedInUser } = useAuth();
   const trainings = useGetAllTrainings();
-  const userEnrolledTracks = useGetUserTracks();
-  const enrolledUserCounts = useEnrolledUserCounts(userEnrolledTracks);
 
   const [loadingTrainings, setLoadingTrainings] = useState(true);
-  const [openEnrollModal, setOpenEnrollModal] = useState(false);
   const [openOnboardingModal, setOpenOnboardingModal] = useState(false);
-  const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
 
   useEffect(() => {
     setLoadingTrainings(true);
@@ -27,48 +20,6 @@ const TrainingsHomePage = () => {
     }
     setLoadingTrainings(false);
   }, [loggedInUser, openOnboardingModal]);
-
-  const renderTrainingCard = (training) => {
-    const isEnrolled = enrolledTrackIds.has(training.id);
-    const enrolledUserCount = enrolledUserCounts[training.id];
-
-    return (
-      <div
-        key={training.id}
-        className='bg-[#393053] min-w-[300px] flex flex-col items-center justify-center px-10 h-[200px] rounded-2xl'
-      >
-        <button
-          onClick={() => setOpenEnrollModal(true)}
-          className='w-full justify-center items-center'
-        >
-          <h1 className='text-2xl font-bold text-white'>{training.name}</h1>
-          <div className='flex items-center mt-4'>
-            <img
-              className='h-8 w-8 rounded-full mr-2'
-              src={
-                training.leadImage
-                  ? training.leadImage
-                  : '/blank-profile-picture.svg'
-              }
-              alt={training.leadName}
-            />
-            <p className='text-white'>{training.leadName}</p>
-          </div>
-          <div className='flex justify-end mt-5'>
-            <p className='text-white'>{enrolledUserCount} Enrolled</p>
-          </div>
-        </button>
-        {openEnrollModal && isEnrolled && (
-          <EnrollModal
-            isOpen={openEnrollModal}
-            trackSlug={training.slug}
-            trackId={training.id}
-            setIsOpen={setOpenEnrollModal}
-          />
-        )}
-      </div>
-    );
-  };
 
   return (
     <>
@@ -81,9 +32,7 @@ const TrainingsHomePage = () => {
         ) : loggedInUser?.onboarding ? (
           <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
             {trainings.map((training) => (
-              <Link key={training.id} href={training.slug}>
-                {renderTrainingCard(training)}
-              </Link>
+              <TrainingCard key={training.id} training={training} />
             ))}
           </div>
         ) : (
