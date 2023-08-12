@@ -36,7 +36,8 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
     }
   }, [loggedInUser]);
 
-  const updateUser = async () => {
+  const updateUser = async (e: any) => {
+    e?.preventDefault();
     const userRef = doc(db, 'users', loggedInUser?.uid);
     await setDoc(
       userRef,
@@ -85,7 +86,7 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
     }
 
     // update user
-    await updateUser();
+    await updateUser(e);
     setIsOpen(false);
   };
 
@@ -110,7 +111,10 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
             </h2>
           </div>
           <div>
-            <div className='flex flex-col gap-3 mt-5'>
+            <form
+              onSubmit={(e) => handleOnboarding(e)}
+              className='flex flex-col gap-3 mt-5'
+            >
               <div>
                 <img
                   src={loggedInUser?.photoURL}
@@ -153,11 +157,12 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
                 className='border px-4 py-2 bg-[#443C68] text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-[300px] sm:text-sm'
                 onChange={(e) => setLocation(e.target.value)}
               />
-            </div>
+            </form>
             <div className='mt-10 flex justify-end w-full'>
               <button
                 className='rounded-full text-white bg-[#393053] py-1 w-[100px]'
-                onClick={handleOnboarding}
+                type='submit'
+                onClick={(e) => handleOnboarding(e)}
               >
                 Submit
               </button>
