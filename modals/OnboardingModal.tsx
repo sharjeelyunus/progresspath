@@ -42,8 +42,15 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
     await setDoc(
       userRef,
       {
+        uid: loggedInUser?.uid,
         name: name,
         username: username,
+        email: loggedInUser?.email,
+        photoURL: loggedInUser?.photoURL,
+        metadata: {
+          lastSignInTime: loggedInUser?.metadata.lastSignInTime,
+          creationTime: loggedInUser?.metadata.creationTime,
+        },
         bio: bio,
         organization: organization,
         location: location,
