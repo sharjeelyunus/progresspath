@@ -8,7 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -20,11 +20,21 @@ type Props = {
 
 const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
   const { loggedInUser } = useAuth();
-  const [name, setName] = useState(loggedInUser?.name);
-  const [username, setUsername] = useState<string>(loggedInUser?.username);
-  const [bio, setBio] = useState(loggedInUser?.bio);
-  const [organization, setOrganization] = useState(loggedInUser?.organization);
-  const [location, setLocation] = useState(loggedInUser?.location);
+  const [name, setName] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
+  const [bio, setBio] = useState<string>('');
+  const [organization, setOrganization] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
+
+  useEffect(() => {
+    if (loggedInUser) {
+      setName(loggedInUser.name);
+      setUsername(loggedInUser.username);
+      setBio(loggedInUser.bio);
+      setOrganization(loggedInUser.organization);
+      setLocation(loggedInUser.location);
+    }
+  }, [loggedInUser]);
 
   const updateUser = async () => {
     const userRef = doc(db, 'users', loggedInUser?.uid);
@@ -42,7 +52,8 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
     );
   };
 
-  const handleOnboarding = async () => {
+  const handleOnboarding = async (e: any) => {
+    e?.preventDefault();
     // check empty values
     if (!name || !username || !bio || !location || !organization) {
       toast.error('Please fill all the fields');
@@ -67,7 +78,7 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
       );
       const querySnapshot = await getDocs(q);
 
-      if (querySnapshot.size > 0) {
+      if (querySnapshot.size > 0 && loggedInUser?.username !== username) {
         toast.error('Username already exists');
         return;
       }

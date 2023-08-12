@@ -1,8 +1,7 @@
-// index.tsx
-import HomePage from '../components/HomePage';
 import { useAuth } from '../context/AuthContext';
 import TrainingsHomePage from '../components/TrainingsHomePage';
 import { useEffect, useState } from 'react';
+import HomePage from './HomePage';
 
 const LandingPage = () => {
   const { loading, loggedInUser } = useAuth();
