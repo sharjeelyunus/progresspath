@@ -7,7 +7,6 @@ import { useGetUserCompletedTasks } from '../hooks/useGetUserCompletedTasks';
 import { useAuth } from '../context/AuthContext';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import useGetUserReviews from '../hooks/useGetUserReviews';
 import GenerateCertificateModal from '../modals/GenerateCertificateModal';
 
 type Props = {
@@ -21,7 +20,6 @@ const TrainingCard = ({ training }: Props) => {
   const [openReviewModal, setOpenReviewModal] = useState(false);
   const [totalTasks, setTotalTasks] = useState(0);
   const enrolledUserCounts = useEnrolledUserCounts();
-  const reviewed = useGetUserReviews(training.id);
   const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
   const isEnrolled = enrolledTrackIds.has(training.id);
   const enrolledUserCount = enrolledUserCounts[training.id];

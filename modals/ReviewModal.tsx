@@ -53,6 +53,7 @@ const ReviewModal = ({
       ...data,
     });
     setFeedbackSubmitted(true);
+    toast.success('Feedback submitted successfully');
   };
 
   const handleOnSubmit = async (e: any) => {
@@ -69,7 +70,6 @@ const ReviewModal = ({
     } else {
       // submit feedback
       await submitFeedback();
-      toast.success('Feedback submitted successfully');
     }
   };
 
