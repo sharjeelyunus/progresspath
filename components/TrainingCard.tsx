@@ -7,7 +7,8 @@ import { useGetUserCompletedTasks } from '../hooks/useGetUserCompletedTasks';
 import { useAuth } from '../context/AuthContext';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import ReviewModal from '../modals/ReviewModal';
+import useGetUserReviews from '../hooks/useGetUserReviews';
+import GenerateCertificateModal from '../modals/GenerateCertificateModal';
 
 type Props = {
   training: any;
@@ -20,6 +21,7 @@ const TrainingCard = ({ training }: Props) => {
   const [openReviewModal, setOpenReviewModal] = useState(false);
   const [totalTasks, setTotalTasks] = useState(0);
   const enrolledUserCounts = useEnrolledUserCounts();
+  const reviewed = useGetUserReviews(training.id);
   const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
   const isEnrolled = enrolledTrackIds.has(training.id);
   const enrolledUserCount = enrolledUserCounts[training.id];
@@ -76,7 +78,7 @@ const TrainingCard = ({ training }: Props) => {
               ></div>
             </div>
           </Link>
-          {progressPercentage > 75 && (
+          {progressPercentage > -1 && (
             <button
               className='text-amber-400 py-5 bg-gray-800 rounded-b-2xl'
               onClick={() => setOpenReviewModal(true)}
@@ -86,9 +88,10 @@ const TrainingCard = ({ training }: Props) => {
           )}
         </div>
         {openReviewModal && (
-          <ReviewModal
+          <GenerateCertificateModal
             isOpen={openReviewModal}
             setIsOpen={setOpenReviewModal}
+            trackId={training.id}
           />
         )}
       </>
