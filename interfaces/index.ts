@@ -109,3 +109,17 @@ export interface TargetUser {
   };
   tracks?: UserTracks[];
 }
+
+export interface Review {
+  TrackExperence: {
+    rating: string;
+    feedback: string;
+  };
+  PlatformExperience: {
+    rating: string;
+    feedback: string;
+  };
+  userId: string;
+  trackId: string;
+  timestamp: Timestamp;
+}

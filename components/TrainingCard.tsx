@@ -7,6 +7,7 @@ import { useGetUserCompletedTasks } from '../hooks/useGetUserCompletedTasks';
 import { useAuth } from '../context/AuthContext';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import GenerateCertificateModal from '../modals/GenerateCertificateModal';
 
 type Props = {
   training: any;
@@ -16,6 +17,7 @@ const TrainingCard = ({ training }: Props) => {
   const { loggedInUser } = useAuth();
   const userEnrolledTracks = useGetUserTracks();
   const [openEnrollModal, setOpenEnrollModal] = useState(false);
+  const [openReviewModal, setOpenReviewModal] = useState(false);
   const [totalTasks, setTotalTasks] = useState(0);
   const enrolledUserCounts = useEnrolledUserCounts();
   const enrolledTrackIds = new Set(userEnrolledTracks.map((track) => track.id));
@@ -41,41 +43,59 @@ const TrainingCard = ({ training }: Props) => {
   const calculateProgress = () => {
     const completedTasks = userTrackDetails?.completedTasksByUser;
     const progress = (completedTasks?.length / totalTasks) * 100;
-    return progress.toFixed(2);
+    return progress.toFixed(0) as unknown as number;
   };
 
   const progressPercentage = calculateProgress();
 
   if (isEnrolled) {
     return (
-      <Link
-        key={training.id}
-        href={training.slug}
-        className='bg-[#393053] min-w-[300px] flex flex-col justify-center px-10 h-[200px] rounded-2xl'
-      >
-        <h1 className='text-2xl font-bold text-white'>{training.name}</h1>
-        <div className='flex items-center mt-4'>
-          <img
-            className='h-8 w-8 rounded-full mr-2'
-            src={
-              training.leadImage
-                ? training.leadImage
-                : '/blank-profile-picture.svg'
-            }
-            alt={training.leadName}
+      <>
+        <div className='bg-[#393053] min-w-[300px] flex flex-col justify-center h-full rounded-2xl'>
+          <Link key={training.id} href={training.slug} className='p-10'>
+            <h1 className='text-2xl font-bold text-white'>{training.name}</h1>
+            <div className='flex items-center mt-4'>
+              <img
+                className='h-8 w-8 rounded-full mr-2'
+                src={
+                  training.leadImage
+                    ? training.leadImage
+                    : '/blank-profile-picture.svg'
+                }
+                alt={training.leadName}
+              />
+              <p className='text-white'>{training.leadName}</p>
+            </div>
+            <div className='flex mt-5 w-full justify-end'>
+              <p className='text-white'>{enrolledUserCount} Enrolled</p>
+            </div>
+            <div className='flex w-full items-center text-white mt-5 gap-3'>
+              <div className='h-[10px] w-full bg-slate-300 rounded-full'>
+                <div
+                  className='bg-blue-500 h-[10px] rounded-full'
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+              <div>{progressPercentage}%</div>
+            </div>
+          </Link>
+          {progressPercentage > 80 && (
+            <button
+              className='text-amber-400 py-5 bg-gray-800 rounded-b-2xl'
+              onClick={() => setOpenReviewModal(true)}
+            >
+              Generate Certificate
+            </button>
+          )}
+        </div>
+        {openReviewModal && (
+          <GenerateCertificateModal
+            isOpen={openReviewModal}
+            setIsOpen={setOpenReviewModal}
+            trackId={training.id}
           />
-          <p className='text-white'>{training.leadName}</p>
-        </div>
-        <div className='flex justify-end mt-5 w-full'>
-          <p className='text-white'>{enrolledUserCount} Enrolled</p>
-        </div>
-        <div className='h-[10px] bg-slate-300 rounded-full mt-5'>
-          <div
-            className='bg-blue-500 h-[10px] rounded-full'
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
-        </div>
-      </Link>
+        )}
+      </>
     );
   }
 

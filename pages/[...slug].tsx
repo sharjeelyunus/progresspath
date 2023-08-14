@@ -32,7 +32,7 @@ const Training = () => {
 
   if (loading) {
     return (
-      <Layout title='React & Nextjs | ProgressPath'>
+      <Layout title='Loading... | ProgressPath'>
         <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
           <div className='flex flex-col'>
             <h1>Loading...</h1>
