@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
 import ReviewModal from './ReviewModal';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
@@ -14,6 +14,7 @@ type Props = {
 const GenerateCertificateModal = ({ isOpen, setIsOpen, trackId }: Props) => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const { loggedInUser } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const checkFeedback = async () => {
@@ -32,10 +33,15 @@ const GenerateCertificateModal = ({ isOpen, setIsOpen, trackId }: Props) => {
     checkFeedback();
   }, []);
 
-  const handleOnClose = (e: any) => {
-    if (e.target.id === 'container') {
-      setIsOpen(false);
-    }
+  const navigateToCertificatePage = () => {
+    // Navigate to certificate generation page with userId and trackId as query parameters
+    router.push({
+      pathname: '/certificate/generate',
+      query: {
+        userId: loggedInUser.uid,
+        trackId: trackId,
+      },
+    });
   };
 
   if (!isOpen) return null;
@@ -49,21 +55,11 @@ const GenerateCertificateModal = ({ isOpen, setIsOpen, trackId }: Props) => {
         setFeedbackSubmitted={setFeedbackSubmitted}
       />
     );
+  } else {
+    // If feedback has been submitted, navigate to the certificate generation page
+    navigateToCertificatePage();
+    return null;
   }
-
-  return (
-    <div
-      onClick={handleOnClose}
-      id='container'
-      className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50'
-    >
-      <div className='bg-[#443C68] mt-[-71px] overflow-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
-        <div className='flex flex-col w-[350px] lg:w-[900px] h-[calc(100vh-250px)] items-center py-6 lg:px-20 px-4'>
-          {/* Show user certificate here */}
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default GenerateCertificateModal;

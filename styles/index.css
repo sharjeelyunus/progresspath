@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'BestermindRegular';
+  src: url('/fonts/BestermindRegular.ttf');
+}
+
 :root {
   --primary: #393053;
-  --secondary: #6554AF;
+  --secondary: #6554af;
 }
 
 /* Firefox */

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
 
 type Props = {
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
@@ -24,6 +25,7 @@ const ReviewModal = ({
   const [trackFeedback, setTrackFeedback] = useState('');
   const [platformExperience, setPlatformExperience] = useState('5');
   const [platformFeedback, setPlatformFeedback] = useState('');
+  const router = useRouter();
 
   const handleOnClose = (e: any) => {
     if (e.target.id === 'container') {
@@ -32,6 +34,16 @@ const ReviewModal = ({
   };
 
   if (!isOpen) return null;
+
+  const navigateToCertificatePage = () => {
+    router.push({
+      pathname: '/certificate/generate',
+      query: {
+        userId: loggedInUser.uid,
+        trackId: trackId,
+      },
+    });
+  };
 
   const submitFeedback = async () => {
     const data = {
@@ -54,6 +66,8 @@ const ReviewModal = ({
     });
     setFeedbackSubmitted(true);
     toast.success('Feedback submitted successfully');
+    setIsOpen(false);
+    navigateToCertificatePage();
   };
 
   const handleOnSubmit = async (e: any) => {
