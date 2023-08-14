@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore';
 import { CompletedTasks, TrainingsInterface, UserType } from '../../interfaces';
 import { db } from '../../config/firebase';
+import { setMemoryCache as setCache } from '../../utils/cache';
 
 export default async function handler(req, res) {
   const { trackId, userId } = req.query;
@@ -63,12 +64,16 @@ const getUserTrackDetails = async (
     }
   }
 
+  const cacheKey = `${trackId}-${userId}`;
+
   const allTrainingsData: TrainingsInterface = {
     ...userTrackDetails,
     lead: await getAuthorDetails(userTrackDetails.author),
     completedTasksByUser: userCompletedTasks,
     userPoints,
   };
+
+  setCache(cacheKey, allTrainingsData);
 
   return allTrainingsData;
 };

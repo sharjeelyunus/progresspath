@@ -38,34 +38,28 @@ export default async function handler(
   }
 }
 
-async function usersWithCompletedTasks(
-  tasks: CompletedTasks[]
-): Promise<UserTasks[]> {
-  const UsersWithCompletedTasks: UserTasks[] = [];
-  tasks.forEach((task) => {
-    const authorId = task.authorId;
-    if (!authorId) {
-      return;
-    }
-    const existingUserTasks = UsersWithCompletedTasks.find(
-      (ut) => ut.authorId === authorId
-    );
-    if (existingUserTasks) {
-      existingUserTasks.tasks.push(task);
-    } else {
-      UsersWithCompletedTasks.push({
-        authorId: authorId,
-        tasks: [task],
-      });
-    }
-  });
-  return UsersWithCompletedTasks;
-}
-
 async function mergeTasksByUser(
   tasks: CompletedTasks[]
 ): Promise<LeaderboardEntry[]> {
-  const userTasks = await usersWithCompletedTasks(tasks);
+  const userTasksMap: Record<string, UserTasks> = {};
+
+  for (const task of tasks) {
+    const authorId = task.authorId;
+    if (!authorId) {
+      continue;
+    }
+
+    if (!userTasksMap[authorId]) {
+      userTasksMap[authorId] = {
+        authorId: authorId,
+        tasks: [task],
+      };
+    }
+
+    userTasksMap[authorId].tasks.push(task);
+  }
+
+  const userTasks = Object.values(userTasksMap);
 
   const leaderboard: LeaderboardEntry[] = [];
   for (const userTask of userTasks) {
@@ -136,7 +130,14 @@ async function mergeTasksByUser(
     };
   });
 
-  setCache('leaderboardData', top10WithRank);
+  const cachedLeaderboard = getCache('leaderboardData');
+  if (
+    !cachedLeaderboard ||
+    JSON.stringify(cachedLeaderboard) !== JSON.stringify(top10WithRank)
+  ) {
+    setCache('leaderboardData', top10WithRank);
+  }
+
   return top10;
 }
 
