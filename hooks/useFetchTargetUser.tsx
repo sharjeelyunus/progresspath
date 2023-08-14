@@ -2,6 +2,10 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { UserType } from '../interfaces';
+import {
+  getLocalStorageCache as getCache,
+  setLocalStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useFetchTargetUser(username: string): UserType {
   const [targetUserDetails, setTargetUserDetails] = useState<UserType>({
@@ -14,6 +18,14 @@ export default function useFetchTargetUser(username: string): UserType {
   });
 
   useEffect(() => {
+    const cacheKey = `user-${username}`;
+    const cachedData = getCache(cacheKey);
+
+    if (cachedData) {
+      setTargetUserDetails(cachedData as UserType);
+      return;
+    }
+
     const unsub = onSnapshot(
       query(collection(db, 'users'), where('username', '==', username || '')),
       (snapshot) => {
@@ -24,6 +36,7 @@ export default function useFetchTargetUser(username: string): UserType {
             ...userData,
             uid: snapshot.docs?.[0]?.id,
           }));
+          setCache(cacheKey, userData);
         }
       }
     );

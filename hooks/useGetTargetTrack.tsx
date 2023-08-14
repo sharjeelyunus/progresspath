@@ -2,6 +2,10 @@ import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { TrainingsInterface, UserType } from '../interfaces';
 import { db } from '../config/firebase';
+import {
+  getLocalStorageCache as getCache,
+  setLocalStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useGetTargetTrack(
   trackId: string
@@ -9,8 +13,18 @@ export default function useGetTargetTrack(
   const [targetTrainingDetails, setTargetTrainingDetails] =
     useState<TrainingsInterface>();
 
+  const cacheKey = `ProgressPath-track-${trackId}`;
+
   useEffect(() => {
     if (!trackId) {
+      return;
+    }
+
+    // Check if there is cached data and return it
+    const cachedData = getCache(cacheKey);
+
+    if (cachedData) {
+      setTargetTrainingDetails(cachedData as TrainingsInterface);
       return;
     }
 
@@ -34,6 +48,7 @@ export default function useGetTargetTrack(
       };
 
       setTargetTrainingDetails(trainingData);
+      setCache(cacheKey, trainingData);
     });
 
     return () => unsubscribe();

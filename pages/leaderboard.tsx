@@ -5,7 +5,6 @@ import useGetLeaderboardData from '../hooks/useGetLeaderboard';
 
 const Leaderboard = () => {
   const [leaderboardData] = useGetLeaderboardData();
-  console.log(leaderboardData)
 
   const [loading, setLoading] = useState(true);
 
