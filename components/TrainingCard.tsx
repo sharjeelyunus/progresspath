@@ -14,7 +14,7 @@ type Props = {
 };
 
 const TrainingCard = ({ training }: Props) => {
-  const { loggedInUser } = useAuth();
+  const { user } = useAuth();
   const userEnrolledTracks = useGetUserTracks();
   const [openEnrollModal, setOpenEnrollModal] = useState(false);
   const [openReviewModal, setOpenReviewModal] = useState(false);
@@ -35,10 +35,7 @@ const TrainingCard = ({ training }: Props) => {
     fetchTotalTasks();
   }, []);
 
-  const userTrackDetails = useGetUserCompletedTasks(
-    training.id,
-    loggedInUser.uid
-  );
+  const userTrackDetails = useGetUserCompletedTasks(training.id, user.uid);
 
   const calculateProgress = () => {
     const completedTasks = userTrackDetails?.completedTasksByUser;
@@ -53,11 +50,11 @@ const TrainingCard = ({ training }: Props) => {
       <>
         <div className='bg-gray-800 min-w-[300px] flex flex-col justify-center h-full rounded-2xl border-2 border-[#272829]'>
           <Link key={training.id} href={training.slug}>
-            <div className='h-[300px]'>
+            <div className='h-[200px]'>
               <img
                 src={training?.image}
                 alt={training?.name}
-                className='h-full rounded-t-2xl'
+                className='h-full w-full object-cover rounded-t-2xl'
               />
             </div>
             <div className='p-5'>

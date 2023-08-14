@@ -69,7 +69,34 @@ const CompleteTaskModal = ({
         authorId: user.uid,
       }
     );
-    
+    // update cache
+    const cachedData = localStorage.getItem(cacheKey);
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      parsedData.completedTasksByUser.push({
+        taskId,
+        timestamp: Timestamp.now(),
+        postLink,
+        liveLink,
+        codeLink,
+        authorId: user.uid,
+      });
+    }
+
+    // update local storage
+    const localStorageData = localStorage.getItem(cacheKey);
+    if (localStorageData) {
+      const parsedData = JSON.parse(localStorageData);
+      parsedData.completedTasksByUser.push({
+        taskId,
+        timestamp: Timestamp.now(),
+        postLink,
+        liveLink,
+        codeLink,
+        authorId: user.uid,
+      });
+    }
+
     toast.success('Task completed successfully');
     setIsOpen(false);
     setMarkDone(true);
