@@ -9,7 +9,7 @@ import {
   UserTasks,
   UserType,
 } from '../../interfaces';
-import { setCache } from '../../utils/cache';
+import { setMemoryCache as setCache } from '../../utils/cache';
 
 export default async function handler(
   req: NextApiRequest,

@@ -5,11 +5,12 @@ import useGetLeaderboardData from '../hooks/useGetLeaderboard';
 
 const Leaderboard = () => {
   const [leaderboardData] = useGetLeaderboardData();
+  console.log(leaderboardData)
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (leaderboardData.length > 0) {
+    if (leaderboardData?.length > 0) {
       setLoading(false);
     }
   }, [leaderboardData]);
@@ -29,7 +30,7 @@ const Leaderboard = () => {
       <div className='pt-24 flex flex-col items-center bg-[#272829] text-white min-h-screen'>
         <h1 className='font-bold text-2xl'>Architects of Excellence</h1>
         <div className='py-3'>
-          {leaderboardData.map((entry, index) => (
+          {leaderboardData?.map((entry, index) => (
             <LeaderboardCard
               key={entry.author.uid}
               rank={entry?.rank || index + 1}

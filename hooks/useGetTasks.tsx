@@ -9,7 +9,10 @@ import { useEffect, useState } from 'react';
 import { TaskDetailsInterface, TaskInterface } from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
 import { db } from '../config/firebase';
-import { getCache, setCache } from '../utils/cache';
+import {
+  getLocalStorageCache as getCache,
+  setLocalStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useGetAllTasks(
   slug: string,

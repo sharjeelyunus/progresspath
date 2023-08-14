@@ -19,7 +19,7 @@ type Props = {
 };
 
 const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
-  const { loggedInUser } = useAuth();
+  const { loggedInUser, user } = useAuth();
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [bio, setBio] = useState<string>('');
@@ -28,7 +28,7 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
 
   useEffect(() => {
     if (loggedInUser) {
-      setName(loggedInUser.name);
+      setName(loggedInUser.name ? loggedInUser.name : user.name);
       setUsername(loggedInUser.username);
       setBio(loggedInUser.bio);
       setOrganization(loggedInUser.organization);
@@ -45,11 +45,11 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
         uid: loggedInUser?.uid,
         name: name,
         username: username,
-        email: loggedInUser?.email,
-        photoURL: loggedInUser?.photoURL,
+        email: user?.email,
+        photoURL: user?.photoURL,
         metadata: {
-          lastSignInTime: loggedInUser?.metadata.lastSignInTime,
-          creationTime: loggedInUser?.metadata.creationTime,
+          lastSignInTime: user?.metadata?.lastSignInTime,
+          creationTime: user?.metadata?.creationTime,
         },
         bio: bio,
         organization: organization,
@@ -124,7 +124,11 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
             >
               <div>
                 <img
-                  src={loggedInUser?.photoURL}
+                  src={
+                    loggedInUser?.photoURL
+                      ? loggedInUser?.photoURL
+                      : user.photoURL
+                  }
                   alt=''
                   className='w-20 h-20 rounded-2xl'
                 />

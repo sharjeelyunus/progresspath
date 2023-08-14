@@ -9,11 +9,16 @@ import {
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
+import {
+  getSessionStorageCache as getCache,
+  setSessionStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useGetAllTrainings(): TrainingsInterface[] {
   const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
   const [authorDetails, setAuthorDetails] = useState<UserType>();
-  const [cachedData, setCachedData] = useState<TrainingsInterface[]>();
+
+  const cacheKey = 'ProgressPath-trainings';
 
   useEffect(() => {
     const fetchAuthorDetails = async (authorId: string) => {
@@ -37,8 +42,10 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
     const q = query(trainingsRef, orderBy('index', 'asc'));
 
     // Check if there is cached data and return it
+    const cachedData = getCache(cacheKey);
+
     if (cachedData) {
-      setTrainings(cachedData);
+      setTrainings(cachedData as TrainingsInterface[]);
       return;
     }
 
@@ -49,13 +56,13 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
       });
 
       // Cache the data
-      setCachedData(allTrainingsData);
+      setCache(cacheKey, allTrainingsData);
 
       setTrainings(allTrainingsData);
     });
 
     return unsub;
-  }, [cachedData]);
+  }, []);
 
   return trainings.map((training) => ({
     ...training,

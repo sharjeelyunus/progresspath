@@ -12,7 +12,7 @@ const Training = () => {
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
 
-  const { user } = useAuth();
+  const { user, loggedInUser } = useAuth();
 
   useEffect(() => {
     if (!user) {
@@ -64,7 +64,10 @@ const Training = () => {
               />
             </Collapsible>
           ))}
-          <AddTask trackId={data[0]?.trackId} lastTaskDay={lastTaskDay} />
+          {loggedInUser?.mentorTracks?.length > 0 &&
+            loggedInUser?.mentorTracks.includes(data[0]?.trackId) && (
+              <AddTask trackId={data[0]?.trackId} lastTaskDay={lastTaskDay} />
+            )}
         </div>
       </div>
     </Layout>

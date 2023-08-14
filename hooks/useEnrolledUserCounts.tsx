@@ -1,7 +1,10 @@
 import { useEffect, useState, useMemo } from 'react';
 import { collectionGroup, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { getCache, setCache } from '../utils/cache';
+import {
+  getSessionStorageCache as getCache,
+  setSessionStorageCache as setCache,
+} from '../utils/cache';
 
 const useEnrolledUserCounts = () => {
   const [enrolledUserCounts, setEnrolledUserCounts] = useState({});
