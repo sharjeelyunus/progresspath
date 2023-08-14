@@ -25,8 +25,21 @@ const GenerateCertificate = () => {
     html2canvas(certificateContainer).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
 
-      const pdf = new jsPDF('p', 'mm', [1000, 600]);
-      pdf.addImage(imgData, 'PNG', 10, 10, 190, 277);
+      const pdf = new jsPDF('l', 'mm', [1000, 600]);
+
+      const contentWidth = 1000;
+      const contentHeight = 600;
+      const xPosition = (pdf.internal.pageSize.getWidth() - contentWidth) / 2;
+      const yPosition = (pdf.internal.pageSize.getHeight() - contentHeight) / 2;
+
+      pdf.addImage(
+        imgData,
+        'PNG',
+        xPosition,
+        yPosition,
+        contentWidth,
+        contentHeight
+      );
       pdf.save('certificate.pdf');
     });
   };
