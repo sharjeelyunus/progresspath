@@ -43,7 +43,7 @@ const TrainingCard = ({ training }: Props) => {
   const calculateProgress = () => {
     const completedTasks = userTrackDetails?.completedTasksByUser;
     const progress = (completedTasks?.length / totalTasks) * 100;
-    return progress.toFixed(0) as unknown as number;
+    return progress.toFixed(2) as unknown as number;
   };
 
   const progressPercentage = calculateProgress();
@@ -76,10 +76,10 @@ const TrainingCard = ({ training }: Props) => {
                   style={{ width: `${progressPercentage}%` }}
                 ></div>
               </div>
-              <div>{progressPercentage}%</div>
+              <p className='text-sm'>{progressPercentage}%</p>
             </div>
           </Link>
-          {progressPercentage > 80 && (
+          {progressPercentage >= 80 && (
             <button
               className='text-amber-400 py-5 bg-gray-800 rounded-b-2xl'
               onClick={() => setOpenReviewModal(true)}
