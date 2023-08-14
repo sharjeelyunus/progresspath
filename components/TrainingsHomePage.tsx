@@ -30,7 +30,7 @@ const TrainingsHomePage = () => {
             Loading...
           </div>
         ) : loggedInUser?.onboarding ? (
-          <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
+          <div className='flex justify-center bg-[#272829] py-28 min-h-screen'>
             {trainings.map((training) => (
               <TrainingCard key={training.id} training={training} />
             ))}

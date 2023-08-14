@@ -17,7 +17,7 @@ const Leaderboard = () => {
   if (loading) {
     return (
       <Layout title='Loading... | ProgressPath'>
-        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
+        <div className='flex justify-center items-center text-white bg-[#272829] py-28 min-h-screen'>
           Loading...
         </div>
       </Layout>
@@ -26,7 +26,7 @@ const Leaderboard = () => {
 
   return (
     <Layout title='Leaderboard | ProgressPath'>
-      <div className='pt-24 flex flex-col items-center bg-[#635985] text-white min-h-screen'>
+      <div className='pt-24 flex flex-col items-center bg-[#272829] text-white min-h-screen'>
         <h1 className='font-bold text-2xl'>Architects of Excellence</h1>
         <div className='py-3'>
           {leaderboardData.map((entry, index) => (

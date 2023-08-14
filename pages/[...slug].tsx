@@ -33,7 +33,7 @@ const Training = () => {
   if (loading) {
     return (
       <Layout title='Loading... | ProgressPath'>
-        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
+        <div className='flex justify-center items-center text-white bg-[#272829] py-28 min-h-screen'>
           <div className='flex flex-col'>
             <h1>Loading...</h1>
           </div>
@@ -46,7 +46,7 @@ const Training = () => {
 
   return (
     <Layout title='React & Nextjs | ProgressPath'>
-      <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
+      <div className='flex justify-center bg-[#272829] py-28 min-h-screen'>
         <div className='flex flex-col w-11/12 lg:w-3/4'>
           {tasks.map((task, index) => (
             <Collapsible

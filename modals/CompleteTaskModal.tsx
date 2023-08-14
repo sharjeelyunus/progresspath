@@ -1,5 +1,5 @@
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
@@ -25,6 +25,8 @@ const CompleteTaskModal = ({
 
   const { user } = useAuth();
 
+  const cacheKey = useMemo(() => `${trackId}-${user.uid}`, [trackId, user.uid]);
+
   const handleCompleteTask = async () => {
     // Ensure at least one link is present
     if (!postLink && !liveLink && !codeLink) {
@@ -36,7 +38,7 @@ const CompleteTaskModal = ({
     const urlRegex = new RegExp(
       /^(http|https):\/\/(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\S*$/i
     );
-    
+
     if (postLink && !urlRegex.test(postLink)) {
       toast.error('Please enter a valid post URL');
       return;
@@ -67,6 +69,8 @@ const CompleteTaskModal = ({
         authorId: user.uid,
       }
     );
+    
+    toast.success('Task completed successfully');
     setIsOpen(false);
     setMarkDone(true);
   };
