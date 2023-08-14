@@ -40,7 +40,7 @@ const GenerateCertificate = () => {
         contentWidth,
         contentHeight
       );
-      pdf.save('certificate.pdf');
+      pdf.save(`Certificate-${loggedInUser?.name}-${trackDetails?.name}.pdf`);
     });
   };
 
@@ -59,20 +59,20 @@ const GenerateCertificate = () => {
 
   return (
     <Layout title='Generate Certificate | ProgressPath'>
-      <div className='flex justify-center items-center bg-[#635985] h-screen'>
-        <div className='mt-[100px] flex gap-10 justify-center items-center'>
+      <div className='flex justify-center items-center bg-[#635985] lg:h-screen'>
+        <div className='mt-[100px] flex flex-col-reverse lg:flex-row gap-10 justify-center items-center'>
           <div
-            className='bg-gray-800 text-white p-10 w-[1000px] h-[600px]'
+            className='bg-gray-800 text-white p-10 w-[300px] lg:w-[1000px] lg:h-[600px]'
             id='certificate-container'
           >
             <Logo />
             <div className=''>
-              <h2 className='font-bold text-3xl mt-10'>PROOF OF COMPLETION</h2>
-              <p className='my-3 text-lg italic'>Congratulations to</p>
-              <h1 className='text-4xl font-semibold'>{loggedInUser?.name}</h1>
-              <p className='mt-3 text-lg italic'>for successfully completing</p>
-              <p className='font-bold text-2xl my-1'>{trackDetails?.name}</p>
-              <p className='text-lg italic'>interactive track on {date}.</p>
+              <h2 className='font-bold lg:text-3xl mt-10'>PROOF OF COMPLETION</h2>
+              <p className='my-3 lg:text-lg italic'>Congratulations to</p>
+              <h1 className='lg:text-4xl font-semibold'>{loggedInUser?.name}</h1>
+              <p className='mt-3 lg:text-lg italic'>for successfully completing</p>
+              <p className='font-bold lg:text-2xl my-1'>{trackDetails?.name}</p>
+              <p className='lg:text-lg italic'>interactive track on {date}.</p>
               <p className='mt-5 italic text-gray-300'>
                 This certificate signifies that recipient has an exemplary level
                 of {trackDetails?.name} proficiency.
