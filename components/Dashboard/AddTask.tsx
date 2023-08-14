@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import React, { useState } from 'react';
 import AddTaskModal from '../../modals/AddTaskModal';
 
 type Props = {
@@ -8,22 +7,7 @@ type Props = {
 };
 
 const AddTask = ({ trackId, lastTaskDay }: Props) => {
-  const { loggedInUser } = useAuth();
-  const [isMentor, setIsMentor] = useState(false);
   const [addTaskOpen, setAddTaskOpen] = useState(false);
-
-  useEffect(() => {
-    if (
-      loggedInUser?.mentorTracks?.length > 0 &&
-      loggedInUser?.mentorTracks.includes(trackId)
-    ) {
-      setIsMentor(true);
-    } else {
-      setIsMentor(false);
-    }
-  }, [loggedInUser]);
-
-  if (!isMentor) return;
 
   return (
     <div className='flex justify-center mt-20'>

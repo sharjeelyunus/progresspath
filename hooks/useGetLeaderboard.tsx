@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { LeaderboardEntry } from '../interfaces';
-import { getCache, setCache } from '../utils/cache';
+import {
+  getLocalStorageCache as getCache,
+  setLocalStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useGetLeaderboardData(): [LeaderboardEntry[]] {
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(

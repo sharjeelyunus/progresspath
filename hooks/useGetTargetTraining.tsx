@@ -1,20 +1,31 @@
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { TrainingsInterface } from '../interfaces';
 import { db } from '../config/firebase';
+import {
+  getLocalStorageCache as getCache,
+  setLocalStorageCache as setCache,
+} from '../utils/cache';
 
-export default function useGetTargetTraining(slug: string): TrainingsInterface | undefined {
+export default function useGetTargetTraining(
+  slug: string
+): TrainingsInterface | undefined {
   const [targetTrainingDetails, setTargetTrainingDetails] =
     useState<TrainingsInterface>();
+
+  const cacheKey = `ProgressPath-training-${slug}`;
 
   useEffect(() => {
     if (!slug) {
       return; // Early return if slug is undefined
+    }
+
+    // Check if there is cached data and return it
+    const cachedData = getCache(cacheKey);
+
+    if (cachedData) {
+      setTargetTrainingDetails(cachedData as TrainingsInterface);
+      return;
     }
 
     const trainingRef = collection(db, 'trainings');
@@ -31,6 +42,7 @@ export default function useGetTargetTraining(slug: string): TrainingsInterface |
       } as TrainingsInterface;
 
       setTargetTrainingDetails(TrainingData);
+      setCache(cacheKey, TrainingData);
     });
   }, [slug]);
 

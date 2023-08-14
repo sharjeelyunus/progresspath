@@ -2,18 +2,22 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { db } from '../config/firebase';
 import { UserTracks } from '../interfaces';
+import {
+  getMemoryCache as getCache,
+  setMemoryCache as setCache,
+} from '../utils/cache';
 
 export default function useFetchTargetUserTracks(
   userId: string
 ): Array<UserTracks> {
-  const [completedTasksCache, setCompletedTasksCache] = useState<
-    Array<UserTracks>
-  >([]);
   const [completedTasks, setCompletedTasks] = useState<Array<UserTracks>>([]);
+
+  const cacheKey = `user-${userId}-tracks`;
 
   const handleSnapshot = useCallback((docs) => {
     const allUserTracksData = docs.docs.map((doc) => doc.data() as UserTracks);
-    setCompletedTasksCache(allUserTracksData);
+    setCompletedTasks(allUserTracksData);
+    setCache(cacheKey, allUserTracksData);
   }, []);
 
   const userTracksRef = useMemo(
@@ -24,15 +28,18 @@ export default function useFetchTargetUserTracks(
 
   useEffect(() => {
     if (userId) {
-      const unsub = onSnapshot(userTracksQuery, handleSnapshot);
+      // Check if there is cached data and return it
+      const cachedData = getCache(cacheKey);
 
+      if (cachedData) {
+        setCompletedTasks(cachedData as Array<UserTracks>);
+        return;
+      }
+
+      const unsub = onSnapshot(userTracksQuery, handleSnapshot);
       return unsub;
     }
   }, [userId, userTracksQuery, handleSnapshot]);
-
-  useEffect(() => {
-    setCompletedTasks(completedTasksCache);
-  }, [completedTasksCache]);
 
   return completedTasks;
 }

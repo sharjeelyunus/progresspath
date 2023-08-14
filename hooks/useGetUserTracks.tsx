@@ -3,6 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserTracks } from '../interfaces';
 import { db } from '../config/firebase';
+import {
+  getSessionStorageCache as getCache,
+  setSessionStorageCache as setCache,
+} from '../utils/cache';
 
 export default function useGetUserTracks(): Array<UserTracks> {
   const { user } = useAuth();
@@ -11,7 +15,17 @@ export default function useGetUserTracks(): Array<UserTracks> {
     Array<UserTracks>
   >([]);
 
+  const cacheKey = `ProgressPath-userEnrolledTracks-${user.uid}`;
+
   useEffect(() => {
+    // Check if there is cached data and return it
+    const cachedData = getCache(cacheKey);
+
+    if (cachedData) {
+      setUserEnrolledTracks(cachedData as Array<UserTracks>);
+      return;
+    }
+
     const enrolledTrackRef = collection(
       db,
       'users',
@@ -24,6 +38,7 @@ export default function useGetUserTracks(): Array<UserTracks> {
         return { ...doc.data(), id: doc.id } as UserTracks;
       });
       setUserEnrolledTracks(allUserTracksData);
+      setCache(cacheKey, allUserTracksData);
     });
 
     return unsub;

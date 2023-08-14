@@ -1,13 +1,12 @@
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { CompletedTasks } from '../interfaces';
 import { db } from '../config/firebase';
+import {
+  getMemoryCache as getCache,
+  setMemoryCache as setCache,
+} from '../utils/cache';
 
 export default function useGetCompletedTasks(
   trackId: string
@@ -16,7 +15,18 @@ export default function useGetCompletedTasks(
     []
   );
   const { user } = useAuth();
+
+  const cacheKey = `user-${user.uid}-tracks-${trackId}`;
+
   useEffect(() => {
+    // Check if there is cached data and return it
+    const cachedData = getCache(cacheKey);
+
+    if (cachedData) {
+      setCompletedTasks(cachedData as Array<CompletedTasks>);
+      return;
+    }
+
     if (trackId) {
       const enrolledTrackRef = collection(
         db,
@@ -34,6 +44,7 @@ export default function useGetCompletedTasks(
             return { ...doc.data(), id: doc.id } as CompletedTasks;
           });
           setCompletedTasks(allUserTracksData);
+          setCache(cacheKey, allUserTracksData);
         },
         error: (error) => {
           console.error(error);

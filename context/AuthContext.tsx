@@ -64,7 +64,7 @@ export const AuthContextProvider = ({
             lastSignInTime: user.metadata.lastSignInTime,
             creationTime: user.metadata.creationTime,
           },
-        })
+        });
       } else {
         setUser(null);
         setLoggedInUser(null);
@@ -80,7 +80,13 @@ export const AuthContextProvider = ({
     const syncUser = async () => {
       if (user) {
         const userRef = doc(db, 'users', user.uid);
-        const userData = (await getDoc(userRef)).data();
+        const getData = await getDoc(userRef);
+
+        const userData = {
+          ...getData.data(),
+          uid: user.uid,
+        } as UserType;
+
         if (userData) {
           setLoggedInUser(userData as UserType);
         }
@@ -94,7 +100,11 @@ export const AuthContextProvider = ({
       if (user && !loggedInUser) {
         // Only sync user data if loggedInUser is not set yet
         const userRef = doc(db, 'users', user.uid);
-        const userData = (await getDoc(userRef)).data();
+        const getData = await getDoc(userRef);
+        const userData = {
+          ...getData.data(),
+          uid: user.uid,
+        } as UserType;
         if (userData) {
           setLoggedInUser(userData as UserType);
         }
