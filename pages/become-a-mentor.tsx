@@ -73,8 +73,8 @@ const BecomeMentor = () => {
   return (
     <Layout title='Become a Mentor | ProgressPath'>
       <div className='py-24 flex flex-col items-center bg-[#272829] text-white min-h-screen px-10'>
-        <h1 className='text-3xl font-semibold mb-6 mt-10'>
-          Become a Mentor at ProgressPath
+        <h1 className='text-3xl font-semibold mb-6 mt-10 text-center'>
+          Become a Mentor at <span className='underline'>ProgressPath</span> 🚀
         </h1>
 
         <form className='max-w-md w-full' onSubmit={handleBecomeMentor}>
