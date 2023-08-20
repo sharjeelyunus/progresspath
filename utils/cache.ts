@@ -5,7 +5,7 @@ interface CacheItem<T> {
 
 type Cache<T> = Record<string, CacheItem<T>>;
 
-const MEMORY_CACHE_DURATION_IN_SECONDS = 300; // 5 minutes
+const MEMORY_CACHE_DURATION_IN_SECONDS = 60; // 1 minutes
 const LOCAL_STORAGE_CACHE_DURATION_IN_SECONDS = 86400; // 1 day
 const SESSION_STORAGE_CACHE_DURATION_IN_SECONDS = 432000; // 5 days
 

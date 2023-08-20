@@ -30,6 +30,22 @@ export interface UserType {
   isAdmin?: boolean;
 }
 
+export interface MentorRequests {
+  id: string;
+  name: string;
+  email: string;
+  areaOfExpertise: string;
+  motivation: string;
+  status: string;
+  trackName: string;
+  trackShortDescription: string;
+  userId: string;
+  yearsOfExperience: string;
+  trackType: string;
+  timestamp: Timestamp;
+  photoURL: string;
+}
+
 export interface TrainingsInterface {
   id: string;
   index: number;
