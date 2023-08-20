@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
-  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   UserCredential,
@@ -10,7 +9,7 @@ import { auth, db, provider } from '../config/firebase';
 import { UserType } from '../interfaces';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-type authContextType = {
+type AuthContextType = {
   user: UserType | null;
   loggedInUser: UserType | null;
   login: () => void;
@@ -18,159 +17,101 @@ type authContextType = {
   loading: boolean;
 };
 
-const authContextDefaultValues: authContextType = {
-  user: null,
-  loggedInUser: null,
-  login: () => {},
-  logout: () => {},
-  loading: true,
-};
-
-const AuthContext = createContext<authContextType>(authContextDefaultValues);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthContextProvider');
+  }
+  return context;
 }
 
-export const AuthContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [user, setUser] = useState<UserType>();
+export const AuthContextProvider: React.FC = ({ children }) => {
+  const [user, setUser] = useState<UserType | null>(null);
   const [loggedInUser, setLoggedInUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser({
-          email: user.email,
+          email: user.email!,
           uid: user.uid,
           photoURL: user.photoURL,
           name: user.displayName,
-          onboarding: false,
-          metadata: {
-            lastSignInTime: user.metadata.lastSignInTime,
-            creationTime: user.metadata.creationTime,
-          },
         });
-        setLoggedInUser({
-          email: user.email,
-          uid: user.uid,
-          photoURL: user.photoURL,
-          name: user.displayName,
-          metadata: {
-            lastSignInTime: user.metadata.lastSignInTime,
-            creationTime: user.metadata.creationTime,
-          },
-        });
+
+        // Fetch user data from the database
+        const userRef = doc(db, 'users', user.uid);
+        const userData = (await getDoc(userRef)).data() as UserType | undefined;
+
+        if (userData) {
+          setLoggedInUser({
+            ...userData,
+            uid: user.uid,
+          });
+        }
       } else {
         setUser(null);
         setLoggedInUser(null);
       }
-    });
-    setLoading(false);
 
-    return () => unsubscribe();
+      setLoading(false);
+    });
+
+    return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    // loggedInUser is the user from the database
-    const syncUser = async () => {
-      if (user) {
-        const userRef = doc(db, 'users', user.uid);
-        const getData = await getDoc(userRef);
-
-        const userData = {
-          ...getData.data(),
-          uid: user.uid,
-        } as UserType;
-
-        if (userData) {
-          setLoggedInUser(userData as UserType);
-        }
-      }
-    };
-    syncUser();
-  }, [user]);
-
-  useEffect(() => {
-    const syncUser = async () => {
-      if (user && !loggedInUser) {
-        // Only sync user data if loggedInUser is not set yet
-        const userRef = doc(db, 'users', user.uid);
-        const getData = await getDoc(userRef);
-        const userData = {
-          ...getData.data(),
-          uid: user.uid,
-        } as UserType;
-        if (userData) {
-          setLoggedInUser(userData as UserType);
-        }
-      }
-    };
-    syncUser();
-  }, [user, loggedInUser]);
-
-  const handleAddNewUser = async (result: UserCredential) => {
+  const handleLogin = async (result: UserCredential) => {
     const user = result.user;
     const userRef = doc(db, 'users', user.uid);
-    const userDetails: UserType = {
-      email: user.email,
-      uid: user.uid,
-      photoURL: user.photoURL,
-      name: user.displayName,
-      onboarding: false,
-      metadata: {
-        lastSignInTime: user?.metadata.lastSignInTime,
-        creationTime: user?.metadata.creationTime,
-      },
-    };
-    await setDoc(userRef, userDetails as UserType, { merge: true });
-  };
+    const userSnapshot = await getDoc(userRef);
 
-  const handleUpdateUserMetadata = async (result: UserCredential) => {
-    const user = result.user;
-    const userRef = doc(db, 'users', user?.uid);
-    const userDetails = {
-      metadata: {
-        lastSignInTime: user?.metadata.lastSignInTime,
-        creationTime: user?.metadata.creationTime,
-      },
-    };
-    await setDoc(userRef, userDetails, { merge: true });
-    toast.success('Welcome back');
+    if (!userSnapshot.exists()) {
+      // New user, add to database
+      const userDetails: UserType = {
+        email: user.email!,
+        uid: user.uid,
+        photoURL: user.photoURL,
+        name: user.displayName,
+        onboarding: true, // Set to true for new users
+        metadata: {
+          lastSignInTime: user.metadata.lastSignInTime,
+          creationTime: user.metadata.creationTime,
+        },
+      };
+
+      await setDoc(userRef, userDetails, { merge: true });
+      toast.success('Welcome to ProgressPath');
+      setLoggedInUser(userDetails); // Update loggedInUser with new user details
+    } else {
+      // Existing user, update metadata
+      const userDetails = {
+        metadata: {
+          lastSignInTime: user.metadata.lastSignInTime,
+          creationTime: user.metadata.creationTime,
+        },
+      };
+
+      await setDoc(userRef, userDetails, { merge: true });
+      toast.success('Welcome back');
+      const existingUserData = {
+        ...userSnapshot.data(),
+        uid: user.uid,
+      } as UserType;
+      setLoggedInUser(existingUserData);
+    }
   };
 
   const login = () => {
     signInWithPopup(auth, provider)
-      // add user to database
-      .then((result) => {
-        // The signed-in user info.
-        const user = result.user;
-        async () => {
-          const userRef = doc(db, 'users', user.uid);
-          const userDataExists = (await getDoc(userRef)).exists();
-          // check if user already exists in database
-          if (userDataExists) {
-            // if yes, update user's metadata
-            handleUpdateUserMetadata(result);
-          } else {
-            // if not, add user to database
-            handleAddNewUser(result);
-          }
-        };
-      })
+      .then((result) => handleLogin(result))
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        console.log({ errorCode, errorMessage, email, credential });
+        console.log({ errorCode, errorMessage });
       });
   };
 
@@ -178,7 +119,7 @@ export const AuthContextProvider = ({
     auth.signOut();
   };
 
-  const value = {
+  const contextValue: AuthContextType = {
     user,
     loggedInUser,
     login,
@@ -186,5 +127,7 @@ export const AuthContextProvider = ({
     loading,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+  );
 };

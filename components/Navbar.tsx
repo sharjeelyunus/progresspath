@@ -34,6 +34,12 @@ const Navbar = () => {
                 </Link>
               </div>
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+                <Link
+                  href='/become-a-mentor'
+                  className='text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+                >
+                  Become a mentor
+                </Link>
                 {/* Profile dropdown */}
                 <Menu as='div' className='relative ml-3'>
                   <div>
