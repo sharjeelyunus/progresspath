@@ -27,6 +27,7 @@ export interface UserType {
     lastSignInTime: string;
   };
   mentorTracks?: string[];
+  isAdmin?: boolean;
 }
 
 export interface TrainingsInterface {

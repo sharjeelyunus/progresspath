@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
-import { addDoc, collection } from 'firebase/firestore';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const BecomeMentor = () => {
@@ -41,6 +41,9 @@ const BecomeMentor = () => {
       trackShortDescription: trackShortDescription,
       motivation: motivation,
       status: 'pending',
+      trackType: trackType,
+      timestamp: Timestamp.now(),
+      photoURL: loggedInUser?.photoURL,
     };
 
     try {
