@@ -95,7 +95,7 @@ c-31 3 -162 9 -291 12 -262 7 -413 -6 -541 -48 -80 -25 -98 -45 -71 -77 l17
         </g>
       </svg>
 
-      <p className='text-white ml-5'>Progress Path</p>
+      <p className='text-white ml-5'>ProgressPath</p>
     </div>
   );
 };
