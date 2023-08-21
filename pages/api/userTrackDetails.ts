@@ -68,7 +68,7 @@ const getUserTrackDetails = async (
 
   const allTrainingsData: TrainingsInterface = {
     ...userTrackDetails,
-    lead: await getAuthorDetails(userTrackDetails.author),
+    lead: await getAuthorDetails(userTrackDetails.mentors[0]),
     completedTasksByUser: userCompletedTasks,
     userPoints,
   };

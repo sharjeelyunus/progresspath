@@ -35,11 +35,11 @@ export default function useGetTargetTrack(
         id: doc.id,
       } as TrainingsInterface;
 
-      const authorDetails = await getAuthorDetails(trackData.author);
+      const authorDetails = await getAuthorDetails(trackData.mentors[0]);
 
       const trainingData: TrainingsInterface = {
         name: trackData.name,
-        author: trackData.author,
+        mentors: trackData.mentors,
         id: trackData.id,
         slug: trackData.slug,
         image: trackData.image,

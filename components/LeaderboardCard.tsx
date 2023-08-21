@@ -13,7 +13,7 @@ const LeaderboardCard = ({ rank, author, points, completedTasks }: Props) => {
   const isMobile = window.innerWidth < 768;
 
   const calculateProgress = () => {
-    const progress = (completedTasks / 38) * 100;
+    const progress = (completedTasks / 39) * 100;
     return progress.toFixed(0) as unknown as number;
   };
 

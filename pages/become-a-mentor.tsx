@@ -16,6 +16,11 @@ const BecomeMentor = () => {
   const [trackShortDescription, setTrackShortDescription] = useState('');
   const [motivation, setMotivation] = useState('');
   const [trackType, setTrackType] = useState('new');
+  const [trackSubType, setTrackSubType] = useState('public'); // ['public', 'invite-only', 'private'
+  const [linkedin, setLinkedin] = useState('');
+  const [github, setGithub] = useState('');
+  const [twitter, setTwitter] = useState('');
+  const [portfolio, setPortfolio] = useState('');
 
   const router = useRouter();
 
@@ -44,6 +49,12 @@ const BecomeMentor = () => {
       trackType: trackType,
       timestamp: Timestamp.now(),
       photoURL: loggedInUser?.photoURL,
+      linkedin: linkedin,
+      github: github,
+      twitter: twitter,
+      portfolio: portfolio,
+      username: loggedInUser?.username,
+      trackSubType: trackSubType,
     };
 
     try {
@@ -64,7 +75,9 @@ const BecomeMentor = () => {
       !yearsOfExperience ||
       !trackName ||
       !trackShortDescription ||
-      !motivation
+      !motivation ||
+      !trackType ||
+      !linkedin
     ) {
       toast.error('Please fill all the fields');
       return;
@@ -149,31 +162,62 @@ const BecomeMentor = () => {
             </select>
           </div>
 
-          <div className='mb-4'>
-            <label className='block text-sm font-medium text-gray-300'>
-              Track you want to mentor?
-            </label>
-            <input
-              type='text'
-              value={trackName}
-              onChange={(e) => setTrackName(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
-              placeholder='Track name you want to mentor'
-            />
-          </div>
+          {trackType === 'new' ? (
+            <>
+              <div className='mb-4'>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Is this track public, invite only or private?
+                </label>
+                <select
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  value={trackSubType}
+                  onChange={(e) => setTrackSubType(e.target.value)}
+                >
+                  <option value='public'>Public</option>
+                  <option value='invite-only'>Invite only</option>
+                  <option value='private'>Private</option>
+                </select>
+              </div>
+              <div className='mb-4'>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Track you want to mentor?
+                </label>
+                <input
+                  type='text'
+                  value={trackName}
+                  onChange={(e) => setTrackName(e.target.value)}
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  placeholder='Track name you want to mentor'
+                />
+              </div>
 
-          <div className='mb-4'>
-            <label className='block text-sm font-medium text-gray-300'>
-              Details about your track? (Description)
-            </label>
-            <textarea
-              rows={4}
-              value={trackShortDescription}
-              onChange={(e) => setTrackShortDescription(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
-              placeholder='Write short description of what will be in this track?'
-            />
-          </div>
+              <div className='mb-4'>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Details about your track? (Description)
+                </label>
+                <textarea
+                  rows={4}
+                  value={trackShortDescription}
+                  onChange={(e) => setTrackShortDescription(e.target.value)}
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  placeholder='Write short description of what will be in this track?'
+                />
+              </div>
+            </>
+          ) : (
+            <div className='mb-4'>
+              <label className='block text-sm font-medium text-gray-300'>
+                Track you want to mentor?
+              </label>
+              <input
+                type='text'
+                value={trackName}
+                onChange={(e) => setTrackName(e.target.value)}
+                className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                placeholder='Track name you want to mentor'
+              />
+            </div>
+          )}
 
           <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-300'>
@@ -185,6 +229,59 @@ const BecomeMentor = () => {
               onChange={(e) => setMotivation(e.target.value)}
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               placeholder='Tell us your motivation...'
+            />
+          </div>
+
+          {/* Social Links */}
+          <div className='mb-4'>
+            <label className='block text-sm font-medium text-gray-300'>
+              LinkedIn
+            </label>
+            <input
+              type='text'
+              value={linkedin}
+              onChange={(e) => setLinkedin(e.target.value)}
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              placeholder='LinkedIn profile link'
+            />
+          </div>
+
+          <div className='mb-4'>
+            <label className='block text-sm font-medium text-gray-300'>
+              Github (Optional)
+            </label>
+            <input
+              type='text'
+              value={github}
+              onChange={(e) => setGithub(e.target.value)}
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              placeholder='Github profile link'
+            />
+          </div>
+
+          <div className='mb-4'>
+            <label className='block text-sm font-medium text-gray-300'>
+              Twitter (Optional)
+            </label>
+            <input
+              type='text'
+              value={twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              placeholder='Twitter profile link'
+            />
+          </div>
+
+          <div className='mb-4'>
+            <label className='block text-sm font-medium text-gray-300'>
+              Portfolio (Optional)
+            </label>
+            <input
+              type='text'
+              value={portfolio}
+              onChange={(e) => setPortfolio(e.target.value)}
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              placeholder='Portfolio link'
             />
           </div>
 
