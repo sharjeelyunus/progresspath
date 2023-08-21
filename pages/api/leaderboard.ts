@@ -9,7 +9,6 @@ import {
   UserTasks,
   UserType,
 } from '../../interfaces';
-import { setMemoryCache as setCache } from '../../utils/cache';
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,7 +33,9 @@ export default async function handler(
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: error.message });
   }
 }
 
@@ -130,15 +131,7 @@ async function mergeTasksByUser(
     };
   });
 
-  const cachedLeaderboard = getCache('leaderboardData');
-  if (
-    !cachedLeaderboard ||
-    JSON.stringify(cachedLeaderboard) !== JSON.stringify(top10WithRank)
-  ) {
-    setCache('leaderboardData', top10WithRank);
-  }
-
-  return top10;
+  return top10WithRank;
 }
 
 function isValidUrl(url: string): boolean {

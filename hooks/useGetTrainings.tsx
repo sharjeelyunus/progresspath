@@ -10,15 +10,15 @@ import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import {
-  getSessionStorageCache as getCache,
-  setSessionStorageCache as setCache,
+  getMemoryCache as getCache,
+  setMemoryCache as setCache,
 } from '../utils/cache';
 
 export default function useGetAllTrainings(): TrainingsInterface[] {
   const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
   const [authorDetails, setAuthorDetails] = useState<UserType>();
 
-  const cacheKey = 'ProgressPath-trainings';
+  const cacheKey = 'ProgressPath-tracks';
 
   useEffect(() => {
     const fetchAuthorDetails = async (authorId: string) => {
@@ -34,7 +34,7 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
       setAuthorDetails(documentData as UserType);
     };
 
-    fetchAuthorDetails(trainings[0]?.author || '');
+    fetchAuthorDetails(trainings[0]?.mentors[0] || '');
   }, [trainings]);
 
   useEffect(() => {

@@ -38,12 +38,18 @@ export interface MentorRequests {
   motivation: string;
   status: string;
   trackName: string;
-  trackShortDescription: string;
+  trackShortDescription?: string;
   userId: string;
   yearsOfExperience: string;
   trackType: string;
   timestamp: Timestamp;
   photoURL: string;
+  username: string;
+  linkedin: string;
+  github?: string;
+  twitter?: string;
+  portfolio?: string;
+  trackSubType?: string;
 }
 
 export interface TrainingsInterface {
@@ -52,7 +58,7 @@ export interface TrainingsInterface {
   name: string;
   lead: UserType;
   slug: string;
-  author: string;
+  mentors: string[];
   image?: string;
   completedTasksByUser?: CompletedTasks[];
   userPoints?: number;
