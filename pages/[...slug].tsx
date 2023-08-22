@@ -1,73 +1,72 @@
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Collapsible from '../components/Collapsible';
 import Layout from '../components/Layout';
 import TaskDetails from '../components/TaskDetails';
 import { useAuth } from '../context/AuthContext';
 import useGetAllTasks from '../hooks/useGetTasks';
 import AddTask from '../components/Dashboard/AddTask';
+import Loading from '../src/shared/components/Loading';
 
 const Training = () => {
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
+  const { loggedInUser } = useAuth();
+  const { tasks, track } = useGetAllTasks(slug[0], setLoading);
 
-  const { user, loggedInUser } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      router.push('/');
+  const lastTaskDay = useMemo(() => {
+    if (tasks.length > 0) {
+      return tasks[tasks.length - 1].day;
     }
-  }, []);
-
-  const data = useGetAllTasks(slug[0], setLoading);
-
-  const tasks = data.map((task) => ({
-    id: task.id,
-    taskName: task.taskName,
-    details: task.details,
-    trackId: task.trackId,
-    day: task.day,
-  }));
+  }, [tasks]);
 
   if (loading) {
-    return (
-      <Layout title='Loading... | ProgressPath'>
-        <div className='flex justify-center items-center text-white bg-[#272829] py-28 min-h-screen'>
-          <div className='flex flex-col'>
-            <h1>Loading...</h1>
-          </div>
-        </div>
-      </Layout>
-    );
+    return <Loading />;
   }
 
-  const lastTaskDay = tasks[tasks.length - 1]?.day;
-
   return (
-    <Layout title='React & Nextjs | ProgressPath'>
-      <div className='flex justify-center bg-[#272829] py-28 min-h-screen'>
+    <Layout title={`${track?.name} | ProgressPath`}>
+      <div className='flex justify-center bg-gray-700 py-28 min-h-screen'>
         <div className='flex flex-col w-11/12 lg:w-3/4'>
-          {tasks.map((task, index) => (
-            <Collapsible
-              key={index}
-              index={index}
-              taskId={task.id}
-              taskName={task.taskName}
-              trackId={task.trackId}
-            >
-              <TaskDetails
+          <div>
+            <div className='flex justify-end'>
+              {loggedInUser?.mentorTracks?.includes(track?.id) &&
+                tasks.length > 10 &&
+                track.trackStatus == 'pending' && (
+                  <button className='text-white bg-gray-900 px-10 py-4 rounded-xl'>
+                    Publish Track
+                  </button>
+                )}
+            </div>
+            <h1 className='text-4xl font-bold text-white text-center'>
+              {track?.name}
+            </h1>
+            <p className='text-white mt-3 text-center'>
+              {track?.trackShortDescription}
+            </p>
+          </div>
+          <div className='mt-5'>
+            {tasks.map((task, index) => (
+              <Collapsible
                 key={task.id}
-                trackId={task.trackId}
+                index={index}
                 taskId={task.id}
-                details={task.details}
-              />
-            </Collapsible>
-          ))}
-          {loggedInUser?.mentorTracks?.length > 0 &&
-            loggedInUser?.mentorTracks.includes(data[0]?.trackId) && (
-              <AddTask trackId={data[0]?.trackId} lastTaskDay={lastTaskDay} />
-            )}
+                taskName={task.taskName}
+                trackId={task.trackId}
+              >
+                <TaskDetails
+                  key={task.id}
+                  trackId={task.trackId}
+                  taskId={task.id}
+                  details={task.details}
+                />
+              </Collapsible>
+            ))}
+          </div>
+          {loggedInUser?.mentorTracks?.includes(track?.id) && (
+            <AddTask trackId={track?.id} lastTaskDay={lastTaskDay} />
+          )}
         </div>
       </div>
     </Layout>

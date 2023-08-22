@@ -34,8 +34,8 @@ const Collapsible = (props: Props) => {
       <button
         className={
           markDone
-            ? 'bg-[#443C68] flex p-4 w-full justify-between font-normal text-lg text-white'
-            : 'bg-[#393053] flex p-4 w-full justify-between font-normal text-lg text-white'
+            ? 'bg-gray-900 flex p-4 w-full justify-between font-normal text-lg text-white border-b-[1px] border-gray-800'
+            : 'bg-gray-800 flex p-4 w-full justify-between font-normal text-lg text-white border-b-[1px] border-gray-900'
         }
         onClick={toggle}
       >

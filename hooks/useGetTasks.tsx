@@ -5,25 +5,26 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import { TaskDetailsInterface, TaskInterface } from '../interfaces';
+import { useEffect, useState, useMemo } from 'react';
+import {
+  TaskDetailsInterface,
+  TaskInterface,
+  TrainingsInterface,
+} from '../interfaces';
 import useGetTargetTraining from './useGetTargetTraining';
 import { db } from '../config/firebase';
-import {
-  getLocalStorageCache as getCache,
-  setLocalStorageCache as setCache,
-} from '../utils/cache';
 
 export default function useGetAllTasks(
   slug: string,
-  setLoading
-): Array<TaskInterface> {
+  setLoading: (value: boolean) => void
+): {
+  tasks: Array<TaskInterface>;
+  track: TrainingsInterface | undefined;
+} {
   const [tasks, setTasks] = useState<Array<TaskInterface>>([]);
   const targetTraining = useGetTargetTraining(slug);
 
-  const cacheKey = `tasks-${slug}`;
-
-  const fetchTasks = async () => {
+  const fetchTasks = useMemo(async () => {
     if (targetTraining && targetTraining.id) {
       const trainingsRef = collection(
         db,
@@ -33,46 +34,44 @@ export default function useGetAllTasks(
       );
       const q = query(trainingsRef, orderBy('day', 'asc'));
 
-      const unsub = onSnapshot(q, (docs) => {
+      const unsub = onSnapshot(q, async (docs) => {
         setLoading(true);
         const docsArr = docs.docs;
-        const allTasksData = docsArr.map((doc) => {
-          return { ...doc.data(), id: doc.id } as TaskInterface;
+        const allTasksData = docsArr.map(
+          (doc) =>
+            ({
+              ...doc.data(),
+              id: doc.id,
+            } as TaskInterface)
+        );
+
+        const taskPromises = allTasksData.map(async (task) => {
+          const taskDetails = await getTaskDetails(targetTraining.id, task.id);
+          task.trackId = targetTraining.id;
+          task.details = taskDetails;
+          return task;
         });
 
-        Promise.allSettled(
-          allTasksData.map((task) => {
-            return getTaskDetails(targetTraining.id, task.id).then(
-              (taskDetails: TaskDetailsInterface[]) => {
-                task.trackId = targetTraining.id;
-                task.details = taskDetails;
-              }
-            );
-          })
-        ).then(() => {
-          setTasks(allTasksData);
-          setCache(cacheKey, allTasksData);
-          setLoading(false);
-        });
+        const updatedTasks = await Promise.all(taskPromises);
+        setTasks(updatedTasks);
+        setLoading(false);
       });
 
       return () => unsub();
     }
-  };
+  }, [targetTraining, setLoading]);
 
   useEffect(() => {
-    const cachedData = getCache(cacheKey);
-    if (cachedData) {
-      setTasks(cachedData as Array<TaskInterface>);
-    } else {
-      fetchTasks();
-    }
-  }, [targetTraining]);
+    fetchTasks;
+  }, [fetchTasks]);
 
-  return tasks;
+  return { tasks, track: targetTraining };
 }
 
-const getTaskDetails = async (trainingId: string, taskId: string) => {
+const getTaskDetails = async (
+  trainingId: string,
+  taskId: string
+): Promise<TaskDetailsInterface[]> => {
   const detailsRef = collection(
     db,
     'trainings',
@@ -84,8 +83,12 @@ const getTaskDetails = async (trainingId: string, taskId: string) => {
   const q = query(detailsRef, orderBy('index', 'asc'));
 
   const querySnapshot = await getDocs(q);
-  const documentData = querySnapshot.docs.map((doc) => {
-    return { ...doc.data(), id: doc.id } as TaskDetailsInterface;
-  });
-  return documentData as Object;
+  const documentData = querySnapshot.docs.map(
+    (doc) =>
+      ({
+        ...doc.data(),
+        id: doc.id,
+      } as TaskDetailsInterface)
+  );
+  return documentData;
 };

@@ -23,7 +23,7 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
   useEffect(() => {
     const fetchAuthorDetails = async (authorId: string) => {
       if (!authorId) {
-        return; // Early return if authorId is empty or undefined
+        return;
       }
 
       const q = doc(db, 'users', authorId);
@@ -41,7 +41,6 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
     const trainingsRef = collection(db, 'trainings');
     const q = query(trainingsRef, orderBy('index', 'asc'));
 
-    // Check if there is cached data and return it
     const cachedData = getCache(cacheKey);
 
     if (cachedData) {
@@ -54,8 +53,7 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
       const allTrainingsData = docsArr.map((doc) => {
         return { ...doc.data(), id: doc.id } as TrainingsInterface;
       });
-
-      // Cache the data
+      
       setCache(cacheKey, allTrainingsData);
 
       setTrainings(allTrainingsData);

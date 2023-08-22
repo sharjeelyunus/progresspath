@@ -62,6 +62,11 @@ export interface TrainingsInterface {
   image?: string;
   completedTasksByUser?: CompletedTasks[];
   userPoints?: number;
+  tasks?: TaskInterface[];
+  trackShortDescription?: string;
+  timestamp?: Timestamp;
+  trackStatus?: string;
+  trackType?: string;
 }
 
 export interface TaskDetailsInterface {

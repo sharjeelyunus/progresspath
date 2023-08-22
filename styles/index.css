@@ -8,8 +8,8 @@
 }
 
 :root {
-  --primary: #393053;
-  --secondary: #6554af;
+  --primary: #1F2937;
+  --secondary: #111827;
 }
 
 /* Firefox */
@@ -25,11 +25,10 @@
 
 *::-webkit-scrollbar-track {
   background: var(--primary);
-  border-radius: 5px;
 }
 
 *::-webkit-scrollbar-thumb {
   background-color: var(--secondary);
-  border-radius: 14px;
+  border-radius: 15px;
   border: 3px solid var(--primary);
 }
