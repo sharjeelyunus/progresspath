@@ -11,24 +11,23 @@ const Training = () => {
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
-
-  const { user, loggedInUser } = useAuth();
-
-  useEffect(() => {
-    if (!user) {
-      router.push('/');
-    }
-  }, []);
+  const { loggedInUser } = useAuth();
 
   const data = useGetAllTasks(slug[0], setLoading);
 
-  const tasks = data.map((task) => ({
+  const tasks = data.tasks.map((task) => ({
     id: task.id,
     taskName: task.taskName,
     details: task.details,
     trackId: task.trackId,
     day: task.day,
   }));
+
+  // useEffect(() => {
+  //   if (loggedInUser?.mentorTracks?.length > 0) {
+  //     setIsMentor(loggedInUser?.mentorTracks?.includes(data?.track?.id));
+  //   }
+  // }, [loggedInUser]);
 
   if (loading) {
     return (
@@ -45,28 +44,38 @@ const Training = () => {
   const lastTaskDay = tasks[tasks.length - 1]?.day;
 
   return (
-    <Layout title='React & Nextjs | ProgressPath'>
+    <Layout title={`${data?.track?.name} | ProgressPath`}>
       <div className='flex justify-center bg-[#272829] py-28 min-h-screen'>
         <div className='flex flex-col w-11/12 lg:w-3/4'>
-          {tasks.map((task, index) => (
-            <Collapsible
-              key={index}
-              index={index}
-              taskId={task.id}
-              taskName={task.taskName}
-              trackId={task.trackId}
-            >
-              <TaskDetails
-                key={task.id}
-                trackId={task.trackId}
+          <div>
+            <h1 className='text-4xl font-bold text-white text-center'>
+              {data?.track?.name}
+            </h1>
+            <p className='text-white mt-3 text-center'>
+              {data?.track?.trackShortDescription}
+            </p>
+          </div>
+          <div className='mt-5'>
+            {tasks.map((task, index) => (
+              <Collapsible
+                key={index}
+                index={index}
                 taskId={task.id}
-                details={task.details}
-              />
-            </Collapsible>
-          ))}
+                taskName={task.taskName}
+                trackId={task.trackId}
+              >
+                <TaskDetails
+                  key={task.id}
+                  trackId={task.trackId}
+                  taskId={task.id}
+                  details={task.details}
+                />
+              </Collapsible>
+            ))}
+          </div>
           {loggedInUser?.mentorTracks?.length > 0 &&
-            loggedInUser?.mentorTracks.includes(data[0]?.trackId) && (
-              <AddTask trackId={data[0]?.trackId} lastTaskDay={lastTaskDay} />
+            loggedInUser?.mentorTracks.includes(data?.track?.id) && (
+              <AddTask trackId={data?.track?.id} lastTaskDay={lastTaskDay} />
             )}
         </div>
       </div>

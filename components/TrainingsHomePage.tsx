@@ -9,7 +9,6 @@ import TrainingCard from './TrainingCard';
 const TrainingsHomePage = () => {
   const { loggedInUser } = useAuth();
   const trainings = useGetAllTrainings();
-
   const [loadingTrainings, setLoadingTrainings] = useState(true);
   const [openOnboardingModal, setOpenOnboardingModal] = useState(false);
 
@@ -24,13 +23,13 @@ const TrainingsHomePage = () => {
   return (
     <>
       <Toaster position='top-center' reverseOrder={false} />
-      <Layout title='Trainings | ProgressPath'>
+      <Layout title='ProgressPath'>
         {loadingTrainings ? (
           <div className='flex justify-center items-center text-white text-2xl bg-[#635985] py-28 min-h-screen'>
             Loading...
           </div>
         ) : loggedInUser?.onboarding ? (
-          <div className='flex justify-center bg-[#272829] py-28 min-h-screen'>
+          <div className='flex flex-col lg:flex-row justify-center items-center gap-5 bg-[#272829] py-28 min-h-screen'>
             {trainings.map((training) => (
               <TrainingCard key={training.id} training={training} />
             ))}
