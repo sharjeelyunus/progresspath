@@ -49,7 +49,7 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
 
   return (
     <>
-      <div className='flex justify-between px-5 py-3 bg-[#393053] text-white'>
+      <div className={`flex justify-between px-5 py-3 text-white ${markDone ? 'bg-gray-900' : 'bg-gray-800'}`}>
         <div className='w-full'>
           <div className='text-sm'>
             <div className='flex flex-col'>
@@ -84,9 +84,9 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
             </div>
           </div>
           {isMentor && (
-            <div className='flex justify-center'>
+            <div className='flex justify-center mt-10'>
               <button
-                className='bg-[#443C68] px-5 py-2 rounded-lg text-sm'
+                className='bg-gray-900 px-10 py-3 rounded-xl text-sm'
                 onClick={() => setAddTaskDetails(true)}
               >
                 Add Details

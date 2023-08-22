@@ -25,7 +25,7 @@ const TrainingCard = ({ training }: Props) => {
 
   if (!isEnrolled && training.trackStatus !== 'published') {
     if (training.mentors.includes(user.uid)) {
-      return <EnrolledTrainingCard training={training} />;
+      return <PendingTrainingCard training={training} />;
     } else {
       return null;
     }
@@ -77,7 +77,7 @@ const EnrolledTrainingCard = ({ training }: Props) => {
 
   return (
     <>
-      <div className='bg-gray-800 w-[300px] h-[400px] flex flex-col rounded-2xl border-2 border-[#272829]'>
+      <div className='bg-gray-800 w-[300px] h-[400px] flex flex-col rounded-2xl'>
         <Link key={training.id} href={training.slug}>
           <div className='h-[200px] w-[300px]'>
             <img
@@ -182,6 +182,50 @@ const EnrollTrainingCard = ({ training }: Props) => {
           setIsOpen={setOpenEnrollModal}
         />
       )}
+    </>
+  );
+};
+
+const PendingTrainingCard = ({ training }: Props) => {
+  const status = training?.trackStatus;
+
+  return (
+    <>
+      <div className='bg-gray-800 w-[300px] h-[400px] flex flex-col rounded-2xl'>
+        <Link key={training.id} href={training.slug}>
+          <div className='h-[200px] w-[300px]'>
+            <img
+              src={training?.image}
+              alt={training?.name}
+              className='h-full w-full object-cover rounded-t-2xl'
+            />
+          </div>
+          <div className='p-5'>
+            <h1 className='text-2xl font-bold text-white'>{training.name}</h1>
+            <div className='flex items-center mt-4'>
+              <img
+                className='h-8 w-8 rounded-full mr-2'
+                src={
+                  training.leadImage
+                    ? training.leadImage
+                    : '/blank-profile-picture.svg'
+                }
+                alt={training.leadName}
+              />
+              <p className='text-white'>{training.leadName}</p>
+            </div>
+
+            {status !== undefined && status !== 'Published' && (
+              <div className='flex w-full flex-col items-center text-white mt-5 gap-3'>
+                <p className='text-sm text-yellow-500'>Status: {status}</p>
+                {status === 'pending' && (
+                  <p className='text-sm'>Please update the track to publish</p>
+                )}
+              </div>
+            )}
+          </div>
+        </Link>
+      </div>
     </>
   );
 };
