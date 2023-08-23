@@ -4,7 +4,6 @@ import {
   getDocs,
   query,
   setDoc,
-  Timestamp,
   where,
 } from 'firebase/firestore';
 import { useRouter } from 'next/router';
@@ -12,19 +11,17 @@ import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import Loading from '../src/shared/components/Loading';
 
-type Props = {
-  setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-  isOpen: boolean;
-};
-
-const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
+const OnboardingModal = () => {
   const { loggedInUser, user } = useAuth();
   const [name, setName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [bio, setBio] = useState<string>('');
   const [organization, setOrganization] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+
+  const router = useRouter();
 
   useEffect(() => {
     if (loggedInUser) {
@@ -33,6 +30,12 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
       setBio(loggedInUser.bio);
       setOrganization(loggedInUser.organization);
       setLocation(loggedInUser.location);
+    }
+  }, [loggedInUser]);
+
+  useEffect(() => {
+    if (loggedInUser && loggedInUser.onboarding) {
+      router.push('/');
     }
   }, [loggedInUser]);
 
@@ -47,10 +50,6 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
         username: username,
         email: user?.email,
         photoURL: user?.photoURL,
-        metadata: {
-          lastSignInTime: user?.metadata?.lastSignInTime,
-          creationTime: user?.metadata?.creationTime,
-        },
         bio: bio,
         organization: organization,
         location: location,
@@ -94,23 +93,19 @@ const OnboardingModal = ({ setIsOpen, isOpen }: Props) => {
 
     // update user
     await updateUser(e);
-    setIsOpen(false);
+
+    // redirect to home
+    router.push('/');
+    window.location.reload();
   };
 
-  const handleOnClose = (e: any) => {
-    if (e.target.id === 'container') {
-      setIsOpen(false);
-    }
-  };
-
-  if (!isOpen) return null;
+  if (!loggedInUser || !user) {
+    return <Loading />;
+  }
 
   return (
-    <div
-      onClick={handleOnClose}
-      className='fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-50'
-    >
-      <div className='bg-[#443C68] mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
+    <div className='fixed inset-0 bg-gray-700 backdrop-blur-sm flex justify-center items-center z-50'>
+      <div className='bg-gray-800 mt-[-71px] overflow-y-scroll lg:overflow-y-hidden lg:mt-0 lg:px-0 lg:py-0 rounded-3xl'>
         <div className='flex flex-col w-[350px] lg:w-[500px] justify-center items-center py-6 lg:px-8 px-4'>
           <div>
             <h2 className='text-center text-white font-bold text-lg lg:text-2xl'>
