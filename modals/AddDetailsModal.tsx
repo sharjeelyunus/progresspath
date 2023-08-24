@@ -99,10 +99,10 @@ const AddDetailsModal = ({
               </h2>
             </div>
             <div className='mt-2'>
-              <label className='block text-sm font-medium text-gray-300 mt-5'>
-                Index
-              </label>
               <div className='py-3'>
+                <label className='block text-sm font-medium text-gray-300'>
+                  Index
+                </label>
                 <input
                   type='number'
                   placeholder='Index'
