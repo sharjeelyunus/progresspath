@@ -49,6 +49,16 @@ function AddTaskModal({ isOpen, setIsOpen, lastTaskDay, trackId }: Props) {
       return;
     }
 
+    if (
+      taskName === '' ||
+      taskDescription === '' ||
+      taskType === '' ||
+      Number.isNaN(taskDay)
+    ) {
+      toast.error('Please fill all the fields');
+      return;
+    }
+
     await addDoc(collection(db, 'trainings', trackId, 'tasks'), {
       day: taskDay,
       taskName: taskName,
