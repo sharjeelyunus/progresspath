@@ -26,7 +26,7 @@ const AddTask = ({ trackId, lastTaskDay }: Props) => {
   return (
     <div className='flex justify-center mt-20'>
       <button
-        className='text-white bg-[#443C68] px-5 py-2 rounded-lg'
+        className='text-white bg-gray-900 px-20 py-3 rounded-lg'
         onClick={() => setAddTaskOpen(true)}
       >
         Add Task
