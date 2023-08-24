@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import ValidateURL from '../src/shared/components/ValidateURL';
+import { isValidUrl } from '../src/utils';
 
 const BecomeMentor = () => {
   const { loggedInUser } = useAuth();
@@ -35,6 +37,48 @@ const BecomeMentor = () => {
 
   const submitRequestBecomeMentor = async (e: any) => {
     e?.preventDefault();
+
+    if (
+      !name ||
+      !email ||
+      !areaOfExpertise ||
+      !yearsOfExperience ||
+      !trackName ||
+      !trackShortDescription ||
+      !motivation ||
+      !trackType ||
+      !linkedin ||
+      !trackSubType
+    ) {
+      toast.error('Please fill all the fields');
+      return;
+    }
+
+    if (motivation.length < 10) {
+      toast.error('Motivation should be atleast 10 characters long');
+      return;
+    }
+
+    if (!isValidUrl(linkedin)) {
+      toast.error('Please enter a valid LinkedIn URL');
+      return;
+    }
+
+    if (github && !isValidUrl(github)) {
+      toast.error('Please enter a valid Github URL');
+      return;
+    }
+
+    if (twitter && !isValidUrl(twitter)) {
+      toast.error('Please enter a valid Twitter URL');
+      return;
+    }
+
+    if (portfolio && !isValidUrl(portfolio)) {
+      toast.error('Please enter a valid Portfolio URL');
+      return;
+    }
+
     const mentorRequestsRef = collection(db, 'mentorRequests');
     const data = {
       userId: loggedInUser?.uid,
@@ -246,6 +290,7 @@ const BecomeMentor = () => {
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               placeholder='LinkedIn profile link'
             />
+            <ValidateURL url={linkedin} />
           </div>
 
           <div className='mb-4'>
@@ -259,6 +304,7 @@ const BecomeMentor = () => {
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               placeholder='Github profile link'
             />
+            <ValidateURL url={github} />
           </div>
 
           <div className='mb-4'>
@@ -272,6 +318,7 @@ const BecomeMentor = () => {
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               placeholder='Twitter profile link'
             />
+            <ValidateURL url={twitter} />
           </div>
 
           <div className='mb-4'>
@@ -285,6 +332,7 @@ const BecomeMentor = () => {
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               placeholder='Portfolio link'
             />
+            <ValidateURL url={portfolio} />
           </div>
 
           {/* Submit Button */}
