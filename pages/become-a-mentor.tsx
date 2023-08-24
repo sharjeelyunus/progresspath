@@ -156,6 +156,7 @@ const BecomeMentor = () => {
               className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
               value={trackType}
               onChange={(e) => setTrackType(e.target.value)}
+              disabled
             >
               <option value='new'>New</option>
               <option value='existing'>Existing</option>
@@ -172,6 +173,7 @@ const BecomeMentor = () => {
                   className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
                   value={trackSubType}
                   onChange={(e) => setTrackSubType(e.target.value)}
+                  disabled
                 >
                   <option value='public'>Public</option>
                   <option value='invite-only'>Invite only</option>

@@ -7,11 +7,16 @@ import { useAuth } from '../context/AuthContext';
 import useGetAllTasks from '../hooks/useGetTasks';
 import AddTask from '../components/Dashboard/AddTask';
 import Loading from '../src/shared/components/Loading';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../config/firebase';
+import { toast } from 'react-hot-toast';
+import UploadTrackImageModal from '../modals/UploadTrackImageModal';
 
 const Training = () => {
   const router = useRouter();
   const slug = (router.query.slug as string[]) ?? [];
   const [loading, setLoading] = useState(false);
+  const [openUploadImageModal, setOpenUploadImageModal] = useState(false);
   const { loggedInUser } = useAuth();
   const { tasks, track } = useGetAllTasks(slug[0], setLoading);
 
@@ -25,20 +30,44 @@ const Training = () => {
     return <Loading />;
   }
 
+  const handleRequestPublishTrack = async () => {
+    await updateDoc(doc(db, 'trainings', track?.id), {
+      trackStatus: 'in-review',
+    });
+
+    toast.success('Your track has been submitted for review');
+
+    router.push('/');
+  };
+
   return (
     <Layout title={`${track?.name} | ProgressPath`}>
       <div className='flex justify-center bg-gray-700 py-28 min-h-screen'>
         <div className='flex flex-col w-11/12 lg:w-3/4'>
           <div>
-            <div className='flex justify-end'>
-              {loggedInUser?.mentorTracks?.includes(track?.id) &&
-                tasks.length > 10 &&
-                track.trackStatus == 'pending' && (
-                  <button className='text-white bg-gray-900 px-10 py-4 rounded-xl'>
-                    Publish Track
-                  </button>
-                )}
+            <div className='flex justify-between'>
+              <button
+                onClick={() => setOpenUploadImageModal(true)}
+                className='text-white bg-gray-900 px-10 py-4 rounded-xl'
+              >
+                Update Track Image
+              </button>
+              {tasks.length > 10 && track?.trackStatus == 'pending' && (
+                <button
+                  onClick={handleRequestPublishTrack}
+                  className='text-white bg-gray-900 px-10 py-4 rounded-xl'
+                >
+                  Publish Track
+                </button>
+              )}
             </div>
+
+            {track?.trackStatus !== 'Published' && tasks.length < 10 && (
+              <p className='text-black font-bold text-center bg-white p-3 my-10 rounded-md'>
+                This track is still in development. You'll be able to publish it
+                once you've added at least 10 tasks.
+              </p>
+            )}
             <h1 className='text-4xl font-bold text-white text-center'>
               {track?.name}
             </h1>
@@ -69,6 +98,15 @@ const Training = () => {
           )}
         </div>
       </div>
+      {openUploadImageModal && (
+        <UploadTrackImageModal
+          isOpen={openUploadImageModal}
+          setIsOpen={setOpenUploadImageModal}
+          trackId={track?.id}
+          trackImage={track?.image}
+          trackName={track?.name}
+        />
+      )}
     </Layout>
   );
 };
