@@ -132,7 +132,7 @@ const BecomeMentor = () => {
 
   return (
     <Layout title='Become a Mentor | ProgressPath'>
-      <div className='py-24 flex flex-col items-center bg-[#272829] text-white min-h-screen px-10'>
+      <div className='py-24 flex flex-col items-center bg-gray-700 text-white min-h-screen px-10'>
         <h1 className='text-3xl font-semibold mb-6 mt-10 text-center'>
           Become a Mentor at <span className='underline'>ProgressPath</span> 🚀
         </h1>
@@ -147,7 +147,7 @@ const BecomeMentor = () => {
               type='text'
               value={name}
               disabled
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#313233] border text-white cursor-not-allowed'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white cursor-not-allowed'
               placeholder='Your full name'
             />
           </div>
@@ -160,7 +160,7 @@ const BecomeMentor = () => {
               type='email'
               disabled
               value={email}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#313233] border text-white cursor-not-allowed'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white cursor-not-allowed'
               placeholder='Your email address'
             />
           </div>
@@ -174,7 +174,7 @@ const BecomeMentor = () => {
               type='text'
               value={areaOfExpertise}
               onChange={(e) => setAreaOfExpertise(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Your area of expertise'
             />
           </div>
@@ -187,7 +187,7 @@ const BecomeMentor = () => {
               type='number'
               value={yearsOfExperience}
               onChange={(e) => setYearsOfExperience(+e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Number of years'
             />
           </div>
@@ -197,7 +197,7 @@ const BecomeMentor = () => {
               Do you want to mentor already existing track or create a new one?
             </label>
             <select
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               value={trackType}
               onChange={(e) => setTrackType(e.target.value)}
               disabled
@@ -214,7 +214,7 @@ const BecomeMentor = () => {
                   Is this track public, invite only or private?
                 </label>
                 <select
-                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
                   value={trackSubType}
                   onChange={(e) => setTrackSubType(e.target.value)}
                   disabled
@@ -232,7 +232,7 @@ const BecomeMentor = () => {
                   type='text'
                   value={trackName}
                   onChange={(e) => setTrackName(e.target.value)}
-                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
                   placeholder='Track name you want to mentor'
                 />
               </div>
@@ -245,7 +245,7 @@ const BecomeMentor = () => {
                   rows={4}
                   value={trackShortDescription}
                   onChange={(e) => setTrackShortDescription(e.target.value)}
-                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                  className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
                   placeholder='Write short description of what will be in this track?'
                 />
               </div>
@@ -259,7 +259,7 @@ const BecomeMentor = () => {
                 type='text'
                 value={trackName}
                 onChange={(e) => setTrackName(e.target.value)}
-                className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+                className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
                 placeholder='Track name you want to mentor'
               />
             </div>
@@ -273,7 +273,7 @@ const BecomeMentor = () => {
               rows={4}
               value={motivation}
               onChange={(e) => setMotivation(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Tell us your motivation...'
             />
           </div>
@@ -287,7 +287,7 @@ const BecomeMentor = () => {
               type='text'
               value={linkedin}
               onChange={(e) => setLinkedin(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='LinkedIn profile link'
             />
             <ValidateURL url={linkedin} />
@@ -301,7 +301,7 @@ const BecomeMentor = () => {
               type='text'
               value={github}
               onChange={(e) => setGithub(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Github profile link'
             />
             <ValidateURL url={github} />
@@ -315,7 +315,7 @@ const BecomeMentor = () => {
               type='text'
               value={twitter}
               onChange={(e) => setTwitter(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Twitter profile link'
             />
             <ValidateURL url={twitter} />
@@ -329,7 +329,7 @@ const BecomeMentor = () => {
               type='text'
               value={portfolio}
               onChange={(e) => setPortfolio(e.target.value)}
-              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-[#272829] border text-white'
+              className='mt-1 p-2 w-full border-gray-300 rounded-md bg-gray-800 border text-white'
               placeholder='Portfolio link'
             />
             <ValidateURL url={portfolio} />
@@ -338,7 +338,7 @@ const BecomeMentor = () => {
           {/* Submit Button */}
           <button
             type='submit'
-            className='w-full text-white bg-[#443C68] px-5 py-2 rounded-lg hover:bg-gray-800 transition duration-200'
+            className='w-full text-white bg-gray-900 px-5 py-2 mt-10 rounded-lg hover:bg-gray-800 transition duration-200'
           >
             Submit
           </button>
