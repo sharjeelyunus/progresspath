@@ -2,6 +2,8 @@ import { addDoc, collection } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { toast } from 'react-hot-toast';
+import { isValidUrl } from '../src/utils';
+import ValidateURL from '../src/shared/components/ValidateURL';
 
 type Props = {
   isOpen: boolean;
@@ -23,12 +25,6 @@ const AddDetailsModal = ({
   const [taskType, setTaskType] = useState<string>('docs');
   const [taskLink, setTaskLink] = useState<string>('');
   const [taskDescription, setTaskDescription] = useState<string>('');
-
-  function isValidUrl(url: string): boolean {
-    const urlPattern =
-      /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
-    return urlPattern.test(url);
-  }
 
   const handleOnClose = (e: any) => {
     if (e.target.id === 'container') {
@@ -163,21 +159,7 @@ const AddDetailsModal = ({
                   onChange={(e) => setTaskLink(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-gray-700 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
-                <div className='flex justify-end'>
-                  <p
-                    className={`${
-                      taskLink === '' || isValidUrl(taskLink)
-                        ? 'text-white'
-                        : 'text-orange-600'
-                    }`}
-                  >
-                    {taskLink === ''
-                      ? ''
-                      : isValidUrl(taskLink)
-                      ? ''
-                      : 'Invalid URL'}
-                  </p>
-                </div>
+                <ValidateURL url={taskLink} />
               </div>
             </div>
           </div>

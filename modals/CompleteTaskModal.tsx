@@ -3,6 +3,8 @@ import React, { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { db } from '../config/firebase';
 import { useAuth } from '../context/AuthContext';
+import { isValidUrl } from '../src/utils';
+import ValidateURL from '../src/shared/components/ValidateURL';
 
 type Props = {
   isOpen: boolean;
@@ -34,18 +36,13 @@ const CompleteTaskModal = ({
       return;
     }
 
-    // Validate URLs
-    const urlRegex = new RegExp(
-      /^(http|https):\/\/(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\S*$/i
-    );
-
-    if (postLink && !urlRegex.test(postLink)) {
+    if (postLink && !isValidUrl(postLink)) {
       toast.error('Please enter a valid post URL');
       return;
-    } else if (liveLink && !urlRegex.test(liveLink)) {
+    } else if (liveLink && !isValidUrl(liveLink)) {
       toast.error('Please enter a valid live URL');
       return;
-    } else if (codeLink && !urlRegex.test(codeLink)) {
+    } else if (codeLink && !isValidUrl(codeLink)) {
       toast.error('Please enter a valid code URL');
       return;
     }
@@ -136,6 +133,7 @@ const CompleteTaskModal = ({
                   onChange={(e) => setCodeLink(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-gray-700 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
+                <ValidateURL url={codeLink} />
                 <label className='block text-sm font-medium text-gray-300 mt-5'>
                   Project URL (Live)
                 </label>
@@ -146,6 +144,7 @@ const CompleteTaskModal = ({
                   onChange={(e) => setLiveLink(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-gray-700 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
+                <ValidateURL url={liveLink} />
                 <label className='block text-sm font-medium text-gray-300 mt-5'>
                   Post URL
                 </label>
@@ -156,6 +155,7 @@ const CompleteTaskModal = ({
                   onChange={(e) => setPostLink(e.target.value)}
                   className='mt-2 border px-4 py-2 bg-gray-700 text-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm'
                 />
+                <ValidateURL url={postLink} />
               </div>
             </div>
           </div>
