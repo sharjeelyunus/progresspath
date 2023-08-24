@@ -8,9 +8,10 @@ import { useAuth } from '../context/AuthContext';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import GenerateCertificateModal from '../modals/GenerateCertificateModal';
+import { TrainingsInterface } from '../interfaces';
 
 type Props = {
-  training: any;
+  training: TrainingsInterface;
 };
 
 const TrainingCard = ({ training }: Props) => {
@@ -97,13 +98,13 @@ const EnrolledTrainingCard = ({ training }: Props) => {
               <img
                 className='h-8 w-8 rounded-full mr-2'
                 src={
-                  training.leadImage
-                    ? training.leadImage
+                  training?.lead?.photoURL
+                    ? training.lead.photoURL
                     : '/blank-profile-picture.svg'
                 }
-                alt={training.leadName}
+                alt={training?.lead?.name}
               />
-              <p className='text-white'>{training.leadName}</p>
+              <p className='text-white'>{training?.lead?.name}</p>
             </div>
             {enrolledUserCount > 0 && (
               <div className='flex mt-5 w-full justify-end'>
@@ -161,13 +162,13 @@ const EnrollTrainingCard = ({ training }: Props) => {
           <img
             className='h-8 w-8 rounded-full mr-2'
             src={
-              training.leadImage
-                ? training.leadImage
+              training?.lead?.photoURL
+                ? training?.lead?.photoURL
                 : '/blank-profile-picture.svg'
             }
-            alt={training.leadName}
+            alt={training?.lead?.name}
           />
-          <p className='text-white'>{training.leadName}</p>
+          <p className='text-white'>{training?.lead?.name}</p>
         </div>
         <div className='flex justify-end mt-5 w-full'>
           <p className='text-white'>{enrolledUserCount} Enrolled</p>
@@ -187,7 +188,7 @@ const EnrollTrainingCard = ({ training }: Props) => {
 
 const PendingTrainingCard = ({ training }: Props) => {
   const status = training?.trackStatus;
-  
+
   return (
     <>
       <div className='bg-gray-800 w-[300px] flex flex-col rounded-2xl'>
@@ -207,13 +208,13 @@ const PendingTrainingCard = ({ training }: Props) => {
               <img
                 className='h-8 w-8 rounded-full mr-2'
                 src={
-                  training.leadImage
-                    ? training.leadImage
+                  training?.lead?.photoURL
+                    ? training?.lead?.photoURL
                     : '/blank-profile-picture.svg'
                 }
-                alt={training.leadName}
+                alt={training?.lead?.name}
               />
-              <p className='text-white'>{training.leadName}</p>
+              <p className='text-white'>{training?.lead?.name}</p>
             </div>
 
             {status !== undefined && status !== 'Published' && (

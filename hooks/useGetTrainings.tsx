@@ -16,26 +16,7 @@ import {
 
 export default function useGetAllTrainings(): TrainingsInterface[] {
   const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
-  const [authorDetails, setAuthorDetails] = useState<UserType>();
-
   const cacheKey = 'ProgressPath-tracks';
-
-  useEffect(() => {
-    const fetchAuthorDetails = async (authorId: string) => {
-      if (!authorId) {
-        return;
-      }
-
-      const q = doc(db, 'users', authorId);
-
-      const querySnapshot = await getDoc(q);
-      const documentData = querySnapshot.data();
-
-      setAuthorDetails(documentData as UserType);
-    };
-
-    fetchAuthorDetails(trainings[0]?.mentors[0] || '');
-  }, [trainings]);
 
   useEffect(() => {
     const trainingsRef = collection(db, 'trainings');
@@ -50,22 +31,37 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
 
     const unsub = onSnapshot(q, (docs) => {
       const docsArr = docs.docs;
-      const allTrainingsData = docsArr.map((doc) => {
-        return { ...doc.data(), id: doc.id } as TrainingsInterface;
-      });
-      
-      setCache(cacheKey, allTrainingsData);
+      const allTrainingsData = docsArr.map(async (document) => {
+        const trainingData = {
+          ...document.data(),
+          id: document.id,
+        } as TrainingsInterface;
 
-      setTrainings(allTrainingsData);
+        // Fetch author details for each training
+        const authorId = trainingData.mentors[0]; // Assuming mentors is an array of author IDs
+        if (authorId) {
+          const authorDocRef = doc(db, 'users', authorId); // Use doc function from firestore package
+          const authorSnapshot = await getDoc(authorDocRef);
+          const authorData = {
+            ...authorSnapshot.data(),
+            uid: authorSnapshot.id,
+          } as UserType;
+
+          // Update the training data with author details
+          trainingData.lead = authorData;
+        }
+
+        return trainingData;
+      });
+
+      Promise.all(allTrainingsData).then((completedTrainings) => {
+        setCache(cacheKey, completedTrainings);
+        setTrainings(completedTrainings);
+      });
     });
 
     return unsub;
   }, []);
 
-  return trainings.map((training) => ({
-    ...training,
-    leadName: authorDetails?.name || '',
-    leadImage: authorDetails?.photoURL || '',
-    leadUsername: authorDetails?.username || '',
-  }));
+  return trainings;
 }

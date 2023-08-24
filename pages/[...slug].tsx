@@ -46,27 +46,36 @@ const Training = () => {
         <div className='flex flex-col w-11/12 lg:w-3/4'>
           <div>
             <div className='flex justify-between'>
-              <button
-                onClick={() => setOpenUploadImageModal(true)}
-                className='text-white bg-gray-900 px-10 py-4 rounded-xl'
-              >
-                Update Track Image
-              </button>
-              {tasks.length > 10 && track?.trackStatus == 'pending' && (
+              {loggedInUser?.mentorTracks?.includes(track?.id) && (
                 <button
-                  onClick={handleRequestPublishTrack}
+                  onClick={() => setOpenUploadImageModal(true)}
                   className='text-white bg-gray-900 px-10 py-4 rounded-xl'
                 >
-                  Publish Track
+                  Update Track Image
                 </button>
               )}
+              {loggedInUser?.mentorTracks?.includes(track?.id) && (
+                <>
+                  {tasks.length > 10 && track?.trackStatus == 'pending' && (
+                    <button
+                      onClick={handleRequestPublishTrack}
+                      className='text-white bg-gray-900 px-10 py-4 rounded-xl'
+                    >
+                      Publish Track
+                    </button>
+                  )}
+                </>
+              )}
             </div>
-
-            {track?.trackStatus !== 'Published' && tasks.length < 10 && (
-              <p className='text-black font-bold text-center bg-white p-3 my-10 rounded-md'>
-                This track is still in development. You'll be able to publish it
-                once you've added at least 10 tasks.
-              </p>
+            {loggedInUser?.mentorTracks?.includes(track?.id) && (
+              <>
+                {track?.trackStatus !== 'Published' && tasks.length < 10 && (
+                  <p className='text-black font-bold text-center bg-white p-3 my-10 rounded-md'>
+                    This track is still in development. You'll be able to
+                    publish it once you've added at least 10 tasks.
+                  </p>
+                )}
+              </>
             )}
             <h1 className='text-4xl font-bold text-white text-center'>
               {track?.name}
