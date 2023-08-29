@@ -39,12 +39,12 @@ const TrackCard = ({ userId, trackId, timestamp }: Props) => {
       className={
         loggedInUser?.uid === userId ||
         userTrackDetails?.lead?.uid === loggedInUser?.uid
-          ? 'bg-[#443C68] lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
+          ? 'bg-gray-800 lg:p-10 p-5 mt-5 rounded-2xl lg:max-w-[80%]'
           : 'w-full'
       }
     >
       <Link href={`/${userTrackDetails?.slug}`} className='flex justify-center'>
-        <div className='lg:flex lg:w-full justify-center w-[350px] items-center bg-[#18122B] rounded-2xl p-5 lg:mt-5'>
+        <div className='lg:flex lg:w-full justify-center w-[350px] items-center bg-gray-900 rounded-2xl p-5 lg:mt-5'>
           <div className='lg:flex gap-5 items-center'>
             <img
               src={

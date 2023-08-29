@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import useFetchTargetUser from '../../hooks/useFetchTargetUser';
 import UserTracks from '../../components/UserTracks';
+import Loading from '../../src/shared/components/Loading';
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -19,17 +20,13 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <Layout title='Loading... | ProgressPath'>
-        <div className='flex justify-center items-center text-white bg-[#635985] py-28 min-h-screen'>
-          Loading...
-        </div>
-      </Layout>
+      <Loading />
     );
   }
 
   return (
     <Layout title={`${targetUser?.name} | ProgressPath`}>
-      <div className='flex justify-center bg-[#635985] py-28 min-h-screen'>
+      <div className='flex justify-center bg-gray-700 py-28 min-h-screen'>
         <div className='flex items-center flex-col w-full'>
           <div className='flex gap-5'>
             <img

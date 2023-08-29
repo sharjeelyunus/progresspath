@@ -6,16 +6,19 @@ import {
   orderBy,
   query,
 } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { db } from '../config/firebase';
 import { TrainingsInterface, UserType } from '../interfaces';
 import {
   getMemoryCache as getCache,
   setMemoryCache as setCache,
 } from '../utils/cache';
+import { useRecoilState } from 'recoil';
+import TrainingAtom from '../atoms/TrainingsAtom';
 
 export default function useGetAllTrainings(): TrainingsInterface[] {
-  const [trainings, setTrainings] = useState<TrainingsInterface[]>([]);
+  const [trainings, setTrainings] =
+    useRecoilState<TrainingsInterface[]>(TrainingAtom);
   const cacheKey = 'ProgressPath-tracks';
 
   useEffect(() => {
@@ -37,17 +40,15 @@ export default function useGetAllTrainings(): TrainingsInterface[] {
           id: document.id,
         } as TrainingsInterface;
 
-        // Fetch author details for each training
-        const authorId = trainingData.mentors[0]; // Assuming mentors is an array of author IDs
+        const authorId = trainingData.mentors[0];
         if (authorId) {
-          const authorDocRef = doc(db, 'users', authorId); // Use doc function from firestore package
+          const authorDocRef = doc(db, 'users', authorId);
           const authorSnapshot = await getDoc(authorDocRef);
           const authorData = {
             ...authorSnapshot.data(),
             uid: authorSnapshot.id,
           } as UserType;
 
-          // Update the training data with author details
           trainingData.lead = authorData;
         }
 

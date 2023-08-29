@@ -55,7 +55,7 @@ const CompletedTaskDetails = ({
     <>
       <div
         key={id}
-        className='flex flex-col lg:w-[450px] w-[350px] mt-5 bg-[#393053] text-white lg:px-7 p-5 rounded-2xl'
+        className='flex flex-col lg:w-[450px] w-[350px] mt-5 bg-gray-700 text-white lg:px-7 p-5 rounded-2xl'
       >
         <div className='flex justify-between'>
           <h1 className='text-lg underline font-semibold'>
@@ -64,7 +64,7 @@ const CompletedTaskDetails = ({
           {leadId === loggedInUser?.uid && (
             <button
               onClick={() => setOpenReviewModal(true)}
-              className='bg-[#18122B] px-5 h-9 rounded-lg'
+              className='bg-gray-900 px-5 h-9 rounded-lg'
             >
               Review
             </button>
