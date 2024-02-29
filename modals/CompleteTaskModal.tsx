@@ -9,14 +9,14 @@ import ValidateURL from '../src/shared/components/ValidateURL';
 type Props = {
   isOpen: boolean;
   setIsOpen: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-  setMarkDone: (markDone: boolean) => void;
+  // setMarkDone: (markDone: boolean) => void;
   trackId: string;
   taskId: string;
 };
 
 const CompleteTaskModal = ({
   trackId,
-  setMarkDone,
+  // setMarkDone,
   isOpen,
   setIsOpen,
   taskId,
@@ -96,7 +96,7 @@ const CompleteTaskModal = ({
 
     toast.success('Task completed successfully');
     setIsOpen(false);
-    setMarkDone(true);
+    // setMarkDone(true);
   };
 
   const handleOnClose = (e: any) => {

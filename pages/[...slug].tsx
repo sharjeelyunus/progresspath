@@ -11,6 +11,8 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { toast } from 'react-hot-toast';
 import UploadTrackImageModal from '../modals/UploadTrackImageModal';
+import { TaskInterface } from '../interfaces';
+import TaskSidebar from '../components/TaskSidebar';
 
 const Training = () => {
   const router = useRouter();
@@ -19,6 +21,11 @@ const Training = () => {
   const [openUploadImageModal, setOpenUploadImageModal] = useState(false);
   const { loggedInUser } = useAuth();
   const { tasks, track } = useGetAllTasks(slug[0], setLoading);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const handleTaskSelection = (task: TaskInterface) => {
+    setSelectedTask(task);
+  };
 
   const lastTaskDay = useMemo(() => {
     if (tasks.length > 0) {
@@ -43,9 +50,9 @@ const Training = () => {
   return (
     <Layout title={`${track?.name} | ProgressPath`}>
       <div className='flex justify-center bg-gray-700 py-28 min-h-screen'>
-        <div className='flex flex-col w-11/12 lg:w-3/4'>
+        <div className='flex flex-col w-full'>
           <div>
-            <div className='flex justify-between'>
+            <div className='flex justify-between px-20'>
               {loggedInUser?.mentorTracks?.includes(track?.id) && (
                 <button
                   onClick={() => setOpenUploadImageModal(true)}
@@ -80,11 +87,28 @@ const Training = () => {
             <h1 className='text-4xl font-bold text-white text-center'>
               {track?.name}
             </h1>
-            <p className='text-white mt-3 text-center'>
-              {track?.trackShortDescription}
-            </p>
           </div>
-          <div className='mt-5'>
+          <div className='flex mt-5'>
+            <TaskSidebar
+              tasks={tasks}
+              onSelectTask={handleTaskSelection}
+              selectedTask={selectedTask}
+            />
+            <div className='w-full'>
+              {selectedTask ? (
+                <TaskDetails
+                  trackId={selectedTask.trackId}
+                  taskId={selectedTask.id}
+                  details={selectedTask.details}
+                />
+              ) : (
+                <p className='text-white mt-3 text-center'>
+                  {track?.trackShortDescription}
+                </p>
+              )}
+            </div>
+          </div>
+          {/* <div className='mt-5'>
             {tasks.map((task, index) => (
               <Collapsible
                 key={task.id}
@@ -101,7 +125,7 @@ const Training = () => {
                 />
               </Collapsible>
             ))}
-          </div>
+          </div> */}
           {loggedInUser?.mentorTracks?.includes(track?.id) && (
             <AddTask trackId={track?.id} lastTaskDay={lastTaskDay} />
           )}

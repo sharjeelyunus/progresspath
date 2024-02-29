@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useGetCompletedTasks from '../hooks/useGetCompletedTasks';
-import { Details } from '../interfaces';
+import { CompletedTasks, Details } from '../interfaces';
 import ComplelteTaskModal from '../modals/CompleteTaskModal';
 import { MdVideoLibrary } from 'react-icons/md';
 import { SiReadthedocs } from 'react-icons/si';
@@ -13,25 +13,28 @@ type Props = {
   details: Array<Details>;
   trackId: string;
   taskId: string;
+  // completedTasks: CompletedTasks[];
 };
 
 const TaskDetails = ({ taskId, trackId, details }: Props) => {
   const { loggedInUser } = useAuth();
 
   const [openCompleteTaskModal, setOpenCompleteTaskModal] = useState(false);
-  const [markDone, setMarkDone] = useState(false);
+  // const [markDone, setMarkDone] = useState(false);
   const [isMentor, setIsMentor] = useState(false);
   const [addTaskDetails, setAddTaskDetails] = useState(false);
 
   const completedTasks = useGetCompletedTasks(trackId);
 
-  useEffect(() => {
-    completedTasks.map((task) => {
-      if (task.id === taskId) {
-        setMarkDone(true);
-      }
-    });
-  }, [completedTasks]);
+  const isCompleted = completedTasks?.some((item) => item.id === taskId);
+
+  // useEffect(() => {
+  //   completedTasks.map((task) => {
+  //     if (task.id === taskId) {
+  //       setMarkDone(true);
+  //     }
+  //   });
+  // }, [completedTasks]);
 
   useEffect(() => {
     if (
@@ -49,7 +52,9 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
 
   return (
     <>
-      <div className={`flex justify-between px-5 py-3 text-white ${markDone ? 'bg-gray-900' : 'bg-gray-800'}`}>
+      <div
+        className='flex justify-between w-full px-5 py-3 text-white bg-gray-700'
+      >
         <div className='w-full'>
           <div className='text-sm'>
             <div className='flex flex-col'>
@@ -97,10 +102,10 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
             <button
               className='bg-green-700 px-5 py-2 rounded-lg text-sm'
               onClick={
-                markDone ? () => {} : () => setOpenCompleteTaskModal(true)
+                isCompleted ? () => {} : () => setOpenCompleteTaskModal(true)
               }
             >
-              {markDone ? 'Completed' : 'Mark as Done'}
+              {isCompleted ? 'Completed' : 'Mark as Done'}
             </button>
           </div>
         </div>
@@ -109,7 +114,7 @@ const TaskDetails = ({ taskId, trackId, details }: Props) => {
         <ComplelteTaskModal
           trackId={trackId}
           taskId={taskId}
-          setMarkDone={setMarkDone}
+          // setMarkDone={setMarkDone}
           isOpen={openCompleteTaskModal}
           setIsOpen={setOpenCompleteTaskModal}
         />
